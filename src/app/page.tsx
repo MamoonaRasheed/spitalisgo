@@ -1,3 +1,4 @@
+import { UserIcon } from "@/icons";
 export default function Page() {
     return (
         <>
@@ -44,8 +45,8 @@ export default function Page() {
                                     <li><a href="#">B2 Probeprüfung</a></li>
                                     <li><a href="#">Einstufungstest</a></li>
                                 </ul>
-                                <a href="#" className="login-button">
-                                    <i className="fas fa-user"></i> Log in
+                                <a href="/signin" className="login-button">
+                                    <UserIcon className="icon" /> Log in
                                 </a>
                             </div>
                         </header>

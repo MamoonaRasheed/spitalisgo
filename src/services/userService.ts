@@ -51,3 +51,29 @@ export const toggleUserStatus = async (id: number, currentStatus: string) => {
     throw error;
   }
 };
+
+export const updateUserProfile = async (formData: FormData) => {
+  if (typeof window === 'undefined') {
+    throw new Error("localStorage is not available on the server side");
+  }
+
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    throw new Error("Token not found in localStorage");
+  }
+
+  try {
+    const { data } = await axios.put("/profile", formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return data;
+  } catch (error) {
+    console.error("Failed to update profile:", error);
+    throw error;
+  }
+};

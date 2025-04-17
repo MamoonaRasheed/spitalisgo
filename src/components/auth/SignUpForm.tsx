@@ -1,20 +1,29 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [form, setForm] = useState({
     email: "",
-    username: "",
+    name: "",
     password: "",
-    languages: "",
-    level: "",
+    password_confirmation: "",
     newsletter: false,
   });
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const router = useRouter();
+
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
+  };
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword((prev) => !prev);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,10 +34,41 @@ export default function SignUpForm() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(form);
-    // Submit logic here
+    setLoading(true);
+    setError("");
+    setSuccess("");
+
+    try {
+      const response = await fetch("http://localhost:8000/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(form),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Registration failed.");
+      }
+
+      setSuccess("Registration successful!");
+      setForm({
+        email: "",
+        name: "",
+        password: "",
+        password_confirmation: "",
+        newsletter: false,
+      });
+
+      router.push("/signin");
+    } catch (err: any) {
+      setError(err.message || "Something went wrong, please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -39,118 +79,124 @@ export default function SignUpForm() {
             <h2>Registration</h2>
             <p>Register to continue and save your results.</p>
           </div>
+
           <div className="auth-align">
-            <form onSubmit={handleSubmit}>
-              <div className="auth-fields">
-                <label htmlFor="email">E-mail address</label>
-                <div className="input-field-align">
-                  <input
-                    type="email"
-                    name="email"
-                    id="email"
-                    placeholder="example@example.com"
-                    value={form.email}
-                    onChange={handleChange}
-                  />
-                </div>
-              </div>
-
-              <div className="auth-fields">
-                <label htmlFor="username">User Name</label>
-                <div className="input-field-align">
-                  <input
-                    type="text"
-                    name="username"
-                    id="username"
-                    value={form.username}
-                    onChange={handleChange}
-                  />
-                </div>
-              </div>
-
-              <div className="auth-fields">
-                <label htmlFor="password">Password</label>
-                <div className="input-field-align">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    id="password"
-                    placeholder="Enter password"
-                    value={form.password}
-                    onChange={handleChange}
-                  />
-                  <div className="icon-eye" onClick={togglePasswordVisibility} style={{ cursor: "pointer" }}>
-                    {showPassword ? (
-                      <span>🙈</span>
-                    ) : (
-                      <span>👁️</span>
-                    )}
+            <div className="auth-fields">
+              <form onSubmit={handleSubmit}>
+                <div className="auth-fields">
+                  <label htmlFor="email">E-mail address</label>
+                  <div className="input-field-align">
+                    <input
+                      type="email"
+                      name="email"
+                      id="email"
+                      placeholder="example@example.com"
+                      value={form.email}
+                      onChange={handleChange}
+                    />
                   </div>
                 </div>
-              </div>
 
-              <div className="auth-fields">
-                <label htmlFor="languages">What languages do you know?</label>
-                <div className="input-field-align">
-                  <input
-                    type="text"
-                    name="languages"
-                    id="languages"
-                    value={form.languages}
-                    onChange={handleChange}
-                  />
+                <div className="auth-fields">
+                  <label htmlFor="name">User Name</label>
+                  <div className="input-field-align">
+                    <input
+                      type="text"
+                      name="name"
+                      id="name"
+                      value={form.name}
+                      onChange={handleChange}
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <div className="auth-fields">
-                <label htmlFor="level">Your level:</label>
-                <div className="input-field-align">
-                  <input
-                    type="text"
-                    name="level"
-                    id="level"
-                    value={form.level}
-                    onChange={handleChange}
-                  />
+                <div className="auth-fields">
+                  <label htmlFor="password">Password</label>
+                  <div className="input-field-align">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      id="password"
+                      placeholder="Enter password"
+                      value={form.password}
+                      onChange={handleChange}
+                    />
+                    <div className="icon-eye" onClick={togglePasswordVisibility} style={{ cursor: "pointer" }}>
+                      {showPassword ? (
+                        // Eye open SVG
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                      ) : (
+                        // Eye closed SVG
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.964 9.964 0 012.254-3.592m3.791-2.404A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.958 9.958 0 01-4.126 5.184M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3l18 18" />
+                        </svg>
+                      )}
+                    </div>
+                  </div>
                 </div>
+
+                <div className="auth-fields">
+                  <label htmlFor="password_confirmation">Confirm Password</label>
+                  <div className="input-field-align">
+                    <input
+                      type={showConfirmPassword ? "text" : "password"}
+                      name="password_confirmation"
+                      id="password_confirmation"
+                      placeholder="Confirm password"
+                      value={form.password_confirmation}
+                      onChange={handleChange}
+                    />
+                    <div className="icon-eye" onClick={toggleConfirmPasswordVisibility} style={{ cursor: "pointer" }}>
+                      {showConfirmPassword ? (
+                        // Eye open SVG
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                      ) : (
+                        // Eye closed SVG
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.964 9.964 0 012.254-3.592m3.791-2.404A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.958 9.958 0 01-4.126 5.184M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3l18 18" />
+                        </svg>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+
+
+
+
+                {error && <p className="error-message">{error}</p>}
+                {success && <p className="success-message">{success}</p>}
+
+                <div className="submit-btn register-btn-submit">
+                  <button type="submit" disabled={loading}>
+                    {loading ? "Registering..." : "Register"}
+                  </button>
+                </div>
+              </form>
+
+              
+              <div className="already-account">
+                <p>Or</p>
+                <p>If you already have an account,</p>
               </div>
 
-              <div className="checkbox-register">
-                <input
-                  type="checkbox"
-                  name="newsletter"
-                  id="newsletter"
-                  checked={form.newsletter}
-                  onChange={handleChange}
-                />
-                <label htmlFor="newsletter">
-                  I would like to receive a newsletter with new exercises, products and other offers.
-                </label>
+              <div className="register-btn">
+                <button
+                  type="button"
+                  className="btn btn-outline"
+                  onClick={() => router.push("/signin")}
+                >
+                  Login
+                </button>
               </div>
-
-              <div className="submit-btn">
-                <button type="submit">Register</button>
-              </div>
-            </form>
-
-            <div className="agreement-text">
-              <p>
-                By registering, you accept our <a href="#">Terms and Conditions</a>
-              </p>
-              <p>
-                Information on data protection can be found in our{" "}
-                <a href="#">Privacy Policy</a>
-              </p>
-            </div>
-
-            <div className="already-account">
-              <p>Or</p>
-              <p>If you already have an account,</p>
-            </div>
-            <div className="register-btn">
-              <button type="button" className="btn btn-outline">
-                Login
-              </button>
             </div>
           </div>
         </div>

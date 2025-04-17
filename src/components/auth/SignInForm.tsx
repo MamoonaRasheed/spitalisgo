@@ -51,7 +51,7 @@ export default function SignInForm() {
 
       localStorage.setItem('token', data.access_token);
       toast.success(data.message);
-      router.push('/admin');
+      router.push('/');
     } catch (err: any) {
       console.error(err);
       toast.error(err.response?.data?.message || "An unexpected error occurred");
@@ -115,7 +115,7 @@ export default function SignInForm() {
               <p>If you do not have an account yet,</p>
             </div>
             <div className="register-btn">
-              <Link href="/register" className="btn btn-outline">Register</Link>
+              <Link href="/signup" className="btn btn-outline">Register</Link>
             </div>
           </div>
         </div>

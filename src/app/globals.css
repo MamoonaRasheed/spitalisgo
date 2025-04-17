@@ -1219,9 +1219,9 @@ section#auth-main {
   cursor: pointer;
 }
 
-.icon-eye svg.open-eye {
+/* .icon-eye svg.open-eye {
   display: none;
-}
+} */
 
 .forget-page-link a {
   display: block;
@@ -1245,8 +1245,31 @@ section#auth-main {
   display: flex;
   justify-content: center;
   margin: 40px 0;
+  
+}
+.submit-btn.register-btn-submit{
+  padding-left: 100%;
+}
+.login-button {
+  display: inline-flex;  /* Aligns items on the same line */
+  align-items: center;   /* Vertically aligns the icon and text */
+  padding: 8px 16px;
+  background-color: #f6f233;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: 500;
+  transition: background-color 0.3s;
 }
 
+.login-button:hover {
+  background-color: #0056b3;
+}
+
+.login-button .icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;  /* Adds space between the icon and the text */
+}
 .already-account {
   text-align: center;
 }
