@@ -43,7 +43,7 @@ const navItems: NavItem[] = [
   {
     name: "Users",
     icon: <GroupIcon />,
-    path: "/admin/basic-tables",
+    path: "/admin/users",
   }
 ];
 
