@@ -64,10 +64,10 @@ export default function UserInfoCard({ profile }: UserMetaCardProps) {
 
             <div>
               <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-                Bio
+                Role
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                Team Manager
+                {profile?.role}
               </p>
             </div>
           </div>

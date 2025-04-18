@@ -102,12 +102,10 @@ export default function Page() {
                                             </svg>
                                         </button>
                                     ) : (
-                                        <a
-                                            href="/signin"
-                                            className="px-4 py-2 bg-yellow-300 text-black rounded hover:bg-yellow-400 transition"
-                                        >
-                                            Log in
-                                        </a>
+                                        <a href="/signin" className="login-button">
+                                                                            <UserIcon className="icon" /> Log in
+                                                                        </a>
+                                    
                                     )}
 
                                     {dropdownOpen && (

@@ -19,7 +19,7 @@ export default function UserMetaCard({ profile }: UserMetaCardProps) {
   const [formData, setFormData] = useState({
     name: profile?.name || "",
     email: profile?.email || "",
-    bio: "Team Manager",
+    role: profile?.role || "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,7 +58,7 @@ export default function UserMetaCard({ profile }: UserMetaCardProps) {
                   </h4>
                   <div className="flex flex-col items-center gap-1 text-center xl:flex-row xl:gap-3 xl:text-left">
                     <p className="text-sm text-gray-500 dark:text-gray-400">
-                      Team Manager
+                    {profile?.role}
                     </p>
                   </div>
                 </div>
@@ -123,11 +123,11 @@ export default function UserMetaCard({ profile }: UserMetaCardProps) {
                         />
                       </div>
                       <div className="col-span-2">
-                        <Label>Bio</Label>
+                        <Label>Role</Label>
                         <Input
                           type="text"
-                          name="bio"
-                          value={formData.bio}
+                          name="role"
+                          value={formData.role}
                           onChange={handleChange}
                         />
                       </div>

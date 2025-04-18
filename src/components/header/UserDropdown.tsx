@@ -5,9 +5,11 @@ import React, { useState } from "react";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import useUserProfile from "@/hooks/useUserProfile";
+import { useRouter } from "next/navigation";
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const { profile, loading } = useUserProfile();
+  const router = useRouter();
   console.log('profile------', profile)
   function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     e.stopPropagation();
@@ -17,7 +19,14 @@ export default function UserDropdown() {
   function closeDropdown() {
     setIsOpen(false);
   }
+
+  const handleSignOut = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("username");
+    router.push("/admin/signin");
+};
   return (
+
     <div className="relative">
       <button
         onClick={toggleDropdown}
@@ -61,17 +70,20 @@ export default function UserDropdown() {
         onClose={closeDropdown}
         className="absolute right-0 mt-[17px] flex w-[260px] flex-col rounded-2xl border border-gray-200 bg-white p-3 shadow-theme-lg dark:border-gray-800 dark:bg-gray-dark"
       >
-        <div>
-          <span className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
-            Musharof Chowdhury
-          </span>
-          <span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
-            randomuser@pimjo.com
-          </span>
-        </div>
+        {profile && (
+          <div>
+            <span className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
+
+              {profile?.name}
+            </span>
+            <span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
+            {profile?.email}
+            </span>
+          </div>
+        )}
 
         <ul className="flex flex-col gap-1 pt-4 pb-3 border-b border-gray-200 dark:border-gray-800">
-          <li>
+          {/* <li>
             <DropdownItem
               onItemClick={closeDropdown}
               tag="a"
@@ -95,12 +107,12 @@ export default function UserDropdown() {
               </svg>
               Edit profile
             </DropdownItem>
-          </li>
+          </li> */}
           <li>
             <DropdownItem
               onItemClick={closeDropdown}
               tag="a"
-              href="/profile"
+              href="/admin/profile"
               className="flex items-center gap-3 px-3 py-2 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
             >
               <svg
@@ -121,7 +133,7 @@ export default function UserDropdown() {
               Account settings
             </DropdownItem>
           </li>
-          <li>
+          {/* <li>
             <DropdownItem
               onItemClick={closeDropdown}
               tag="a"
@@ -145,10 +157,11 @@ export default function UserDropdown() {
               </svg>
               Support
             </DropdownItem>
-          </li>
+          </li> */}
         </ul>
         <Link
           href="/signin"
+          onClick={handleSignOut}
           className="flex items-center gap-3 px-3 py-2 mt-3 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
         >
           <svg
