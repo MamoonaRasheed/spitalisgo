@@ -50,6 +50,7 @@ export default function SignInForm() {
       const data = response.data;
 
       localStorage.setItem('token', data.access_token);
+      localStorage.setItem('username', data.user.name);
       toast.success(data.message);
       router.push('/');
     } catch (err: any) {
