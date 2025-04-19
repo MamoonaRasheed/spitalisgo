@@ -92,7 +92,7 @@ export default function Page() {
                         </div>
                         <div className="banner-img">
                             <Image
-                                src="https://img.freepik.com/free-photo/cheerful-couple-with-notebook-sofa_23-2147766956.jpg?ga=GA1.1.91698903.1742156171&semt=ais_hybrid&w=740"
+                                src="/assets/img/banner.png"
                                 alt="Banner"
                                 width={400}
                                 height={250}

@@ -3,12 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   // Add image domain configuration
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'img.freepik.com',
-      },
-    ],
+    domains: ['127.0.0.1', 'localhost']
   },
   
   // Existing webpack configuration
@@ -19,8 +14,6 @@ const nextConfig: NextConfig = {
     });
     return config;
   },
-
-  // Ignore ESLint warnings during build
   eslint: {
     ignoreDuringBuilds: true,
   },
