@@ -1,8 +1,9 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import { UserIcon } from "@/icons";
 import { useRouter } from "next/navigation";
-import Image from 'next/image';
+import Image from "next/image";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
 export default function Page() {
     const [username, setUsername] = useState<string | null>(null);
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -11,7 +12,7 @@ export default function Page() {
 
     useEffect(() => {
         const token = localStorage.getItem("token");
-        const user = localStorage.getItem("username"); // Set this at login time
+        const user = localStorage.getItem("username");
         if (token && user) {
             setUsername(user);
         }
@@ -24,7 +25,6 @@ export default function Page() {
         router.push("/signin");
     };
 
-    // Close dropdown on outside click
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -37,416 +37,449 @@ export default function Page() {
 
     return (
         <>
-            <section id="logo-top">
+        <div id="home-page">
+            <section id="main-header">
                 <div className="container">
                     <div className="align-logo-top">
                         <div className="top-logo">
-                        <Image src="/logo.png" alt="Logo" width={100} height={50} />
-                            <Image src="/images/logo/spitalsgo-logo.png" alt="" />
+                            <Image src="/assets/img/spitalsgo-logo.webp" alt="SpitalsGo Logo" width={150} height={60} />
                         </div>
-                        <div className="top-socials">
+                        <div className="header-links">
                             <ul>
+                                <li><a href="#"> Heim </a></li>
+                                <li><a href="#"> B1 Probeprüfung </a></li>
+                                <li><a href="#"> B2 Probeprüfung </a></li>
+                                <li><a href="#"> Einstufungstest </a></li>
                                 <li>
-                                    <a href="#" className="facebook">
-                                        <svg className="e-font-icon-svg e-fab-facebook" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M504 256C504 119 393 8 256 8S8 119 8 256c0 123.78 90.69 226.38 209.25 245V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.28c-30.8 0-40.41 19.12-40.41 38.73V256h68.78l-11 71.69h-57.78V501C413.31 482.38 504 379.78 504 256z"></path></svg>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" className="twitter">
-                                        <svg className="e-font-icon-svg e-fab-twitter" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"></path></svg>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" className="youtube">
-                                        <svg className="e-font-icon-svg e-fab-youtube" viewBox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><path d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z"></path></svg>
-                                    </a>
+                                    {username ? (
+                                        <div className="relative" ref={dropdownRef}>
+                                            <button
+                                                onClick={() => setDropdownOpen(!dropdownOpen)}
+                                                className="px-4 py-2 text-sm font-medium text-white bg-gray-800 rounded hover:bg-gray-700"
+                                            >
+                                                {username}
+                                            </button>
+                                            {dropdownOpen && (
+                                                <div className="absolute right-0 z-10 mt-2 w-48 bg-white rounded-md shadow-lg">
+                                                    <button
+                                                        onClick={handleSignOut}
+                                                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                                    >
+                                                        Sign out
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
+                                    ) : (
+                                        <a href="/signin" className="text-sm text-gray-700 hover:underline">
+                                            Einloggen
+                                        </a>
+                                    )}
                                 </li>
                             </ul>
                         </div>
                     </div>
                 </div>
             </section>
-            <section id="navigation">
-                <div className="container">
-                    <div className="align-navigation">
-                        <header>
-                            <div className="header-container">
-                                <ul className="nav-links">
-                                    <li><a href="#">Heim</a></li>
-                                    <li><a href="#">A1</a></li>
-                                    <li><a href="#">A2</a></li>
-                                    <li><a href="#">B1</a></li>
-                                    <li><a href="#">B2</a></li>
-                                    <li><a href="#">B1 Probeprüfung</a></li>
-                                    <li><a href="#">B2 Probeprüfung</a></li>
-                                    <li><a href="#">Einstufungstest</a></li>
-                                </ul>
-                                <div className="relative" ref={dropdownRef}>
-                                    {username ? (
-                                        <button
-                                            onClick={() => setDropdownOpen(!dropdownOpen)}
-                                            className="flex items-center gap-2 px-4 py-2 bg-yellow-300 text-black rounded hover:bg-yellow-400 transition"
-                                        >
-                                            <span className="font-medium">{username}</span>
-                                            <svg
-                                                className={`w-4 h-4 transition-transform ${dropdownOpen ? "rotate-180" : ""
-                                                    }`}
-                                                fill="none"
-                                                stroke="currentColor"
-                                                viewBox="0 0 24 24"
-                                            >
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth="2"
-                                                    d="M19 9l-7 7-7-7"
-                                                />
-                                            </svg>
-                                        </button>
-                                    ) : (
-                                        <a href="/signin" className="login-button">
-                                                                            <UserIcon className="icon" /> Log in
-                                                                        </a>
-                                    
-                                    )}
 
-                                    {dropdownOpen && (
-                                        <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded shadow z-50">
-                                            <button
-                                                onClick={handleSignOut}
-                                                className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-                                            >
-                                                Sign out
-                                            </button>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        </header>
-                    </div>
-                </div>
-            </section>
-
-            <section id="banner-main">
+            <section id="home-banner">
                 <div className="container">
                     <div className="align-banner">
                         <div className="banner-content">
-                            <h1>Deutsch Prüfungsvorbereitung mit Spitalisgo von A1- B2</h1>
-                            <p>Spitalisgo bereitet Sie auf die A1-B2 Prüfung vor. Sie können jederzeit über Whatsapp einem Lehrer Ihre Fragen stellen. Mit Spitalisgo werden Sie hervorragend auf die nächste Sprachprüfung vorbereitet.</p>
+                            <h1>Dein Weg zum Prüfungserfolg - mit uns an deiner Seite</h1>
+                            <p>Wir bereiten dich vor - bis du bereit bist, versprachen.</p>
+                            <button type="button" className="btn btn-primary">Jetzt starten</button>
                         </div>
                         <div className="banner-img">
-                            <Image src="/images/website/slide-1.webp" alt="" />
+                            <Image
+                                src="https://img.freepik.com/free-photo/cheerful-couple-with-notebook-sofa_23-2147766956.jpg?ga=GA1.1.91698903.1742156171&semt=ais_hybrid&w=740"
+                                alt="Banner"
+                                width={400}
+                                height={250}
+                            />
                         </div>
                     </div>
                 </div>
             </section>
 
-            <section id="class-tabs">
+            <section id="services">
                 <div className="container">
-                    <div className="align-class-tabs">
-                        <div className="title-class-tabs">
-                            <div className="title-text">
-                                <h2>Unsere Prüfungsvorbereitung</h2>
+                    <div className="services-boxs-align">
+                        <div className="servicex-box">
+                            <div className="services-box-icon">
+                                <svg
+                                    width="512"
+                                    height="512"
+                                    viewBox="0 0 512 512"
+                                    className=""
+                                >
+                                    <g>
+                                        <path
+                                            fill="#50a667"
+                                            d="M512 58.668C512 26.305 485.695 0 453.332 0H58.668C26.305 0 0 26.305 0 58.668v394.664C0 485.695 26.305 512 58.668 512h394.664C485.695 512 512 485.695 512 453.332zm0 0"
+                                            opacity="1"
+                                            data-original="#4caf50"
+                                            className=""
+                                        ></path>
+                                        <path
+                                            fill="#fafafa"
+                                            d="M385.75 171.586c8.34 8.34 8.34 21.82 0 30.164L247.082 340.414c-4.16 4.16-9.621 6.254-15.082 6.254s-10.922-2.094-15.082-6.254l-69.332-69.332c-8.344-8.34-8.344-21.824 0-30.164 8.34-8.344 21.82-8.344 30.164 0l54.25 54.25 123.586-123.582c8.34-8.344 21.82-8.344 30.164 0zm0 0"
+                                            opacity="1"
+                                            data-original="#fafafa"
+                                            className=""
+                                        ></path>
+                                    </g>
+                                </svg>
                             </div>
-                            <div className="tabs-buttons-main">
-                                <button type="button" className="a1-btn active">A1</button>
-                                <button type="button" className="a2-btn" >A2</button>
-                                <button type="button" className="b1-btn" >B1</button>
-                                <button type="button" className="b2-btn" >B2</button>
+                            <div className="services-box-content">
+                                <h3>Bestehens- garantie</h3>
+                                <p>Kostenlose Whster holung-im Fall Ago Nichtbestehens.</p>
                             </div>
                         </div>
-                        <div className="tabs-content-main">
-                            <div className="tabs-content-align">
-                                <div className="tab-specific a1-tab-content active-tabs">
-                                    <div className="tab-box">
-                                        <div className="img-tab-box">
-                                            <Image src="https://spitalisgo.com/wp-content/uploads/2024/11/deaf.png" alt="" />
-                                        </div>
-                                        <div className="content-tab-box">
-                                            <h3>Hören</h3>
-                                            <p>Hörtestaufgaben – Antworten und Erklärungen</p>
-                                        </div>
-                                    </div>
-                                    <div className="tab-box">
-                                        <div className="img-tab-box">
-                                            <Image src="https://spitalisgo.com/wp-content/uploads/2024/11/deaf.png" alt="" />
-                                        </div>
-                                        <div className="content-tab-box">
-                                            <h3>Hören</h3>
-                                            <p>Hörtestaufgaben – Antworten und Erklärungen</p>
-                                        </div>
-                                    </div>
-                                    <div className="tab-box">
-                                        <div className="img-tab-box">
-                                            <Image src="https://spitalisgo.com/wp-content/uploads/2024/11/deaf.png" alt="" />
-                                        </div>
-                                        <div className="content-tab-box">
-                                            <h3>Hören</h3>
-                                            <p>Hörtestaufgaben – Antworten und Erklärungen</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="tab-specific a2-tab-content">
-                                    <div className="tab-box">
-                                        <div className="img-tab-box">
-                                            <Image src="https://spitalisgo.com/wp-content/uploads/2024/11/deaf.png" alt="" />
-                                        </div>
-                                        <div className="content-tab-box">
-                                            <h3>Hören A2</h3>
-                                            <p>Hörtestaufgaben – Antworten und Erklärungen</p>
-                                        </div>
-                                    </div>
-                                    <div className="tab-box">
-                                        <div className="img-tab-box">
-                                            <Image src="https://spitalisgo.com/wp-content/uploads/2024/11/deaf.png" alt="" />
-                                        </div>
-                                        <div className="content-tab-box">
-                                            <h3>Hören A2</h3>
-                                            <p>Hörtestaufgaben – Antworten und Erklärungen</p>
-                                        </div>
-                                    </div>
-                                    <div className="tab-box">
-                                        <div className="img-tab-box">
-                                            <Image src="https://spitalisgo.com/wp-content/uploads/2024/11/deaf.png" alt="" />
-                                        </div>
-                                        <div className="content-tab-box">
-                                            <h3>Hören A2</h3>
-                                            <p>Hörtestaufgaben – Antworten und Erklärungen</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="tab-specific b1-tab-content">
-                                    <div className="tab-box">
-                                        <div className="img-tab-box">
-                                            <Image src="https://spitalisgo.com/wp-content/uploads/2024/11/deaf.png" alt="" />
-                                        </div>
-                                        <div className="content-tab-box">
-                                            <h3>Hören B1 </h3>
-                                            <p>Hörtestaufgaben – Antworten und Erklärungen</p>
-                                        </div>
-                                    </div>
-                                    <div className="tab-box">
-                                        <div className="img-tab-box">
-                                            <Image src="https://spitalisgo.com/wp-content/uploads/2024/11/deaf.png" alt="" />
-                                        </div>
-                                        <div className="content-tab-box">
-                                            <h3>Hören B1 </h3>
-                                            <p>Hörtestaufgaben – Antworten und Erklärungen</p>
-                                        </div>
-                                    </div>
-                                    <div className="tab-box">
-                                        <div className="img-tab-box">
-                                            <Image src="https://spitalisgo.com/wp-content/uploads/2024/11/deaf.png" alt="" />
-                                        </div>
-                                        <div className="content-tab-box">
-                                            <h3>Hören B1 </h3>
-                                            <p>Hörtestaufgaben – Antworten und Erklärungen</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="tab-specific b2-tab-content">
-                                    <div className="tab-box">
-                                        <div className="img-tab-box">
-                                            <Image src="https://spitalisgo.com/wp-content/uploads/2024/11/deaf.png" alt="" />
-                                        </div>
-                                        <div className="content-tab-box">
-                                            <h3>Hören B2 </h3>
-                                            <p>Hörtestaufgaben – Antworten und Erklärungen</p>
-                                        </div>
-                                    </div>
-                                    <div className="tab-box">
-                                        <div className="img-tab-box">
-                                            <Image src="https://spitalisgo.com/wp-content/uploads/2024/11/deaf.png" alt="" />
-                                        </div>
-                                        <div className="content-tab-box">
-                                            <h3>Hören B2 </h3>
-                                            <p>Hörtestaufgaben – Antworten und Erklärungen</p>
-                                        </div>
-                                    </div>
-                                    <div className="tab-box">
-                                        <div className="img-tab-box">
-                                            <Image src="https://spitalisgo.com/wp-content/uploads/2024/11/deaf.png" alt="" />
-                                        </div>
-                                        <div className="content-tab-box">
-                                            <h3>Hören B2 </h3>
-                                            <p>Hörtestaufgaben – Antworten und Erklärungen</p>
-                                        </div>
-                                    </div>
-                                </div>
+                        <div className="servicex-box">
+                            <div className="services-box-icon">
+                                <svg
+                                    width="512"
+                                    height="512"
+                                    viewBox="0 0 512 512"
+                                    className=""
+                                >
+                                    <g>
+                                        <path
+                                            d="M256.064 0h-.128C114.784 0 0 114.816 0 256c0 56 18.048 107.904 48.736 150.048l-31.904 95.104 98.4-31.456C155.712 496.512 204 512 256.064 512 397.216 512 512 397.152 512 256S397.216 0 256.064 0z"
+                                            fill="#50a667"
+                                            data-original="#4caf50"
+                                            opacity="1"
+                                            className=""
+                                        ></path>
+                                        <path
+                                            d="M405.024 361.504c-6.176 17.44-30.688 31.904-50.24 36.128-13.376 2.848-30.848 5.12-89.664-19.264-75.232-31.168-123.68-107.616-127.456-112.576-3.616-4.96-30.4-40.48-30.4-77.216s18.656-54.624 26.176-62.304c6.176-6.304 16.384-9.184 26.176-9.184 3.168 0 6.016.16 8.576.288 7.52.32 11.296.768 16.256 12.64 6.176 14.88 21.216 51.616 23.008 55.392 1.824 3.776 3.648 8.896 1.088 13.856-2.4 5.12-4.512 7.392-8.288 11.744-3.776 4.352-7.36 7.68-11.136 12.352-3.456 4.064-7.36 8.416-3.008 15.936 4.352 7.36 19.392 31.904 41.536 51.616 28.576 25.44 51.744 33.568 60.032 37.024 6.176 2.56 13.536 1.952 18.048-2.848 5.728-6.176 12.8-16.416 20-26.496 5.12-7.232 11.584-8.128 18.368-5.568 6.912 2.4 43.488 20.48 51.008 24.224 7.52 3.776 12.48 5.568 14.304 8.736 1.792 3.168 1.792 18.048-4.384 35.52z"
+                                            fill="#fafafa"
+                                            data-original="#fafafa"
+                                        ></path>
+                                    </g>
+                                </svg>
+                            </div>
+                            <div className="services-box-content">
+                                <h3>WhatsApp- Begleitung</h3>
+                                <p>Individuelle Unterstützang per Chat</p>
+                            </div>
+                        </div>
+                        <div className="servicex-box">
+                            <div className="services-box-icon">
+                                <svg
+                                    width="512"
+                                    height="512"
+                                    viewBox="0 0 64 64"
+                                    className=""
+                                >
+                                    <g>
+                                        <path
+                                            d="M58.99 21.63 32.71 10.52a1.626 1.626 0 0 0-1.28 0L5.02 21.59a1.68 1.68 0 0 0-.01 3.07c1.561.669 10.698 4.502 11.98 5.06l14.44 6.09a1.694 1.694 0 0 0 1.28-.01c4.64-1.958 16.614-7.02 21.07-8.91-.01 1.238.008 11.676 0 13.19-1.986.501-2.793 3.887-1.68 5.72l-1.47 6.6a.976.976 0 0 0 .43 1.05.989.989 0 0 0 1.14-.04 4.3 4.3 0 0 1 2.45-.84 4.24 4.24 0 0 1 2.61.85 1.01 1.01 0 0 0 1.56-1.08l-1.87-6.57c.962-1.65.439-4.613-1.17-5.44.009-1.527-.006-13.078 0-14.28l3.21-1.36a1.676 1.676 0 0 0 0-3.06z"
+                                            fill="#fdb020"
+                                            opacity="1"
+                                            data-original="#000000"
+                                            className=""
+                                        ></path>
+                                        <path
+                                            d="M30.65 37.65c-1.204-.508-14.918-6.304-15.66-6.61v9.74a3.23 3.23 0 0 0 1.43 2.64 27.868 27.868 0 0 0 14.87 4.81 28.551 28.551 0 0 0 16.39-4.78 3.264 3.264 0 0 0 1.47-2.68v-9.74c-.694.301-14.483 6.122-15.66 6.62a3.727 3.727 0 0 1-2.84 0z"
+                                            fill="#fdb020"
+                                            opacity="1"
+                                            data-original="#000000"
+                                            className=""
+                                        ></path>
+                                    </g>
+                                </svg>
+                            </div>
+                            <div className="services-box-content">
+                                <h3>Prüfungs- simulation</h3>
+                                <p>Mit echten Prütenimen und Prüfern .</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-
-            <section id="sections-blocks">
+            <section id="kurse">
                 <div className="container">
-                    <div className="align-sections-blocks">
-                        <div className="main-block-section">
-                            <a href="#">
-                                B1 Probeprüfung
-                            </a>
+                    <div className="section-title">
+                        <h2>Kurse</h2>
+                    </div>
+                    <div className="kure-align">
+                        <div className="kurse-box">
+                            <div className="kurse-icon">
+                                <svg
+                                    width="512"
+                                    height="512"
+                                    viewBox="0 0 512 512"
+                                    className=""
+                                >
+                                    <g>
+                                        <path
+                                            fill="#da4a54"
+                                            d="M466.237 0v420.231L91.643 461.109l-45.884 5.007V45.884c0-12.671 5.13-24.147 13.434-32.451S78.972 0 91.643 0z"
+                                            opacity="1"
+                                            data-original="#da4a54"
+                                            className=""
+                                        ></path>
+                                        <path
+                                            fill="#c32430"
+                                            d="M91.643 0v461.109l-45.884 5.007V45.884c0-12.671 5.13-24.147 13.434-32.451S78.972 0 91.643 0z"
+                                            opacity="1"
+                                            data-original="#c32430"
+                                            className=""
+                                        ></path>
+                                        <path
+                                            fill="#c32430"
+                                            d="M466.241 420.235H91.642c-25.34 0-45.882 20.542-45.882 45.882 0 25.34 20.542 45.882 45.882 45.882h374.599v-25.755l-18.668-20.128 18.668-20.128z"
+                                            opacity="1"
+                                            data-original="#c32430"
+                                            className=""
+                                        ></path>
+                                        <path
+                                            fill="#dfeaef"
+                                            d="M91.642 486.245c-11.099 0-20.128-9.029-20.128-20.128s9.029-20.128 20.128-20.128h374.599v40.256z"
+                                            opacity="1"
+                                            data-original="#dfeaef"
+                                            className=""
+                                        ></path>
+                                        <path
+                                            fill="#f4dd45"
+                                            d="m210.979 99.481-33.355-34.234-33.355 34.234V0h66.71z"
+                                            opacity="1"
+                                            data-original="#f4dd45"
+                                        ></path>
+                                        <path
+                                            fill="#dfeaef"
+                                            d="M356.417 128.242H178.543c-17.834 0-32.291 14.457-32.291 32.291v98.531c0 17.834 14.457 32.291 32.291 32.291h177.874c17.834 0 32.291-14.457 32.291-32.291v-98.531c0-17.834-14.457-32.291-32.291-32.291z"
+                                            opacity="1"
+                                            data-original="#dfeaef"
+                                            className=""
+                                        ></path>
+                                        <path
+                                            fill="#c32430"
+                                            d="M356.417 299.082H178.543c-22.066 0-40.018-17.952-40.018-40.018v-98.531c0-22.065 17.952-40.017 40.018-40.017h177.874c22.066 0 40.018 17.952 40.018 40.017v98.531c0 22.066-17.952 40.018-40.018 40.018zM178.543 135.969c-13.545 0-24.565 11.02-24.565 24.564v98.531c0 13.545 11.02 24.565 24.565 24.565h177.874c13.545 0 24.565-11.02 24.565-24.565v-98.531c0-13.545-11.02-24.564-24.565-24.564z"
+                                            opacity="1"
+                                            data-original="#c32430"
+                                            className=""
+                                        ></path>
+                                        <g fill="#665e66">
+                                            <path
+                                                d="M340.051 197.057H194.909a7.726 7.726 0 1 1 0-15.452H340.05a7.726 7.726 0 0 1 7.726 7.726 7.724 7.724 0 0 1-7.725 7.726zM340.051 237.993H194.909a7.726 7.726 0 1 1 0-15.452H340.05a7.726 7.726 0 0 1 .001 15.452z"
+                                                fill="#665e66"
+                                                opacity="1"
+                                                data-original="#665e66"
+                                                className=""
+                                            ></path>
+                                        </g>
+                                    </g>
+                                </svg>
+                            </div>
+                            <div className="kurse-text">
+                                <h3>A1</h3>
+                                <p>Fiir Anfänger</p>
+                            </div>
                         </div>
-                        <div className="main-block-section">
-                            <a href="#">
-                                B2 Probeprüfung
-                            </a>
+                        <div className="kurse-box">
+                            <div className="kurse-icon">
+                                <svg
+                                    width="512"
+                                    height="512"
+                                    viewBox="0 0 512 512"
+                                    className=""
+                                >
+                                    <g>
+                                        <path
+                                            fill="#f1b105"
+                                            d="M466.237 0v420.231L91.643 461.109l-45.884 5.007V45.884c0-12.671 5.13-24.147 13.434-32.451S78.972 0 91.643 0z"
+                                            opacity="1"
+                                            data-original="#da4a54"
+                                            className=""
+                                        ></path>
+                                        <path
+                                            fill="#f1b105"
+                                            d="M91.643 0v461.109l-45.884 5.007V45.884c0-12.671 5.13-24.147 13.434-32.451S78.972 0 91.643 0z"
+                                            opacity="1"
+                                            data-original="#c32430"
+                                            className=""
+                                        ></path>
+                                        <path
+                                            fill="#f1b105"
+                                            d="M466.241 420.235H91.642c-25.34 0-45.882 20.542-45.882 45.882 0 25.34 20.542 45.882 45.882 45.882h374.599v-25.755l-18.668-20.128 18.668-20.128z"
+                                            opacity="1"
+                                            data-original="#c32430"
+                                            className=""
+                                        ></path>
+                                        <path
+                                            fill="#dfeaef"
+                                            d="M91.642 486.245c-11.099 0-20.128-9.029-20.128-20.128s9.029-20.128 20.128-20.128h374.599v40.256z"
+                                            opacity="1"
+                                            data-original="#dfeaef"
+                                            className=""
+                                        ></path>
+                                        <path
+                                            fill="#f4dd45"
+                                            d="m210.979 99.481-33.355-34.234-33.355 34.234V0h66.71z"
+                                            opacity="1"
+                                            data-original="#f4dd45"
+                                            className=""
+                                        ></path>
+                                        <path
+                                            fill="#dfeaef"
+                                            d="M356.417 128.242H178.543c-17.834 0-32.291 14.457-32.291 32.291v98.531c0 17.834 14.457 32.291 32.291 32.291h177.874c17.834 0 32.291-14.457 32.291-32.291v-98.531c0-17.834-14.457-32.291-32.291-32.291z"
+                                            opacity="1"
+                                            data-original="#dfeaef"
+                                            className=""
+                                        ></path>
+                                        <path
+                                            fill="#f1b105"
+                                            d="M356.417 299.082H178.543c-22.066 0-40.018-17.952-40.018-40.018v-98.531c0-22.065 17.952-40.017 40.018-40.017h177.874c22.066 0 40.018 17.952 40.018 40.017v98.531c0 22.066-17.952 40.018-40.018 40.018zM178.543 135.969c-13.545 0-24.565 11.02-24.565 24.564v98.531c0 13.545 11.02 24.565 24.565 24.565h177.874c13.545 0 24.565-11.02 24.565-24.565v-98.531c0-13.545-11.02-24.564-24.565-24.564z"
+                                            opacity="1"
+                                            data-original="#c32430"
+                                            className=""
+                                        ></path>
+                                        <g fill="#665e66">
+                                            <path
+                                                d="M340.051 197.057H194.909a7.726 7.726 0 1 1 0-15.452H340.05a7.726 7.726 0 0 1 7.726 7.726 7.724 7.724 0 0 1-7.725 7.726zM340.051 237.993H194.909a7.726 7.726 0 1 1 0-15.452H340.05a7.726 7.726 0 0 1 .001 15.452z"
+                                                fill="#665e66"
+                                                opacity="1"
+                                                data-original="#665e66"
+                                                className=""
+                                            ></path>
+                                        </g>
+                                    </g>
+                                </svg>
+                            </div>
+                            <div className="kurse-text">
+                                <h3>A2</h3>
+                                <p>Grundiegende Kenmnese.</p>
+                            </div>
+                        </div>
+                        <div className="kurse-box">
+                            <div className="kurse-icon">
+                                <svg
+                                    width="512"
+                                    height="512"
+                                    viewBox="0 0 512 512"
+                                    className=""
+                                >
+                                    <g>
+                                        <path
+                                            d="m114.688 284.676-73.801-73.801 178.5-178.5 73.8 73.8zm-80.7-60.801 67.7 67.7-101.5 33.8zm281.899-140.3-12.801 12.8-73.899-73.898 12.801-12.801c12.895-12.903 33.805-12.903 46.7 0l27.199 27.199c12.8 12.937 12.8 33.766 0 46.7zm0 0"
+                                            fill="#218a3f"
+                                            opacity="1"
+                                            data-original="#000000"
+                                            className=""
+                                        ></path>
+                                    </g>
+                                </svg>
+                            </div>
+                            <div className="kurse-text">
+                                <h3>B1</h3>
+                                <p>Fortgeschrit- tenes.Kiveau</p>
+                            </div>
+                        </div>
+                        <div className="kurse-box">
+                            <div className="kurse-icon">
+                                <svg
+                                    width="512"
+                                    height="512"
+                                    viewBox="0 0 28 28"
+                                    className=""
+                                >
+                                    <g>
+                                        <path
+                                            fill="#63aad2"
+                                            d="M14 19a5.006 5.006 0 0 1-5-5V7a5 5 0 0 1 10 0v7a5.006 5.006 0 0 1-5 5zm9-5a1 1 0 0 0-2 0 7 7 0 0 1-14 0 1 1 0 0 0-2 0 9 9 0 0 0 18 0zm-8 11v-3a1 1 0 0 0-2 0v3a1 1 0 0 0 2 0z"
+                                            opacity="1"
+                                            data-original="#0a0b12"
+                                            className=""
+                                        ></path>
+                                    </g>
+                                </svg>
+                            </div>
+                            <div className="kurse-text">
+                                <h3>B2</h3>
+                                <p>Selbestrand- ige Sprach- verver-dung</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-
-            <section id="growth">
+            <section id="testimonials">
                 <div className="container">
-                    <div className="align-growth">
-                        <div className="title-section">
-                            <h2>Einstufungstest</h2>
-                        </div>
-                        <div className="growth-blocks">
-                            <div className="growth-block">
-                                <a href="#">
-                                    A1
-                                </a>
-                            </div>
-                            <div className="growth-block">
-                                <a href="#">
-                                    A1
-                                </a>
-                            </div>
-                            <div className="growth-block">
-                                <a href="#">
-                                    A1
-                                </a>
-                            </div>
-                            <div className="growth-block">
-                                <a href="#">
-                                    A1
-                                </a>
-                            </div>
-                            <div className="growth-block">
-                                <a href="#">
-                                    A1
-                                </a>
-                            </div>
-                            <div className="growth-block">
-                                <a href="#">
-                                    A1
-                                </a>
-                            </div>
-                        </div>
+                    <div className="align-testimonials testimonials">
+                        <Swiper className="testiSwiper">
+                            {[1, 2, 3, 4].map((_, index) => (
+                                <SwiperSlide key={index}>
+                                    <div className="testimonial-item">
+                                        <Image src="/assets/img/user.jpg" className="testimonial-img" alt="User" width={80} height={80} />
+                                        <h3>Saul Goodman</h3>
+                                        <h4>CEO &amp; Founder</h4>
+                                        <div className="stars">
+                                            {Array.from({ length: 5 }).map((_, i) => (
+                                                <i key={i} className="bx bxs-star"></i>
+                                            ))}
+                                        </div>
+                                        <p>
+                                            <i className="bx bxs-quote-left"></i>
+                                            <span>
+                                                Proin iaculis purus consequat sem cure digni ssim donec porttitora
+                                                entum suscipit rhoncus. Accusantium quam, ultricies eget id, aliquam
+                                                eget nibh et. Maecen aliquam, risus at semper.
+                                            </span>
+                                            <i className="bx bxs-quote-right"></i>
+                                        </p>
+                                    </div>
+                                </SwiperSlide>
+                            ))}
+                        </Swiper>
                     </div>
                 </div>
             </section>
-
 
             <section id="footer-main">
                 <div className="container">
-                    <div className="footer-align">
+                    <div className="align-footer">
                         <footer>
-                            <div className="footer-logo">
-                                <Image src="https://spitalisgo.com/wp-content/uploads/2024/11/spitalisgo-footer-logo.webp" alt="" />
-                                <p>Wir unterstützen Programme, die den Menschen Aufstieg ermöglichen</p>
+                            <div className="footer-logo-align">
+                                <div className="footer-logo-img">
+                                    <Image src="/assets/img/spitalsgo-logo.webp" alt="SpitalsGo Logo" width={120} height={40} />
+                                    <p>Wir unterstützen Programme, die den Menschen Aufstieg ermöglichen</p>
+                                </div>
                                 <div className="top-socials">
                                     <ul>
                                         <li>
                                             <a href="#" className="facebook">
-                                                <svg className="e-font-icon-svg e-fab-facebook" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M504 256C504 119 393 8 256 8S8 119 8 256c0 123.78 90.69 226.38 209.25 245V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.28c-30.8 0-40.41 19.12-40.41 38.73V256h68.78l-11 71.69h-57.78V501C413.31 482.38 504 379.78 504 256z"></path></svg>
+                                                <svg className="e-font-icon-svg e-fab-facebook" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M504 256C504 119 393 8 256 8S8 119 8 256..." />
+                                                </svg>
                                             </a>
                                         </li>
                                         <li>
                                             <a href="#" className="twitter">
-                                                <svg className="e-font-icon-svg e-fab-twitter" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"></path></svg>
+                                                <svg className="e-font-icon-svg e-fab-twitter" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M459.37 151.716c.325 4.548.325 9.097..." />
+                                                </svg>
                                             </a>
                                         </li>
                                         <li>
                                             <a href="#" className="youtube">
-                                                <svg className="e-font-icon-svg e-fab-youtube" viewBox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><path d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z"></path></svg>
+                                                <svg className="e-font-icon-svg e-fab-youtube" viewBox="0 0 576 512" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M549.655 124.083c-6.281-23.65-24.787-42.276..." />
+                                                </svg>
                                             </a>
                                         </li>
                                     </ul>
                                 </div>
-                            </div>
-                            <div className="footer-links">
-                                <h3>Beliebte Übungen</h3>
-                                <ul>
-                                    <li>
-                                        <a href="#">
-                                            A1 Lesen
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            A1 Lesen
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            A1 Lesen
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            A1 Lesen
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div className="footer-links">
-                                <h3>Rechtliche Hinweise</h3>
-                                <ul>
-                                    <li>
-                                        <a href="#">
-                                            Kontaktieren Sie uns
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            Allgemeine Geschäftsbedingungen
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            A1 Lesen
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div className="footer-links">
-                                <h3>Kontaktinformationen</h3>
-                                <ul>
-                                    <li>
-                                        <a href="tel:+91 458 654 528">
-                                            <svg aria-hidden="true" className="e-font-icon-svg e-fas-phone-volume" viewBox="0 0 384 512" xmlns="http://www.w3.org/2000/svg"><path d="M97.333 506.966c-129.874-129.874-129.681-340.252 0-469.933 5.698-5.698 14.527-6.632 21.263-2.422l64.817 40.513a17.187 17.187 0 0 1 6.849 20.958l-32.408 81.021a17.188 17.188 0 0 1-17.669 10.719l-55.81-5.58c-21.051 58.261-20.612 122.471 0 179.515l55.811-5.581a17.188 17.188 0 0 1 17.669 10.719l32.408 81.022a17.188 17.188 0 0 1-6.849 20.958l-64.817 40.513a17.19 17.19 0 0 1-21.264-2.422zM247.126 95.473c11.832 20.047 11.832 45.008 0 65.055-3.95 6.693-13.108 7.959-18.718 2.581l-5.975-5.726c-3.911-3.748-4.793-9.622-2.261-14.41a32.063 32.063 0 0 0 0-29.945c-2.533-4.788-1.65-10.662 2.261-14.41l5.975-5.726c5.61-5.378 14.768-4.112 18.718 2.581zm91.787-91.187c60.14 71.604 60.092 175.882 0 247.428-4.474 5.327-12.53 5.746-17.552.933l-5.798-5.557c-4.56-4.371-4.977-11.529-.93-16.379 49.687-59.538 49.646-145.933 0-205.422-4.047-4.85-3.631-12.008.93-16.379l5.798-5.557c5.022-4.813 13.078-4.394 17.552.933zm-45.972 44.941c36.05 46.322 36.108 111.149 0 157.546-4.39 5.641-12.697 6.251-17.856 1.304l-5.818-5.579c-4.4-4.219-4.998-11.095-1.285-15.931 26.536-34.564 26.534-82.572 0-117.134-3.713-4.836-3.115-11.711 1.285-15.931l5.818-5.579c5.159-4.947 13.466-4.337 17.856 1.304z"></path></svg>
-                                            +91 458 654 528
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="mailto:info@spitalisgo.com">
-                                            <svg aria-hidden="true" className="e-font-icon-svg e-fas-envelope-open" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M512 464c0 26.51-21.49 48-48 48H48c-26.51 0-48-21.49-48-48V200.724a48 48 0 0 1 18.387-37.776c24.913-19.529 45.501-35.365 164.2-121.511C199.412 29.17 232.797-.347 256 .003c23.198-.354 56.596 29.172 73.413 41.433 118.687 86.137 139.303 101.995 164.2 121.512A48 48 0 0 1 512 200.724V464zm-65.666-196.605c-2.563-3.728-7.7-4.595-11.339-1.907-22.845 16.873-55.462 40.705-105.582 77.079-16.825 12.266-50.21 41.781-73.413 41.43-23.211.344-56.559-29.143-73.413-41.43-50.114-36.37-82.734-60.204-105.582-77.079-3.639-2.688-8.776-1.821-11.339 1.907l-9.072 13.196a7.998 7.998 0 0 0 1.839 10.967c22.887 16.899 55.454 40.69 105.303 76.868 20.274 14.781 56.524 47.813 92.264 47.573 35.724.242 71.961-32.771 92.263-47.573 49.85-36.179 82.418-59.97 105.303-76.868a7.998 7.998 0 0 0 1.839-10.967l-9.071-13.196z"></path></svg>
-                                            info@spitalisgo.com
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void(0)">
-                                            <svg aria-hidden="true" className="e-font-icon-svg e-fas-map-marker-alt" viewBox="0 0 384 512" xmlns="http://www.w3.org/2000/svg"><path d="M172.268 501.67C26.97 291.031 0 269.413 0 192 0 85.961 85.961 0 192 0s192 85.961 192 192c0 77.413-26.97 99.031-172.268 309.67-9.535 13.774-29.93 13.773-39.464 0zM192 272c44.183 0 80-35.817 80-80s-35.817-80-80-80-80 35.817-80 80 35.817 80 80 80z"></path></svg>
-                                            Postfach 16122 Collins Street West Victoria 8007 Australien
-                                        </a>
-                                    </li>
-                                </ul>
+
                             </div>
                         </footer>
                     </div>
                 </div>
-                <div className="bottom-footer">
-                    <p>© Copyright 2024
-                        <strong><a href="https://spitalisgo.com/"><span><span>spitalisgo</span></span></a></strong>
-                        Alle Rechte vorbehalten.
-                    </p>
-                </div>
             </section>
-
+            </div>
         </>
     );
 }

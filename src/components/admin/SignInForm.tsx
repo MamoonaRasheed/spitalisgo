@@ -12,7 +12,7 @@ import ThemeTogglerTwo from "@/components/common/ThemeTogglerTwo";
 import GridShape from "@/components/common/GridShape";
 import Image from "next/image";
 import { ThemeProvider } from "@/context/ThemeContext";
-import axios from 'axios';
+import axios from '@/utils/axios';
 export default function SignInForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -48,11 +48,11 @@ export default function SignInForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
 
     try {
-      const response = await axios.post('http://localhost:8000/api/login', {
+      const response = await axios.post('/login', {
         email,
         password,
       });
@@ -61,14 +61,14 @@ export default function SignInForm() {
 
       // Store token (e.g., in localStorage)
       localStorage.setItem('token', data.access_token);
-      toast.success(data.message); 
-      router.push('/admin');
-      // Optional: redirect or fetch user data
+      toast.success(data.message);
+      router.push("/admin");
+      window.location.reload();
       console.log('Logged in successfully');
 
     } catch (err) {
       console.error(err);
-      toast.error('An unexpected error occurs'); 
+      toast.error('An unexpected error occurs');
     }
   };
   return (
@@ -166,7 +166,7 @@ export default function SignInForm() {
                             type={showPassword ? "text" : "password"}
                             placeholder="Enter your password" onChange={(e) => setPassword(e.target.value)}
                           />
-                           {error.password && <div className="text-danger">{error.password}</div>}
+                          {error.password && <div className="text-danger">{error.password}</div>}
                           <span
                             onClick={() => setShowPassword(!showPassword)}
                             className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
@@ -200,7 +200,7 @@ export default function SignInForm() {
                       </div>
                     </div>
                   </form>
-      
+
                   {/* <div className="mt-5">
                     <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
                       Don&apos;t have an account? {""}

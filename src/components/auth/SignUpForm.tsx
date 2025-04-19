@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-
+import axios from '@/utils/axios';
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -41,30 +41,30 @@ export default function SignUpForm() {
     setSuccess("");
 
     try {
-      const response = await fetch("http://localhost:8000/api/register", {
-        method: "POST",
+      // Directly pass the form data to the axios.post method
+      const response = await axios.post("/register", form, {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(form),
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Registration failed.");
+    
+      // Axios will throw an error for non-2xx status codes, so no need for checking `response.ok`
+      if (response.status === 200) {
+        setSuccess("Registration successful!");
+        setForm({
+          email: "",
+          name: "",
+          password: "",
+          password_confirmation: "",
+          newsletter: false,
+        });
+        router.push("/signin");
+      } else {
+        // Handle any non-success status if needed
+        throw new Error("Registration failed.");
       }
-
-      setSuccess("Registration successful!");
-      setForm({
-        email: "",
-        name: "",
-        password: "",
-        password_confirmation: "",
-        newsletter: false,
-      });
-
-      router.push("/signin");
     } catch (err: unknown) {
+      // Handle errors based on the type of the error
       if (err instanceof Error) {
         setError(err.message || "Something went wrong, please try again.");
       } else {
@@ -73,6 +73,7 @@ export default function SignUpForm() {
     } finally {
       setLoading(false);
     }
+    
     
   };
 

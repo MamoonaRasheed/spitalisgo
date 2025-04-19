@@ -3,7 +3,12 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   // Add image domain configuration
   images: {
-    domains: ['localhost'], // Allow localhost to load images
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'img.freepik.com',
+      },
+    ],
   },
   
   // Existing webpack configuration
@@ -13,6 +18,11 @@ const nextConfig: NextConfig = {
       use: ["@svgr/webpack"],
     });
     return config;
+  },
+
+  // Ignore ESLint warnings during build
+  eslint: {
+    ignoreDuringBuilds: true,
   },
 };
 

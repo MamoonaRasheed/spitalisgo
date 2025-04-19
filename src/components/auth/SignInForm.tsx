@@ -4,7 +4,7 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { toast } from 'react-toastify';
 import { useRouter } from "next/navigation";
-import axios from 'axios';
+import axios from '@/utils/axios';
 
 export default function SignInForm() {
   const [email, setEmail] = useState('');
@@ -42,7 +42,7 @@ export default function SignInForm() {
     if (!validateForm()) return;
 
     try {
-      const response = await axios.post('http://localhost:8000/api/login', { email, password });
+      const response = await axios.post('/login', { email, password });
       const data = response.data;
 
       localStorage.setItem('token', data.access_token);
