@@ -2,17 +2,13 @@
 import React, { useEffect, useState } from "react";
 import { EcommerceMetrics } from "@/components/ecommerce/EcommerceMetrics";
 import { getAllUsers } from '@/services/userService';
-import MonthlyTarget from "@/components/ecommerce/MonthlyTarget";
-import MonthlySalesChart from "@/components/ecommerce/MonthlySalesChart";
-import StatisticsChart from "@/components/ecommerce/StatisticsChart";
 import RecentOrders from "@/components/ecommerce/RecentOrders";
-import DemographicCard from "@/components/ecommerce/DemographicCard";
 
 interface User {
   id: number;
   name: string;
   email: string;
-  status: string;
+  status: "active" | "inactive";
 }
 
 interface UsersResponse {

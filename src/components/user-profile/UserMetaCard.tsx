@@ -29,6 +29,10 @@ export default function UserMetaCard({ profile }: UserMetaCardProps) {
 
   const handleSave = async () => {
     try {
+      // const form = new FormData();
+      // form.append("name", formData.name);
+      // form.append("email", formData.email);
+      // form.append("role", formData.role);
       await updateUserProfile(formData);
       console.log("Profile updated successfully");
       closeModal();
@@ -58,7 +62,7 @@ export default function UserMetaCard({ profile }: UserMetaCardProps) {
                   </h4>
                   <div className="flex flex-col items-center gap-1 text-center xl:flex-row xl:gap-3 xl:text-left">
                     <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {profile?.role}
+                      {profile?.role}
                     </p>
                   </div>
                 </div>

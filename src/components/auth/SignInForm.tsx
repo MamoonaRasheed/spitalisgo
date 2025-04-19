@@ -1,8 +1,4 @@
 "use client";
-import Checkbox from "@/components/form/input/Checkbox";
-import Input from "@/components/form/input/InputField";
-import Label from "@/components/form/Label";
-import Button from "@/components/ui/button/Button";
 import { EyeCloseIcon, EyeIcon } from "@/icons";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -53,10 +49,14 @@ export default function SignInForm() {
       localStorage.setItem('username', data.user.name);
       toast.success(data.message);
       router.push('/');
-    } catch (err: any) {
-      console.error(err);
-      toast.error(err.response?.data?.message || "An unexpected error occurred");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error(err.message);
+      } else {
+        console.error('An unexpected error occurred', err);
+      }
     }
+    
   };
 
   return (

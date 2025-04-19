@@ -64,11 +64,16 @@ export default function SignUpForm() {
       });
 
       router.push("/signin");
-    } catch (err: any) {
-      setError(err.message || "Something went wrong, please try again.");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message || "Something went wrong, please try again.");
+      } else {
+        setError("Something went wrong, please try again.");
+      }
     } finally {
       setLoading(false);
     }
+    
   };
 
   return (

@@ -1,11 +1,6 @@
-import GridShape from "@/components/common/GridShape";
-import ThemeTogglerTwo from "@/components/common/ThemeTogglerTwo";
-
-import { ThemeProvider } from "@/context/ThemeContext";
-import Image from "next/image";
-import Link from "next/link";
 import React from "react";
 import { UserIcon } from "@/icons";
+import Image from 'next/image';
 export default function AuthLayout({
     children,
 }: {
@@ -19,7 +14,7 @@ export default function AuthLayout({
                 <div className="container">
                     <div className="align-logo-top">
                         <div className="top-logo">
-                            <img src="/images/logo/spitalsgo-logo.png" alt="" />
+                        <Image src="/images/logo/spitalsgo-logo.png" alt=""/>
                         </div>
                         <div className="top-socials">
                             <ul>
@@ -72,7 +67,7 @@ export default function AuthLayout({
                     <div className="footer-align">
                         <footer>
                             <div className="footer-logo">
-                                <img src="https://spitalisgo.com/wp-content/uploads/2024/11/spitalisgo-footer-logo.webp" alt="" />
+                            <Image src="https://spitalisgo.com/wp-content/uploads/2024/11/spitalisgo-footer-logo.webp" alt=""/>
                                 <p>Wir unterstützen Programme, die den Menschen Aufstieg ermöglichen</p>
                                 <div className="top-socials">
                                     <ul>

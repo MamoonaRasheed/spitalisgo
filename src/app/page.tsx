@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { UserIcon } from "@/icons";
 import { useRouter } from "next/navigation";
+import Image from 'next/image';
 export default function Page() {
     const [username, setUsername] = useState<string | null>(null);
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -40,7 +41,8 @@ export default function Page() {
                 <div className="container">
                     <div className="align-logo-top">
                         <div className="top-logo">
-                            <img src="/images/logo/spitalsgo-logo.png" alt="" />
+                        <Image src="/logo.png" alt="Logo" width={100} height={50} />
+                            <Image src="/images/logo/spitalsgo-logo.png" alt="" />
                         </div>
                         <div className="top-socials">
                             <ul>
@@ -133,7 +135,7 @@ export default function Page() {
                             <p>Spitalisgo bereitet Sie auf die A1-B2 Prüfung vor. Sie können jederzeit über Whatsapp einem Lehrer Ihre Fragen stellen. Mit Spitalisgo werden Sie hervorragend auf die nächste Sprachprüfung vorbereitet.</p>
                         </div>
                         <div className="banner-img">
-                            <img src="/images/website/slide-1.webp" alt="" />
+                            <Image src="/images/website/slide-1.webp" alt="" />
                         </div>
                     </div>
                 </div>
@@ -158,7 +160,7 @@ export default function Page() {
                                 <div className="tab-specific a1-tab-content active-tabs">
                                     <div className="tab-box">
                                         <div className="img-tab-box">
-                                            <img src="https://spitalisgo.com/wp-content/uploads/2024/11/deaf.png" alt="" />
+                                            <Image src="https://spitalisgo.com/wp-content/uploads/2024/11/deaf.png" alt="" />
                                         </div>
                                         <div className="content-tab-box">
                                             <h3>Hören</h3>
@@ -167,7 +169,7 @@ export default function Page() {
                                     </div>
                                     <div className="tab-box">
                                         <div className="img-tab-box">
-                                            <img src="https://spitalisgo.com/wp-content/uploads/2024/11/deaf.png" alt="" />
+                                            <Image src="https://spitalisgo.com/wp-content/uploads/2024/11/deaf.png" alt="" />
                                         </div>
                                         <div className="content-tab-box">
                                             <h3>Hören</h3>
@@ -176,7 +178,7 @@ export default function Page() {
                                     </div>
                                     <div className="tab-box">
                                         <div className="img-tab-box">
-                                            <img src="https://spitalisgo.com/wp-content/uploads/2024/11/deaf.png" alt="" />
+                                            <Image src="https://spitalisgo.com/wp-content/uploads/2024/11/deaf.png" alt="" />
                                         </div>
                                         <div className="content-tab-box">
                                             <h3>Hören</h3>
@@ -187,7 +189,7 @@ export default function Page() {
                                 <div className="tab-specific a2-tab-content">
                                     <div className="tab-box">
                                         <div className="img-tab-box">
-                                            <img src="https://spitalisgo.com/wp-content/uploads/2024/11/deaf.png" alt="" />
+                                            <Image src="https://spitalisgo.com/wp-content/uploads/2024/11/deaf.png" alt="" />
                                         </div>
                                         <div className="content-tab-box">
                                             <h3>Hören A2</h3>
@@ -196,7 +198,7 @@ export default function Page() {
                                     </div>
                                     <div className="tab-box">
                                         <div className="img-tab-box">
-                                            <img src="https://spitalisgo.com/wp-content/uploads/2024/11/deaf.png" alt="" />
+                                            <Image src="https://spitalisgo.com/wp-content/uploads/2024/11/deaf.png" alt="" />
                                         </div>
                                         <div className="content-tab-box">
                                             <h3>Hören A2</h3>
@@ -205,7 +207,7 @@ export default function Page() {
                                     </div>
                                     <div className="tab-box">
                                         <div className="img-tab-box">
-                                            <img src="https://spitalisgo.com/wp-content/uploads/2024/11/deaf.png" alt="" />
+                                            <Image src="https://spitalisgo.com/wp-content/uploads/2024/11/deaf.png" alt="" />
                                         </div>
                                         <div className="content-tab-box">
                                             <h3>Hören A2</h3>
@@ -216,7 +218,7 @@ export default function Page() {
                                 <div className="tab-specific b1-tab-content">
                                     <div className="tab-box">
                                         <div className="img-tab-box">
-                                            <img src="https://spitalisgo.com/wp-content/uploads/2024/11/deaf.png" alt="" />
+                                            <Image src="https://spitalisgo.com/wp-content/uploads/2024/11/deaf.png" alt="" />
                                         </div>
                                         <div className="content-tab-box">
                                             <h3>Hören B1 </h3>
@@ -225,7 +227,7 @@ export default function Page() {
                                     </div>
                                     <div className="tab-box">
                                         <div className="img-tab-box">
-                                            <img src="https://spitalisgo.com/wp-content/uploads/2024/11/deaf.png" alt="" />
+                                            <Image src="https://spitalisgo.com/wp-content/uploads/2024/11/deaf.png" alt="" />
                                         </div>
                                         <div className="content-tab-box">
                                             <h3>Hören B1 </h3>
@@ -234,7 +236,7 @@ export default function Page() {
                                     </div>
                                     <div className="tab-box">
                                         <div className="img-tab-box">
-                                            <img src="https://spitalisgo.com/wp-content/uploads/2024/11/deaf.png" alt="" />
+                                            <Image src="https://spitalisgo.com/wp-content/uploads/2024/11/deaf.png" alt="" />
                                         </div>
                                         <div className="content-tab-box">
                                             <h3>Hören B1 </h3>
@@ -245,7 +247,7 @@ export default function Page() {
                                 <div className="tab-specific b2-tab-content">
                                     <div className="tab-box">
                                         <div className="img-tab-box">
-                                            <img src="https://spitalisgo.com/wp-content/uploads/2024/11/deaf.png" alt="" />
+                                            <Image src="https://spitalisgo.com/wp-content/uploads/2024/11/deaf.png" alt="" />
                                         </div>
                                         <div className="content-tab-box">
                                             <h3>Hören B2 </h3>
@@ -254,7 +256,7 @@ export default function Page() {
                                     </div>
                                     <div className="tab-box">
                                         <div className="img-tab-box">
-                                            <img src="https://spitalisgo.com/wp-content/uploads/2024/11/deaf.png" alt="" />
+                                            <Image src="https://spitalisgo.com/wp-content/uploads/2024/11/deaf.png" alt="" />
                                         </div>
                                         <div className="content-tab-box">
                                             <h3>Hören B2 </h3>
@@ -263,7 +265,7 @@ export default function Page() {
                                     </div>
                                     <div className="tab-box">
                                         <div className="img-tab-box">
-                                            <img src="https://spitalisgo.com/wp-content/uploads/2024/11/deaf.png" alt="" />
+                                            <Image src="https://spitalisgo.com/wp-content/uploads/2024/11/deaf.png" alt="" />
                                         </div>
                                         <div className="content-tab-box">
                                             <h3>Hören B2 </h3>
@@ -344,7 +346,7 @@ export default function Page() {
                     <div className="footer-align">
                         <footer>
                             <div className="footer-logo">
-                                <img src="https://spitalisgo.com/wp-content/uploads/2024/11/spitalisgo-footer-logo.webp" alt="" />
+                                <Image src="https://spitalisgo.com/wp-content/uploads/2024/11/spitalisgo-footer-logo.webp" alt="" />
                                 <p>Wir unterstützen Programme, die den Menschen Aufstieg ermöglichen</p>
                                 <div className="top-socials">
                                     <ul>

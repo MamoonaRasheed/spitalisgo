@@ -8,12 +8,14 @@ import {
 import Badge from "../ui/badge/Badge";
 import Image from "next/image";
 
-interface User {
-  id: number,
+type User = {
+  id: number;
   name: string;
   email: string;
-  status: string;
-}
+  image?: string;
+  status: "active" | "inactive"; // or whatever statuses you use
+};
+
 type Props = {
   users: User[]; // or `any[]` if you're not using strict types yet
 };
@@ -112,13 +114,15 @@ export default function RecentOrders({ users }: Props) {
                 <TableCell className="py-3">
                   <div className="flex items-center gap-3">
                     <div className="h-[50px] w-[50px] overflow-hidden rounded-md">
-                      <Image
-                        width={50}
-                        height={50}
-                        src={user.image}
-                        className="h-[50px] w-[50px]"
-                        alt={user.name}
-                      />
+                      {user.image && (
+                        <Image
+                          width={50}
+                          height={50}
+                          src={user.image}
+                          className="h-[50px] w-[50px]"
+                          alt={user.name}
+                        />
+                      )}
                     </div>
                     <div>
                       <p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
@@ -131,10 +135,10 @@ export default function RecentOrders({ users }: Props) {
                   </div>
                 </TableCell>
                 <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                {user.name}
+                  {user.name}
                 </TableCell>
                 <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                {user.email}
+                  {user.email}
                 </TableCell>
                 <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                   <Badge

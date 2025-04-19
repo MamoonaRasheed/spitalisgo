@@ -9,7 +9,6 @@ import {
 } from "../ui/table";
 import { getAllUsers,toggleUserStatus } from '@/services/userService';
 import Badge from "../ui/badge/Badge";
-import Image from "next/image";
 
 interface User {
   id: number,

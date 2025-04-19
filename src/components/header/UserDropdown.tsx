@@ -8,7 +8,7 @@ import useUserProfile from "@/hooks/useUserProfile";
 import { useRouter } from "next/navigation";
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
-  const { profile, loading } = useUserProfile();
+  const { profile } = useUserProfile();
   const router = useRouter();
   console.log('profile------', profile)
   function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
