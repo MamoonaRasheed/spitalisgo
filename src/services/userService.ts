@@ -1,3 +1,5 @@
+// \src\services\userService.ts
+
 import axios from '@/utils/axios';
 
 export const getAllUsers = async () => {
@@ -33,13 +35,8 @@ export const toggleUserStatus = async (id: number, currentStatus: string) => {
     throw new Error("Token not found in localStorage");
   }
 
-  const endpoint =
-    currentStatus === "active"
-      ? `/users/${id}/status/inactive`
-      : `/users/${id}/status/active`;
-
   try {
-    const { data } = await axios.patch(endpoint, {}, {
+    const { data } = await axios.get(`/change-status?id=${id}&currentStatus=${currentStatus}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

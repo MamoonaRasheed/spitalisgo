@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   // Add image domain configuration
   images: {
-    domains: ['127.0.0.1', 'localhost']
+    domains: ['127.0.0.1', 'localhost','srv797689.hstgr.cloud',]
   },
   
   // Existing webpack configuration
