@@ -15,6 +15,7 @@ import GridShape from "@/components/common/GridShape";
 import Image from "next/image";
 import { ThemeProvider } from "@/context/ThemeContext";
 import axios from '@/utils/axios';
+
 export default function SignInForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -68,9 +69,13 @@ export default function SignInForm() {
       window.location.reload();
       console.log('Logged in successfully');
 
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      toast.error('An unexpected error occurs');
+    
+      // Optional chaining to safely access message from error response
+      const errorMessage = err?.response?.data?.message || 'An unexpected error occurred';
+    
+      toast.error(errorMessage);
     }
   };
   return (

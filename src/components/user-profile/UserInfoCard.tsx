@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useModal } from "../../hooks/useModal";
 import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
@@ -10,12 +10,26 @@ interface UserMetaCardProps {
   profile: UserProfile | null;
 }
 export default function UserInfoCard({ profile }: UserMetaCardProps) {
-  
+
   const { isOpen, openModal, closeModal } = useModal();
   const handleSave = () => {
     // Handle save logic here
     console.log("Saving changes...");
     closeModal();
+  };
+
+  const [preview, setPreview] = useState(profile?.profile_image || "");
+
+  const handleProfilePicChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+      // Also: Send file to backend if needed here
+    }
   };
   return (
     <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
@@ -49,7 +63,7 @@ export default function UserInfoCard({ profile }: UserMetaCardProps) {
                 Email address
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-              {profile?.email}
+                {profile?.email}
               </p>
             </div>
 
@@ -108,7 +122,7 @@ export default function UserInfoCard({ profile }: UserMetaCardProps) {
           </div>
           <form className="flex flex-col">
             <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
-              <div>
+              {/* <div>
                 <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
                   Social Links
                 </h5>
@@ -143,36 +157,41 @@ export default function UserInfoCard({ profile }: UserMetaCardProps) {
                     />
                   </div>
                 </div>
-              </div>
+              </div> */}
               <div className="mt-7">
                 <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
                   Personal Information
                 </h5>
-
+                <div className="mb-6 flex items-center gap-4">
+                  <img
+                    src={profile?.profile_image || "/default-profile.png"}
+                    alt="Profile"
+                    className="h-16 w-16 rounded-full object-cover"
+                  />
+                  <div>
+                    <Label htmlFor="profilePic">Profile Picture</Label>
+                    <Input
+                      id="profilePic"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleProfilePicChange}
+                    />
+                  </div>
+                </div>
                 <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                   <div className="col-span-2 lg:col-span-1">
-                    <Label>First Name</Label>
-                    <Input type="text" defaultValue="Musharof" />
-                  </div>
-
-                  <div className="col-span-2 lg:col-span-1">
-                    <Label>Last Name</Label>
-                    <Input type="text" defaultValue="Chowdhury" />
+                    <Label>Name</Label>
+                    <Input type="text" defaultValue={profile?.name} disabled />
                   </div>
 
                   <div className="col-span-2 lg:col-span-1">
                     <Label>Email Address</Label>
-                    <Input type="text" defaultValue="randomuser@pimjo.com" />
-                  </div>
-
-                  <div className="col-span-2 lg:col-span-1">
-                    <Label>Phone</Label>
-                    <Input type="text" defaultValue="+09 363 398 46" />
+                    <Input type="text" defaultValue={profile?.email} disabled />
                   </div>
 
                   <div className="col-span-2">
                     <Label>Bio</Label>
-                    <Input type="text" defaultValue="Team Manager" />
+                    <Input type="text" defaultValue={profile?.role} disabled />
                   </div>
                 </div>
               </div>

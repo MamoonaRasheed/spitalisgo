@@ -17,7 +17,8 @@ interface UsersResponse {
 }
 
 export default function Ecommerce() {
-  const [users, setUsers] = useState<UsersResponse | null>(null); // Define state inside the component
+  const [users, setUsers] = useState<UsersResponse | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -26,6 +27,8 @@ export default function Ecommerce() {
         setUsers(users);
       } catch (error) {
         console.error('Error fetching users:', error);
+      } finally {
+        setLoading(false);
       }
     };
 

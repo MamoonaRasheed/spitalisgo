@@ -1312,4 +1312,8 @@ button.btn.btn-outline:hover {
   transform: scale(1);
 }
 
+.text-danger{
+  color: red;
+}
+
 

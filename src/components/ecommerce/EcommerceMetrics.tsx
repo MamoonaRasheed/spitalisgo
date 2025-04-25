@@ -46,10 +46,10 @@ export const EcommerceMetrics = ({ count }: Props) => {
             </h4>
           </div>
 
-          <Badge color="error">
+          {/* <Badge color="error">
             <ArrowDownIcon className="text-error-500" />
             9.05%
-          </Badge>
+          </Badge> */}
         </div>
       </div>
       {/* <!-- Metric Item End --> */}
@@ -69,10 +69,10 @@ export const EcommerceMetrics = ({ count }: Props) => {
             </h4>
           </div>
 
-          <Badge color="error">
+          {/* <Badge color="error">
             <ArrowDownIcon className="text-error-500" />
             9.05%
-          </Badge>
+          </Badge> */}
         </div>
       </div>
       {/* <!-- Metric Item End --> */}
