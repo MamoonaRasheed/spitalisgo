@@ -3,6 +3,10 @@ import CloseIcon from "./close.svg";
 import BoxIcon from "./box.svg";
 import CheckCircleIcon from "./check-circle.svg";
 import AlertIcon from "./alert.svg";
+import HorenIcon from "./horen.svg";
+import LesenIcon from "./lesen.svg";
+import SchreibenIcon from "./schreiben.svg";
+import SprechenIcon from "./sprechen.svg";
 import InfoIcon from "./info.svg";
 import ErrorIcon from "./info-hexa.svg";
 import BoltIcon from "./bolt.svg";
@@ -66,6 +70,10 @@ export {
   CloseIcon,
   CheckCircleIcon,
   AlertIcon,
+  HorenIcon,
+  LesenIcon,
+  SchreibenIcon,
+  SprechenIcon,
   InfoIcon,
   ErrorIcon,
   ArrowUpIcon,
