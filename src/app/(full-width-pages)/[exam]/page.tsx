@@ -30,22 +30,17 @@ export default function Course() {
         fetchCourses();
     }, []);
     return (
-        <section id="choose-category" className="header-space">
+        <section id="providers" className="header-space section-space">
             <div className="container">
-                <div className="align-choose-category">
+                <div className="align-providers">
                     <div className="ctaegory-choose-title">
-                        <h2>
-                            <span>A1 Übungen</span>
-                            für Telc Prüfung
-                        </h2>
+                        <h2>A1 Übungen  <span>{exam}-Prüfung:</span></h2>
                     </div>
-                    <div className="choose-category-boxes-align">
+                    <div className="providers-btns">
                         {courses?.data?.map((course, index) => (
-                            <div className="choose-category-box">
-                                <a href={`${exam}/${course?.slug}`}>
-                                    {course?.name}
-                                </a>
-                            </div>
+                            <a href={`${exam}/${course?.slug}`}>
+                                {course?.name}
+                            </a>
                         ))}
                     </div>
                 </div>

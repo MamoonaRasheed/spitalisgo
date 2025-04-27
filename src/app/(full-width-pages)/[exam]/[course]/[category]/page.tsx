@@ -13,6 +13,7 @@ interface Chapter {
 interface Exercise {
     id: number;
     title: string;
+    slug: string;
     excercise_no: string;
     progress: number;
 }
@@ -86,7 +87,7 @@ export default function Category() {
                             {exercises?.length > 0 ? (
                                 exercises?.map((exercise) => (
                                     <div className="main-box-list" key={exercise.id}>
-                                        <a href="#">
+                                        <a href={`${category}/${exercise?.slug}`}>
                                             <div className="listig-title-left">
                                                 <div className="checkmark-icon">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">

@@ -2257,6 +2257,121 @@ color: var(--primary-orange);
   margin-top: 0;
 }
 
+.align-providers {
+  max-width: 800px;
+  margin: auto;
+}
+
+.providers-btns a {
+  width: 100%;
+  width: 100%;
+  height: 60px;
+  border-radius: 20px;
+  border: 2px solid #000;
+  background: transparent;
+  transition: all .3s ease;
+  cursor: pointer;
+  font-size: 20px;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+}
+
+.providers-btns a:hover {
+  background: #fff0d6;
+  border-color: #fff0d6;
+}
+
+.providers-btns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  max-width: 700px;
+  margin: 2rem auto 0;
+}
+.section-space {
+  margin-bottom: 30px; /* Adjust as needed */
+}
+
+/* Home Categories */
+
+.category-box a {
+  text-decoration: none;
+  color: #fff;
+  font-size: 24px;
+  font-weight: 500;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: red;
+}
+
+.category-box {
+  background: #fefaef;
+  border-radius: 14px;
+  box-shadow: 0px 2px 30px rgba(0, 0, 0, 0.08);
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-categories-align {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+section#home-categories {
+  padding: 79px 0 70px;
+}
+
+.category-box:first-child a {
+  background: #f34a36;
+}
+
+.category-box:nth-child(2) a {
+  background: #fbb13c;
+}
+
+.category-box:nth-child(3) a {
+  background: #1a8b33;
+}
+
+.category-box:nth-child(4) a {
+  background: #4499ae;
+}
+
+.category-box:nth-child(5) a,
+
+.category-box:nth-child(6) a {
+  background: transparent;
+}
+
+.category-box:nth-child(5) a svg ,
+
+.category-box:nth-child(6) a svg {
+  height: 50px;
+  width: 50px;
+}
+
+.category-box:first-child a {
+  background: #f34a36;
+}
+
+.category-box:nth-child(5) a svg path {
+  fill: #13313b;
+}
+
+
+
 @media (max-width: 1199.98px) {
 .deutsch-b1-horen .box_border .text.p2 br,
 .deutsch-b1-horen .box_border .text.p3 br {
@@ -2437,4 +2552,5 @@ color: var(--primary-orange);
   min-width: 100%;
   width: fit-content;
 }
+
 }

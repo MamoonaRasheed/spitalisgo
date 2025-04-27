@@ -4,6 +4,7 @@ import { useParams } from 'next/navigation';
 import { getAllCategories } from '@/services/categoryService';
 import { HorenIcon, LesenIcon, SchreibenIcon, SprechenIcon } from "@/icons";
 interface Category {
+    id: number,
     name: string;
     // icon: string;
     slug: string;
@@ -43,7 +44,7 @@ export default function Course() {
                     </div>
                     <div className="choose-category-boxes-align">
                         {categories?.data.map((category, index) => (
-                            <div className="choose-category-box">
+                            <div key={category?.id || index} className="choose-category-box">
                                <a href={`${course}/${category?.slug}`}>
                                     {
                                         category?.slug === 'horen' ? (

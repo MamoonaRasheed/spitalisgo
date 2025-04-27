@@ -15,3 +15,18 @@ export const getExcercises = async (params: ExcerciseParams) => {
     return data;
 
 };
+
+interface GetExcerciseParams {
+  slug : string;
+}
+
+export const getQuestionsByExcercises = async (params: GetExcerciseParams) => {
+
+    const { data } = await axios.get("/excercises", {
+      params: params, 
+    });
+
+    return data;
+
+};
+
