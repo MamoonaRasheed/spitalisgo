@@ -6,6 +6,7 @@ import { ThemeProvider } from '@/context/ThemeContext';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Script from 'next/script';
+import { RedirectProvider } from '@/context/RedirectContext';
 
 const outfit = Outfit({
   subsets: ['latin'],
@@ -43,10 +44,9 @@ export default function RootLayout({
 
       </head>
       <body className={`${outfit.className} dark:bg-gray-900`}>
-        <ThemeProvider>
-          <SidebarProvider>
-            <div>
-              {children}
+        < RedirectProvider>
+          <ThemeProvider>
+            <SidebarProvider>
               <ToastContainer
                 position="top-right"
                 autoClose={3000}
@@ -59,10 +59,13 @@ export default function RootLayout({
                 pauseOnHover
                 theme="colored"
               />
-            </div>
-          </SidebarProvider>
 
-        </ThemeProvider>
+              {children}
+
+            </SidebarProvider>
+
+          </ThemeProvider>
+        </RedirectProvider>
       </body>
     </html>
   );

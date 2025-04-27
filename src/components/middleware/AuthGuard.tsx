@@ -1,31 +1,27 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import useUserProfile from "@/hooks/useUserProfile";
+import { useRedirect } from "@/context/RedirectContext";
 
-export default function AuthGuard({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const pathname = usePathname();
   const { profile, loading } = useUserProfile();
-  
-  // Define the state and setter function properly
-  const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
+  const { setRedirectPath } = useRedirect();
 
   useEffect(() => {
     if (loading) return;
     
     if (profile?.role === "admin") {
-      setIsAuthorized(true);  // Call the setter function correctly
-      router.replace("/admin");
+      // Authorized
     } else {
-      setIsAuthorized(false);  // Update the state if not authorized
+      console.log("here---------------",pathname)
+      setRedirectPath(pathname);
       router.replace("/admin/signin");
     }
-  }, [profile, loading, router]);
+  }, [profile, loading, router, pathname, setRedirectPath]);
 
   if (loading) {
     return (
@@ -34,11 +30,6 @@ export default function AuthGuard({
       </div>
     );
   }
-
-  // You can optionally use `isAuthorized` to conditionally render the children or the sign-in form
-  // if (isAuthorized === null) {
-  //   return <SignInForm />
-  // }
 
   return <>{children}</>;
 }
