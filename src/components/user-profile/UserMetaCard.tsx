@@ -52,7 +52,8 @@ export default function UserMetaCard({ profile }: UserMetaCardProps) {
                   <Image
                     width={80}
                     height={80}
-                    src={profile?.profile_image}
+                    // src={profile?.profile_image}
+                    src="/assets/img/profile.jpg"
                     alt="user"
                   />
                 </div>
