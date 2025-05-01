@@ -759,24 +759,30 @@ span.flatpickr-weekday,
 #home-page {
   font-family: "Poppins", sans-serif;
   background: #fff8e8;
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensure full viewport height */
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+#home-page .content-wrapper {
+  flex: 1; 
+}
 
 #home-page::before {
-    content: '';
-    height: 700px;
-    width: 700px;
-    background: #fff0d6;
-    position: absolute;
-    border-radius: 1000px;
-    top: -320px;
-    left: -290px;
-    z-index: -1;
+  content: '';
+  height: 700px;
+  width: 700px;
+  background: #fff0d6;
+  position: absolute;
+  border-radius: 1000px;
+  top: -320px;
+  left: -290px;
+  z-index: -1;
 }
+
 
 .top-logo img {
   height: 70px;
@@ -1102,7 +1108,11 @@ section#testimonials {
 section#footer-main {
     padding: 40px 0 40px;
     background: #fff0d6;
+    padding: 20px 0;
+    text-align: center;
+    position: relative;
 }
+
 
 
 section#auth-main {
@@ -1587,6 +1597,11 @@ section#choose-category {
 }
 
 .option-field-main.active {
+  border-color: #f7631b;
+  color: #f7631b;
+}
+
+.option-field-main.error {
   border-color: #dd0000;
   color: #dd0000;
 }
@@ -1604,8 +1619,8 @@ section#choose-category {
 .option-field-main input[type="radio"]:checked {
   width: 24px;
   height: 24px;
-  background: #dd0000;
-  border: 1px solid #dd0000;
+  background: #f7631b;
+  border: 1px solid #f7631b;
   border-radius: 50%;
   outline: none;
   font-weight: 600;

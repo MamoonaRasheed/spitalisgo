@@ -55,7 +55,10 @@ import HorizontaLDots from "./horizontal-dots.svg";
 import ChatIcon from "./chat.svg";
 import MoreDotIcon from "./more-dot.svg";
 import BellIcon from "./bell.svg";
-
+import PlayIcon from "./play.svg";
+import PauseIcon from "./pause.svg";
+import MuteIcon from "./mute.svg";
+import UnmuteIcon from "./unmute.svg";
 export {
   DownloadIcon,
   BellIcon,
@@ -114,4 +117,8 @@ export {
   HorizontaLDots,
   ChevronUpIcon,
   ChatIcon,
+  PlayIcon,
+  PauseIcon,
+  MuteIcon,
+  UnmuteIcon
 };

@@ -79,3 +79,31 @@ export const updateUserProfile = async (data: { name: string; email: string; rol
     throw error;
   }
 };
+
+export const getCorrectAnswers = async (questionIds: number[]) => {
+  if (typeof window === 'undefined') {
+    throw new Error("localStorage is not available on the server side");
+  }
+
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    throw new Error("Token not found in localStorage");
+  }
+
+  try {
+    const response = await axios.post("/questions/correct-answers", {
+      question_ids: questionIds,
+    }, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch correct answers:", error);
+    throw error;
+  }
+};

@@ -1,5 +1,8 @@
 import React from "react";
 import Image from 'next/image';
+import MainHeader from "@/components/header/MainHeader";
+import MainFooter from "@/components/footer/Footer";
+
 export default function FullWidthPageLayout({
   children,
 }: {
@@ -7,75 +10,13 @@ export default function FullWidthPageLayout({
 }) {
   return (
     <div id="home-page">
-      {/* <ThemeProvider> */}
-      {/* <div className="relative flex lg:flex-row w-full h-screen justify-center flex-col  dark:bg-gray-900 sm:p-0"> */}
-      <section id="main-header">
-        <div className="container">
-          <div className="align-logo-top">
-            <div className="top-logo">
-              <a href="/">
-                <Image src="/assets/img/spitalsgo-logo.webp" alt="SpitalsGo Logo" width={150} height={60} />
-              </a>
-            </div>
-            <div className="header-links">
-              <ul>
-                <li><a href="#"> Heim </a></li>
-                <li><a href="#"> B1 Probeprüfung </a></li>
-                <li><a href="#"> B2 Probeprüfung </a></li>
-                <li><a href="#"> Einstufungstest </a></li>
-                <li>
-                  <a href="/signin" className="text-sm text-gray-700 hover:underline">
-                    Einloggen
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-      {children}
-      <section id="footer-main">
-        <div className="container">
-          <div className="align-footer">
-            <footer>
-              <div className="footer-logo-align">
-                <div className="footer-logo-img">
-                  <Image src="/assets/img/spitalsgo-logo.webp" alt="SpitalsGo Logo" width={120} height={40} />
-                  <p>Wir unterstützen Programme, die den Menschen Aufstieg ermöglichen</p>
-                </div>
-                <div className="top-socials">
-                  <ul>
-                    <li>
-                      <a href="#" className="facebook">
-                        <svg className="e-font-icon-svg e-fab-facebook" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M504 256C504 119 393 8 256 8S8 119 8 256..." />
-                        </svg>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" className="twitter">
-                        <svg className="e-font-icon-svg e-fab-twitter" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M459.37 151.716c.325 4.548.325 9.097..." />
-                        </svg>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" className="youtube">
-                        <svg className="e-font-icon-svg e-fab-youtube" viewBox="0 0 576 512" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M549.655 124.083c-6.281-23.65-24.787-42.276..." />
-                        </svg>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
+      <MainHeader />
+      
+      <div className="content-wrapper">
+        {children}
+      </div>
 
-              </div>
-            </footer>
-          </div>
-        </div>
-      </section>
-      {/* </div> */}
-      {/* </ThemeProvider> */}
+      <MainFooter />
     </div>
   );
 }
