@@ -11,11 +11,12 @@ interface ExerciseRendererProps {
   questions: Question[];
 }
 
-const ExerciseRenderer = ({ 
-  question_description, 
-  questions = [] 
+const ExerciseRenderer = ({
+  question_description,
+  questions = []
 }: ExerciseRendererProps) => {
-  // Create a safe mapping of question descriptions to options
+  const [selectedAnswers, setSelectedAnswers] = React.useState<Record<string, string>>({});
+
   const questionOptions = React.useMemo(() => {
     return questions.reduce((acc: Record<string, string[]>, question) => {
       if (question?.description && Array.isArray(question?.options)) {
@@ -25,16 +26,42 @@ const ExerciseRenderer = ({
     }, {});
   }, [questions]);
 
+  const correctAnswers = React.useMemo(() => {
+    return questions.reduce((acc: Record<string, string>, question) => {
+      acc[question.description] = question.correct_option;
+      return acc;
+    }, {});
+  }, [questions]);
+
+  const isAllCorrect = React.useMemo(() => {
+    return Object.keys(correctAnswers).length > 0 &&
+      Object.entries(correctAnswers).every(([key, correct]) => selectedAnswers[key] === correct);
+  }, [selectedAnswers, correctAnswers]);
+
+  const getBorderClass = (id: string) => {
+    const selected = selectedAnswers[id];
+    if (!selected) return '';
+    return selected === correctAnswers[id] ? 'border-green-500' : 'border-red-500';
+  };
+
+
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { id, value } = e.target;
+    setSelectedAnswers(prev => ({ ...prev, [id]: value }));
+  };
+
   const replaceDivs = (domNode: any) => {
     if (domNode.name === 'div' && domNode.attribs?.id?.startsWith('q-')) {
       const divId = domNode.attribs.id;
       const options = questionOptions[divId] || [];
-      
+      const borderClass = getBorderClass(divId);
+
       return (
-        <select 
+        <select
           id={divId}
-          className="german-dropdown"
-          defaultValue=""
+          className={`german-dropdown border-2 ${getBorderClass(divId)}`}
+          value={selectedAnswers[divId] || ''}
+          onChange={handleSelectChange}
         >
           <option value="" disabled>-- Bitte wählen --</option>
           {options.map((option, index) => (
@@ -52,16 +79,18 @@ const ExerciseRenderer = ({
     return <div className="text-gray-500">No question content available</div>;
   }
 
-  try {
-    return (
-      <div className="german-exercise-container">
-        {parse(question_description, { replace: replaceDivs })}
-      </div>
-    );
-  } catch (error) {
-    console.error('Error parsing question:', error);
-    return <div className="text-red-500">Error displaying question</div>;
-  }
+  return (
+    <div className="german-exercise-container space-y-4">
+      {parse(question_description, { replace: replaceDivs })}
+      {/* Optional Feedback Message */}
+      {Object.keys(selectedAnswers).length === questions.length && (
+        <div className={`font-semibold ${isAllCorrect ? 'text-green-600' : 'text-red-600'}`}>
+          {isAllCorrect ? 'Alle Antworten sind korrekt!' : 'Einige Antworten sind falsch.'}
+        </div>
+      )}
+    </div>
+  );
 };
+
 
 export default ExerciseRenderer;

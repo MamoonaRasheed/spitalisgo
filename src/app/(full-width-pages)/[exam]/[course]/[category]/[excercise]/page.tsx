@@ -193,32 +193,152 @@ export default function Exercise() {
     return (
         <section id="detailed-boxes" className="header-space">
             <div className="container">
-                <div className="align-detailed-boxes">
-                    <div className="title-detailed-boxes">
-                        <h2>{exerciseData?.title}</h2>
+                {(exerciseData?.excercise_type == 'image and audio') ?
+                    <div className="deutsch-b1-horen">
+                        <div ref={containerRef} dangerouslySetInnerHTML={{ __html: exerciseData?.description }} />
                     </div>
-                    <div className="listing-detailed-boxes">
-                        <div className="detailed-box-main">
-                            <div ref={containerRef} dangerouslySetInnerHTML={{ __html: exerciseData?.description }} />
+                    :
+                    <div className="align-detailed-boxes">
+                        <div className="title-detailed-boxes">
+                            <h2>{exerciseData?.title}</h2>
                         </div>
-                        {/* <SafeHtmlParser htmlString={exerciseData?.description || ""} /> */}
 
-                        <div className="detailed-box-main">
-                            {
-                                exerciseData?.excercise_type == 'dropdown' ?
+                        <div className="listing-detailed-boxes">
+                            <div className="detailed-box-main">
+                                <div ref={containerRef} dangerouslySetInnerHTML={{ __html: exerciseData?.description }} />
+                            </div>
+                            {/* <SafeHtmlParser htmlString={exerciseData?.description || ""} /> */}
+
+                            <div className="detailed-box-main">
+                                {
+                                    exerciseData?.excercise_type == 'dropdown' &&
                                     <>
-                                         <ExerciseRenderer
-                                                question_description={exerciseData.question_description || ''}
-                                                questions={exerciseData.questions?.map(q => ({
+                                        {exerciseData?.excercise_type === 'dropdown' && (
+                                            <ExerciseRenderer
+                                                question_description={exerciseData?.question_description || ''}
+                                                questions={exerciseData?.questions?.map(q => ({
                                                     description: q.description,
-                                                    options: Array.isArray(q.options) ? q.options.map(opt => opt.description) : []
-                                                  })) || []}
+                                                    options: Array.isArray(q.options) ? q.options.map(opt => opt.description) : [],
+                                                    correct_option: q.correct_option
+                                                })) || []}
                                             />
-                                        {/* <ExerciseRenderer exerciseData={exerciseData} /> */}
-                                        {/* return <div dangerouslySetInnerHTML={{ __html: htmlWithDropdowns }} />; */}
+                                        )}
                                     </>
-                                    // <div dangerouslySetInnerHTML={{ __html: exerciseData?.question_description }} />
-                                    :
+
+                                }
+                                {exerciseData?.excercise_type == 'input field' &&
+                                    <>
+                                        <section className="listening-german deutsch-b1-horen">
+                                            <div className="text-container">
+                                                <div className="container">
+                                                    <div className="box_border back__width">
+                                                        <h2>Bestellformular – Blumenversand</h2>
+                                                        <form method="post" data-gtm-form-interact-id="0">
+                                                            <div className="list__">
+                                                                <p className="label text p2_semibold">Vorname</p>
+                                                                <div className="form_input">
+                                                                    <span className="field">
+                                                                        <input type="text" name="antwort_167899" className="login__form-input" placeholder="" value="" aria-label="antwort_167899" />
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            <div className="list__">
+                                                                <p className="label text p2_semibold">Nachname</p>
+                                                                <div className="form_input">
+                                                                    <span className="field">
+                                                                        <input type="text" name="antwort_167900" className="login__form-input" placeholder="" value="" aria-label="antwort_167900" />
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            <div className="list__">
+                                                                <p className="label text p2_semibold">Telefonnummer</p>
+                                                                <div className="form_input">
+                                                                    <span className="field">
+                                                                        <input type="text" name="antwort_167901" className="login__form-input" placeholder="" value="(0171) 656342223" aria-label="antwort_167901" disabled />
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            <div className="list__">
+                                                                <p className="label text p2_semibold">Zustelladresse</p>
+                                                                <div className="form_input">
+                                                                    <span className="field">
+                                                                        <input type="text" name="antwort_167902" className="login__form-input" placeholder="" value="Willy-Brandt-Str. 75, 20459 Hamburg" aria-label="antwort_167902" disabled />
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            <div className="list__ unset-input">
+                                                                <p className="label text p2_semibold">Anlass</p>
+                                                                <div className="option-field-main active">
+                                                                    <input type="checkbox" name="option" />
+                                                                    <label>falsch</label>
+                                                                </div>
+                                                                <div className="option-field-main">
+                                                                    <input type="checkbox" name="option" />
+                                                                    <label>falsch</label>
+                                                                </div>
+                                                                <div className="option-field-main">
+                                                                    <input type="checkbox" name="option" />
+                                                                    <label>falsch</label>
+                                                                </div>
+                                                            </div>
+                                                            <div className="list__ unset-input">
+                                                                <p className="label text p2_semibold">Blumenart</p>
+                                                                <div className="option-field-main active">
+                                                                    <input type="checkbox" name="option" />
+                                                                    <label>falsch</label>
+                                                                </div>
+                                                                <div className="option-field-main">
+                                                                    <input type="checkbox" name="option" />
+                                                                    <label>falsch</label>
+                                                                </div>
+                                                                <div className="option-field-main">
+                                                                    <input type="checkbox" name="option" />
+                                                                    <label>falsch</label>
+                                                                </div>
+                                                            </div>
+                                                            <div className="list__ unset-input">
+                                                                <p className="label text p2_semibold">Lieferdatum</p>
+                                                                <div className="option-field-main active">
+                                                                    <input type="checkbox" name="option" />
+                                                                    <label>falsch</label>
+                                                                </div>
+                                                                <div className="option-field-main">
+                                                                    <input type="checkbox" name="option" />
+                                                                    <label>falsch</label>
+                                                                </div>
+                                                                <div className="option-field-main">
+                                                                    <input type="checkbox" name="option" />
+                                                                    <label>falsch</label>
+                                                                </div>
+                                                            </div>
+                                                            <div className="list__">
+                                                                <p className="label text p2_semibold">Bezahlmethode</p>
+                                                                <div className="form_input">
+                                                                    <span className="field">
+                                                                        <input type="text" name="antwort_167912" className="login__form-input" placeholder="" value="Banküberweisung" aria-label="antwort_167912" disabled />
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            <div className="action-btns">
+                                                                <button type="button">
+                                                                    <svg width="27" height="16" viewBox="0 0 27 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                        <path d="M1.5 8.00016L8.16667 14.6668M1.5 8.00016L8.16667 1.3335M1.5 8.00016H25.5" stroke="#161616" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                    </svg>
+                                                                    Zurück
+                                                                </button>
+                                                                <button type="button">
+                                                                    Prüfen
+                                                                </button>
+                                                            </div>
+                                                            <input type="hidden" name="submit" value="1" />
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </section>
+                                    </>
+                                }
+                                {(exerciseData?.excercise_type == 'audio' || exerciseData?.excercise_type == 'text') &&
                                     <>
                                         <div className="option-fields">
                                             <div className="option-fields-align">
@@ -314,11 +434,16 @@ export default function Exercise() {
                                             }
                                         </div>
                                     </>
-                            }
+                                }
 
+
+
+
+                            </div>
                         </div>
+
                     </div>
-                </div>
+                }
             </div>
         </section>
     );

@@ -16,7 +16,7 @@ export default function Course() {
     const params = useParams();
     const { exam } = params;
     const [courses, setCourses] = useState<CourseResponse | null>(null); // Define state inside the component
-
+    const [loading, setLoading] = useState<boolean>(true);
     useEffect(() => {
         const fetchCourses = async () => {
             try {
@@ -24,11 +24,16 @@ export default function Course() {
                 setCourses(courses);
             } catch (error) {
                 console.error('Error fetching courses:', error);
+            } finally {
+                setLoading(false);
             }
         };
 
         fetchCourses();
     }, []);
+    if (courses === null) {
+        return <div>Loading...</div>;
+      }
     return (
         <section id="providers" className="header-space section-space">
             <div className="container">
