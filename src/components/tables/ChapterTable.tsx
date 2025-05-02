@@ -12,9 +12,12 @@ import Badge from "../ui/badge/Badge";
 
 interface Data {
   id: number,
-  exam_id: string;
-  course_id: string;
-  category_id: string;
+  exam_id: number;
+  course_id: number;
+  category_id: number;
+  exam: string;
+  course: string;
+  category: string;
   name: string;
   sort: number;
   status: boolean;
@@ -88,13 +91,13 @@ export default function ChapterTable() {
               {data?.data.map((val, index) => (
                 <TableRow key={index}>
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    {val.exam_id}
+                    {val.exam}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400 ">
-                    {val.course_id}
+                    {val.course}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    {val.category_id}
+                    {val.category}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                     {val.name}

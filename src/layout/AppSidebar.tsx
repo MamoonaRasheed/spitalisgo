@@ -5,7 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
 import { GroupIcon } from "@/icons";
-import { faBook } from "@fortawesome/free-solid-svg-icons";
+import { faBook, faQuestion } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   BoxCubeIcon,
@@ -16,6 +16,7 @@ import {
   PlugInIcon,
   UserCircleIcon,
   Exercise,
+  Question
 } from "../icons/index";
 
 type NavItem = {
@@ -52,6 +53,11 @@ const navItems: NavItem[] = [
     name: "Excercies",
     icon: <Exercise/>,
     path: "/admin/exercise",
+  },
+  {
+    name: "Questions",
+    icon: <FontAwesomeIcon icon={faQuestion} size="2x" />,
+    path: "/admin/questions",
   },
 ];
 

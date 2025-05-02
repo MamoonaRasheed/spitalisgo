@@ -56,8 +56,10 @@ import ChatIcon from "./chat.svg";
 import MoreDotIcon from "./more-dot.svg";
 import BellIcon from "./bell.svg";
 import Exercise from "./education-quiz.svg";
+import Question from "./diploma-svgrepo-com.svg";
 
 export {
+  Question,
   Exercise,
   DownloadIcon,
   BellIcon,
