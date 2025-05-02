@@ -27,7 +27,7 @@ export default function EditorPage() {
   return (
     <div className="container mt-5">
       <h1 className="mb-4">Summernote Editor</h1>
-      <textarea id="summernote"></textarea>
+      <textarea id="summernote" ></textarea>
     </div>
   );
 }

@@ -43,7 +43,7 @@ export default function RootLayout({
         <Script src="/assets/js/scripts.js" strategy="afterInteractive" />
 
       </head>
-      <body className={`${outfit.className} dark:bg-gray-900`}>
+      <body className={`${outfit.className} dark:bg-gray-900`} suppressHydrationWarning={true}>
         < RedirectProvider>
           <ThemeProvider>
             <SidebarProvider>

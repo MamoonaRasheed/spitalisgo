@@ -43,7 +43,7 @@ export default function Course() {
                     </div>
                     <div className="choose-category-boxes-align">
                         {categories?.data.map((category, index) => (
-                            <div className="choose-category-box">
+                            <div className="choose-category-box" key={`${index}-${category.name}`}>
                                <a href={`${course}/${category?.slug}`}>
                                     {
                                         category?.slug === 'horen' ? (

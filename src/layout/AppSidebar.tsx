@@ -46,7 +46,7 @@ const navItems: NavItem[] = [
   {
     name: "Chapters",
     icon: <FontAwesomeIcon icon={faBook} size="2x" />,
-    path: "/admin/test",
+    path: "/admin/chapter",
   },
   {
     name: "Excercies",
