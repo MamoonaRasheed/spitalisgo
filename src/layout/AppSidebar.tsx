@@ -5,6 +5,8 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
 import { GroupIcon } from "@/icons";
+import { faBook } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   BoxCubeIcon,
   ChevronDownIcon,
@@ -13,6 +15,7 @@ import {
   PieChartIcon,
   PlugInIcon,
   UserCircleIcon,
+  Exercise,
 } from "../icons/index";
 
 type NavItem = {
@@ -39,7 +42,17 @@ const navItems: NavItem[] = [
     name: "Users",
     icon: <GroupIcon />,
     path: "/admin/users",
-  }
+  },
+  {
+    name: "Chapters",
+    icon: <FontAwesomeIcon icon={faBook} size="2x" />,
+    path: "/admin/test",
+  },
+  {
+    name: "Excercies",
+    icon: <Exercise/>,
+    path: "/admin/exercise",
+  },
 ];
 
 const othersItems: NavItem[] = [
@@ -143,6 +156,7 @@ const AppSidebar: React.FC = () => {
               </Link>
             )
           )}
+
           {nav.subItems && (isExpanded || isHovered || isMobileOpen) && (
             <div
               ref={(el) => {

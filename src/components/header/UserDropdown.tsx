@@ -43,7 +43,8 @@ export default function UserDropdown() {
               <Image
                 width={44}
                 height={44}
-                src={profile?.profile_image}
+                // src={profile?.profile_image}
+                src="/assets/img/profile.jpg"
                 alt="User"
               />
             </span>

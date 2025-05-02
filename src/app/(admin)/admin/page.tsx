@@ -4,6 +4,7 @@ import { EcommerceMetrics } from "@/components/ecommerce/EcommerceMetrics";
 import { getAllUsers } from '@/services/userService';
 import RecentOrders from "@/components/ecommerce/RecentOrders";
 import { useAuth } from "@/context/AuthContext";
+import LoadingSpinner from "@/components/loader/Loader";
 
 interface User {
   id: number;
@@ -14,7 +15,7 @@ interface User {
 
 interface UsersResponse {
   data: User[];
-  user_count: number; 
+  user_count: number;
 }
 
 export default function Ecommerce() {
@@ -23,9 +24,9 @@ export default function Ecommerce() {
   const { user } = useAuth();
 
 
-  useEffect(()=>{
+  useEffect(() => {
     console.log("in page admin page.tsx")
-    console.log("admin details-------",user)
+    console.log("admin details-------", user)
   })
 
   useEffect(() => { //fetches users on dashboard home page
@@ -45,7 +46,11 @@ export default function Ecommerce() {
 
   // Fallback if users are not loaded yet
   if (users === null) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <LoadingSpinner />
+      </div>
+    );
   }
 
   return (
@@ -53,7 +58,7 @@ export default function Ecommerce() {
       <div className="col-span-12">
         <EcommerceMetrics count={users.user_count} />
       </div>
-      
+
       <div className="col-span-12">
         <RecentOrders users={users.data} />
       </div>

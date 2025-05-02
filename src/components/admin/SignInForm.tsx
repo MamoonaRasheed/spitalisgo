@@ -10,10 +10,7 @@ import { toast } from 'react-toastify';
 import { useRouter } from "next/navigation";
 import axios from '@/utils/axios';
 import { useAuth } from "@/context/AuthContext";
-
-
-
-
+import LoadingSpinner from "@/components/loader/Loader"; // Assuming you have this
 
 export default function SignInForm() {
   const [email, setEmail] = useState('');
@@ -21,11 +18,9 @@ export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [error, setError] = useState<{ email?: string; password?: string; general?: string }>({});
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { login } = useAuth();
-
-
-
 
   const validateForm = () => {
     const errors: { email?: string; password?: string } = {};
@@ -51,14 +46,12 @@ export default function SignInForm() {
     return isValid;
   };
 
-
-
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!validateForm()) return;
 
+    setIsLoading(true);
     try {
       const response = await axios.post('/login', { email, password });
       const data = response.data;
@@ -72,12 +65,18 @@ export default function SignInForm() {
       console.error(err);
       const errorMessage = err?.response?.data?.message || 'An unexpected error occurred';
       toast.error(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-
-
-
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <LoadingSpinner />
+      </div>
+    );
+  }
 
   return (
     <div>
