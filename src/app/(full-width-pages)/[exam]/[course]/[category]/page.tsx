@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from 'next/navigation';
 import { getChapters } from '@/services/chapterService';
 import { getExcercises } from '@/services/excerciseService';
+import LoadingSpinner from "@/components/loader/Loader";
 interface Chapter {
     id: number;
     title: string;
@@ -24,7 +25,7 @@ export default function Category() {
     const [exercises, setExercises] = useState<Exercise[]>([]);
     const [selectedChapterId, setSelectedChapterId] = useState<number | null>(null);
     const [chapters, setChapters] = useState<Chapter[]>([]);
-
+    const [loading, setLoading] = useState<boolean>(true);
     useEffect(() => {
         const fetchChapters = async () => {
             try {
@@ -52,75 +53,84 @@ export default function Category() {
             console.error('Error fetching exercises:', error);
             setExercises([]); // Handle the case when no exercises are found
         }
+        finally {
+            setLoading(false);
+        }
     };
     const handleChapterClick = (chapterId: number) => {
         setSelectedChapterId(chapterId);
         fetchExercises(chapterId);
     };
+
     return (
-        <section id="category-tabs" className="header-space">
-            <div className="container">
-                <div className="category-tabs-align">
-                    <div className="category-tabs-list">
-                        <ul>
-                            {chapters?.map((chapter) => (
-                                <li key={chapter.id}>
-                                    <button
-                                        type="button"
-                                        className={selectedChapterId === chapter.id ? 'chapter active' : ''}
-                                        onClick={() => handleChapterClick(chapter.id)}
-                                    >
-                                        {chapter?.name}
-                                    </button>
-                                </li>
-                            ))}
-
-                        </ul>
-                    </div>
-
-                    <div className="category-tab-content">
-                        <div className="title-category-tab-content">
-                            <h3>{exam} <span>{category}</span> Übungen</h3>
+        loading ? (
+            <div className="flex items-center justify-center min-h-screen">
+                <LoadingSpinner />
+            </div>
+        ) : (
+            <section id="category-tabs" className="header-space">
+                <div className="container">
+                    <div className="category-tabs-align">
+                        <div className="category-tabs-list">
+                            <ul>
+                                {chapters?.map((chapter) => (
+                                    <li key={chapter.id}>
+                                        <button
+                                            type="button"
+                                            className={selectedChapterId === chapter.id ? 'chapter active' : ''}
+                                            onClick={() => handleChapterClick(chapter.id)}
+                                        >
+                                            {chapter?.name}
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
                         </div>
-
-                        <div className="listing-categories-tab">
-                            {exercises?.length > 0 ? (
-                                exercises?.map((exercise) => (
-                                    <div className="main-box-list" key={exercise.id}>
-                                        <a href={`${category}/${exercise?.slug}`}>
-                                            <div className="listig-title-left">
-                                                <div className="checkmark-icon">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                                        <path d="M4 12.0005L8.94975 16.9502L19.5572 6.34375" stroke="#F7631B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                                    </svg>
+    
+                        <div className="category-tab-content">
+                            <div className="title-category-tab-content">
+                                <h3>{exam} <span>{category}</span> Übungen</h3>
+                            </div>
+    
+                            <div className="listing-categories-tab">
+                                {exercises?.length > 0 ? (
+                                    exercises?.map((exercise) => (
+                                        <div className="main-box-list" key={exercise.id}>
+                                            <a href={`${category}/${exercise?.slug}`}>
+                                                <div className="listig-title-left">
+                                                    <div className="checkmark-icon">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                                            <path d="M4 12.0005L8.94975 16.9502L19.5572 6.34375" stroke="#F7631B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                                        </svg>
+                                                    </div>
+                                                    <div className="title-box-category">
+                                                        <p>{exercise.excercise_no}</p>
+                                                        <h4>{exercise.title}</h4>
+                                                    </div>
                                                 </div>
-                                                <div className="title-box-category">
-                                                    <p>{exercise.excercise_no}</p>
-                                                    <h4>{exercise.title}</h4>
+    
+                                                <div className="listening-list__progress">
+                                                    <div
+                                                        className="progress-circle"
+                                                        data-progress="0"
+                                                        style={{
+                                                            background: 'conic-gradient(#df0000 4% 0%, #d4cdbf 0% 100%)'
+                                                        }}
+                                                    />
+                                                    <span>0%</span>
                                                 </div>
-                                            </div>
-
-                                            <div className="listening-list__progress">
-                                                <div
-                                                    className="progress-circle"
-                                                    data-progress="0"
-                                                    style={{
-                                                        background: 'conic-gradient(#df0000 4% 0%, #d4cdbf 0% 100%)'
-                                                    }}
-                                                />
-                                                <span>0%</span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                ))
-                            ) : (
-                                <p>No exercises found for this chapter.</p>
-                            )}
+                                            </a>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p>No exercises found for this chapter.</p>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
-
+            </section>
+        )
     );
+    
 }

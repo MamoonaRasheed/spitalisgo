@@ -2369,11 +2369,30 @@ form .action-btns {
   border-radius: 25px;
   padding-left: 5px;
   font: 400 18px/1.3em Poppins;
-  border: 2px solid var(--primary-orange);
+  border: 2px solid #f7631b;
   cursor: pointer;
   transition: all 0.3s linear;
   margin: 0px;
   padding-right: 5px;
+}
+
+span.span-select.green-option {
+  border: 2px solid #0ebe75;
+}
+.border-green{
+  border: 2px solid #0ebe75;
+}
+input.login__form-input.border-green{
+  border: 2px solid #0ebe75;
+}
+input.login__form-input.border-red{
+  border: 2px solid #dd0000;
+}
+.border-red{
+  border: 2px solid #dd0000;
+}
+span.span-select.error {
+  border: 2px solid #dd0000;
 }
 
 .block__select.add .span-select{
@@ -2382,7 +2401,7 @@ form .action-btns {
 
 .block__select .span-select.open,
 .block__select.open .span-select {
-  background: var(--primary-orange);
+  background: #f7631b;
   color: var(--white);
   transition: all 0.3s linear;
 }

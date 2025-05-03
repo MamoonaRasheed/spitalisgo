@@ -1,86 +1,15 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import React from "react";
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
+import MainHeader from "@/components/header/MainHeader";
+import MainFooter from "@/components/footer/Footer";
 export default function Page() {
-    const [username, setUsername] = useState<string | null>(null);
-    const [dropdownOpen, setDropdownOpen] = useState(false);
-    const dropdownRef = useRef<HTMLDivElement>(null);
-    const router = useRouter();
-
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        const user = localStorage.getItem("username");
-        if (token && user) {
-            setUsername(user);
-        }
-    }, []);
-
-    const handleSignOut = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("username");
-        setUsername(null);
-        router.push("/signin");
-    };
-
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-                setDropdownOpen(false);
-            }
-        };
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
-
     return (
         <>
             <div id="home-page">
-                <section id="main-header">
-                    <div className="container">
-                        <div className="align-logo-top">
-                            <div className="top-logo">
-                                <Image src="/assets/img/spitalsgo-logo.webp" alt="SpitalsGo Logo" width={150} height={60} />
-                            </div>
-                            <div className="header-links">
-                                <ul>
-                                    <li><a href="#"> Heim </a></li>
-                                    <li><a href="#"> B1 Probeprüfung </a></li>
-                                    <li><a href="#"> B2 Probeprüfung </a></li>
-                                    <li><a href="#"> Einstufungstest </a></li>
-                                    <li>
-                                        {username ? (
-                                            <div className="relative" ref={dropdownRef}>
-                                                <button
-                                                    onClick={() => setDropdownOpen(!dropdownOpen)}
-                                                    className="px-4 py-2 text-sm font-medium text-white bg-gray-800 rounded hover:bg-gray-700"
-                                                >
-                                                    {username}
-                                                </button>
-                                                {dropdownOpen && (
-                                                    <div className="absolute right-0 z-10 mt-2 w-48 bg-white rounded-md shadow-lg">
-                                                        <button
-                                                            onClick={handleSignOut}
-                                                            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                                        >
-                                                            Sign out
-                                                        </button>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        ) : (
-                                            <a href="/signin" className="text-sm text-gray-700 hover:underline">
-                                                Einloggen
-                                            </a>
-                                        )}
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </section>
+                <MainHeader />
 
                 <section id="home-banner">
                     <div className="container">
@@ -102,7 +31,7 @@ export default function Page() {
                     </div>
                 </section>
 
-                
+
 
                 <section id="home-categories">
                     <div className="container">
@@ -264,7 +193,7 @@ export default function Page() {
                         </div>
                     </div>
                 </section>
-                
+
                 <section id="testimonials">
                     <div className="container">
                         <div className="align-testimonials testimonials">
@@ -297,46 +226,7 @@ export default function Page() {
                     </div>
                 </section>
 
-                <section id="footer-main">
-                    <div className="container">
-                        <div className="align-footer">
-                            <footer>
-                                <div className="footer-logo-align">
-                                    <div className="footer-logo-img">
-                                        <Image src="/assets/img/spitalsgo-logo.webp" alt="SpitalsGo Logo" width={120} height={40} />
-                                        <p>Wir unterstützen Programme, die den Menschen Aufstieg ermöglichen</p>
-                                    </div>
-                                    <div className="top-socials">
-                                        <ul>
-                                            <li>
-                                                <a href="#" className="facebook">
-                                                    <svg className="e-font-icon-svg e-fab-facebook" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-                                                        <path d="M504 256C504 119 393 8 256 8S8 119 8 256..." />
-                                                    </svg>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#" className="twitter">
-                                                    <svg className="e-font-icon-svg e-fab-twitter" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-                                                        <path d="M459.37 151.716c.325 4.548.325 9.097..." />
-                                                    </svg>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#" className="youtube">
-                                                    <svg className="e-font-icon-svg e-fab-youtube" viewBox="0 0 576 512" xmlns="http://www.w3.org/2000/svg">
-                                                        <path d="M549.655 124.083c-6.281-23.65-24.787-42.276..." />
-                                                    </svg>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-
-                                </div>
-                            </footer>
-                        </div>
-                    </div>
-                </section>
+                <MainFooter />
             </div>
         </>
     );

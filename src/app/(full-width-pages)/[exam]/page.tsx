@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from 'next/navigation';
 import { getAllCourses } from '@/services/courseService';
+import LoadingSpinner from "@/components/loader/Loader";
 interface Course {
     name: string;
     // icon: string;
@@ -32,7 +33,11 @@ export default function Course() {
         fetchCourses();
     }, []);
     if (courses === null) {
-        return <div>Loading...</div>;
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+              <LoadingSpinner />
+            </div>
+          );
       }
     return (
         <section id="providers" className="header-space section-space">

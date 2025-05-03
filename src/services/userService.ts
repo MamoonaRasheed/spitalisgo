@@ -107,3 +107,5 @@ export const getCorrectAnswers = async (questionIds: number[]) => {
     throw error;
   }
 };
+
+

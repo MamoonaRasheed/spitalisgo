@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from 'next/navigation';
 import { getAllCategories } from '@/services/categoryService';
 import { HorenIcon, LesenIcon, SchreibenIcon, SprechenIcon } from "@/icons";
+import LoadingSpinner from "@/components/loader/Loader";
 interface Category {
     id: number,
     name: string;
@@ -19,7 +20,7 @@ export default function Course() {
     const params = useParams();
     const { course } = params;
     const [categories, setCategories] = useState<CategoryResponse | null>(null); // Define state inside the component
-
+    const [loading, setLoading] = useState<boolean>(true);
     useEffect(() => {
         const fetchCategories = async () => {
             try {
@@ -28,10 +29,20 @@ export default function Course() {
             } catch (error) {
                 console.error('Error fetching courses:', error);
             }
+            finally {
+                setLoading(false);
+            }
         };
 
         fetchCategories();
     }, []);
+    if (categories === null) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <LoadingSpinner />
+            </div>
+        );
+    }
     return (
         <section id="choose-category" className="header-space">
             <div className="container">
@@ -45,7 +56,7 @@ export default function Course() {
                     <div className="choose-category-boxes-align">
                         {categories?.data.map((category, index) => (
                             <div key={category?.id || index} className="choose-category-box">
-                               <a href={`${course}/${category?.slug}`}>
+                                <a href={`${course}/${category?.slug}`}>
                                     {
                                         category?.slug === 'horen' ? (
                                             <HorenIcon />
