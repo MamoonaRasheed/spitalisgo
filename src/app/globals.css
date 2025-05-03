@@ -813,12 +813,32 @@ a {
   display: flex;
   box-decoration-break: clone;
   gap: 30px;
+  align-items: center;
 }
 
 .header-links ul li a {
   font-size: 16px;
   color: #000;
   padding: 0 10px;
+}
+
+li.login-button a {
+  height: 40px;
+  background: #fff0d6;
+  border: 2px solid #2b2b2b;
+  padding: 0 20px;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  border-radius: 6px;
+  min-width: 120px;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  color: #000;
+  cursor: pointer;
+  transition: .3s ease;
+  font-weight: 500;
 }
 
 .banner-content h1 {
@@ -876,7 +896,7 @@ section#main-header {
     transition: all .3s ease;
     position: fixed;
     width: 100%;
-    z-index: 9;
+    z-index: 99;
 }
 
 
@@ -1041,8 +1061,9 @@ section#kurse {
 
 section#testimonials {
   overflow: hidden;
-  padding: 0 0 80px;
+  padding: 50px 0 80px;
 }
+
 
 .section-title h2 {
     font-size: 40px;
@@ -1518,6 +1539,7 @@ section#choose-category {
   display: flex;
   flex-direction: column;
   gap: 40px;
+  margin-top: 50px;
 }
 
 .detailed-box-main {
@@ -1553,6 +1575,11 @@ section#choose-category {
 
 .option-fields-align ul li {
   list-style: auto;
+}
+.option-fields-align ul {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
 }
 
 .title-option-field h3 {
@@ -1981,6 +2008,7 @@ audio {
 
 .deutsch-b1-horen {
 overflow-x: hidden;
+padding-top: 50px;
 }
 
 .deutsch-b1-horen .heading {
@@ -1993,6 +2021,7 @@ border-radius: 25px;
 padding: 40px 102px;
 width: 100%;
 position: relative;
+margin: 30px 0;
 }
 
 .deutsch-b1-horen .box_border .input__box .primary-button {
@@ -2556,8 +2585,8 @@ span.span-select.error {
   color: #fff;
   font-size: 24px;
   font-weight: 500;
-  width: 50px;
-  height: 50px;
+  width: 80px;
+  height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2569,8 +2598,8 @@ span.span-select.error {
   background: #fefaef;
   border-radius: 14px;
   box-shadow: 0px 2px 30px rgba(0, 0, 0, 0.08);
-  width: 80px;
-  height: 80px;
+  width: 150px;
+  height: 150px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2612,8 +2641,8 @@ section#home-categories {
 .category-box:nth-child(5) a svg ,
 
 .category-box:nth-child(6) a svg {
-  height: 50px;
-  width: 50px;
+  height: 80px;
+  width: 80px;
 }
 
 .category-box:first-child a {
@@ -2624,7 +2653,54 @@ section#home-categories {
   fill: #13313b;
 }
 
+section#services {
+  padding-bottom: 100px;
+}
+.input-icon-status {
+  font-size: 40px;
+  position: absolute;
+  right: 20px;
+  top: 12px;
+}
 
+.option-field-main {
+  position: relative;
+}
+
+.input-icon-status.checkmark-icon {
+  display: none;
+}
+
+.input-icon-status.cross-icon {
+  color: #dd0000;
+}
+
+.input-icon-status.checkmark-icon {
+  color: green;
+}
+
+.explaination-btn button {
+  height: 50px;
+  background: #f7631b;
+  padding: 0 20px;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  border-radius: 6px;
+  min-width: 150px;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  color: #ffffff;
+  cursor: pointer;
+  transition: .3s ease;
+  font-weight: 500;
+}
+
+.explaination-btn {
+  position: absolute;
+  right: 70px;
+}
 
 @media (max-width: 1199.98px) {
 .deutsch-b1-horen .box_border .text.p2 br,
@@ -2808,3 +2884,6 @@ section#home-categories {
 }
 
 }
+
+
+
