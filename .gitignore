@@ -36,14 +36,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-/public/A1/telc/horen/audio
-/public/A1/goethe/horen/audio
 
-/public/A2/telc/horen/audio
-/public/A2/goethe/horen/audio
 
-/public/B1/telc/horen/audio
-/public/B1/goethe/horen/audio
 
-/public/B2/telc/horen/audio
-/public/B2/goethe/horen/audio
