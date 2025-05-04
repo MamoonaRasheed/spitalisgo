@@ -137,6 +137,12 @@ export default function Exercise() {
         }
     };
     
+
+
+
+
+
+    
     const handleMuteClick = () => {
         if (!audioRef.current || !containerRef.current) return;
     
