@@ -4,7 +4,10 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { toast } from 'react-toastify';
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 import axios from '@/utils/axios';
+import LoadingSpinner from "@/components/loader/Loader"; // import your spinner
+
 
 export default function SignInForm() {
   const [email, setEmail] = useState('');
@@ -12,6 +15,8 @@ export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<{ email?: string; password?: string }>({});
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
 
   const validateForm = () => {
     const errors: { email?: string; password?: string } = {};
@@ -39,27 +44,40 @@ export default function SignInForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!validateForm()) return;
 
+    setIsLoading(true);
     try {
       const response = await axios.post('/login', { email, password });
       const data = response.data;
 
-      localStorage.setItem('token', data.access_token);
       localStorage.setItem('username', data.user.name);
+
+      login(data.access_token, { email }); // you can expand this user data based on your API response
+
       toast.success(data.message);
-      router.push('/');
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        console.error(err.message);
-      } else {
-        console.error('An unexpected error occurred', err);
-      }
+      router.push("/");
+      
+    } catch (err: any) {
+      console.error(err);
+      const errorMessage = err?.response?.data?.message || 'An unexpected error occurred';
+      toast.error(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
-    
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
   return (
+    
     <section id="auth-main">
       <div className="container">
         <div className="auth-align">

@@ -59,7 +59,10 @@ import PlayIcon from "./play.svg";
 import PauseIcon from "./pause.svg";
 import MuteIcon from "./mute.svg";
 import UnmuteIcon from "./unmute.svg";
+import Exercise from "./education-quiz.svg";
+
 export {
+  Exercise,
   DownloadIcon,
   BellIcon,
   MoreDotIcon,

@@ -10,15 +10,15 @@ export default function RadioButtons() {
     setSelectedValue(value);
   };
   return (
-    <ComponentCard title="Radio Buttons">
+    <ComponentCard title="Status">
       <div className="flex flex-wrap items-center gap-8">
-        <Radio
+      <Radio
           id="radio1"
           name="group1"
           value="option1"
           checked={selectedValue === "option1"}
           onChange={handleRadioChange}
-          label="Default"
+          label="Active"
         />
         <Radio
           id="radio2"
@@ -26,18 +26,13 @@ export default function RadioButtons() {
           value="option2"
           checked={selectedValue === "option2"}
           onChange={handleRadioChange}
-          label="Selected"
-        />
-        <Radio
-          id="radio3"
-          name="group1"
-          value="option3"
-          checked={selectedValue === "option3"}
-          onChange={handleRadioChange}
-          label="Disabled"
-          disabled={true}
+          label="Inactive"
         />
       </div>
     </ComponentCard>
   );
 }
+
+
+
+
