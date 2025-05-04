@@ -2343,7 +2343,7 @@ color: var(--primary-orange);
   border: 1px solid white;
   height: 501px;
   width: 450px;
-  background-image: url('/img/notizen.jpg');
+  background-image: url(/assets/img/notizen.jpg);
   background-size: 100% 100%;
 }
 

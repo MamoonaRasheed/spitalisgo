@@ -62,7 +62,7 @@ export default function Exercise() {
                 setLoading(false);
             }
         };
-    
+
         if (slug) {
             fetchExercise();
         }
@@ -70,15 +70,15 @@ export default function Exercise() {
 
     const containerRef = useRef<HTMLDivElement | null>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
-    
+
     useEffect(() => {
         if (!containerRef.current) return;
-    
+
         const container = containerRef.current;
-    
+
         const handleClick = (e: MouseEvent) => {
             const target = e.target as HTMLElement;
-    
+
             if (target.closest('.play-btn')) {
                 handlePlayClick();
             }
@@ -89,19 +89,19 @@ export default function Exercise() {
                 handleProgressClick(e);
             }
         };
-    
+
         container.addEventListener('click', handleClick);
-    
+
         // Find and store the audio element reference
         const audioElement = container.querySelector('audio');
         if (audioElement instanceof HTMLAudioElement) {
             audioRef.current = audioElement;
-    
+
             // Add timeupdate event for progress bar
             audioElement.addEventListener('timeupdate', updateProgressBar);
             audioElement.addEventListener('loadedmetadata', updateDurationDisplay);
         }
-    
+
         // Cleanup
         return () => {
             container.removeEventListener('click', handleClick);
@@ -112,7 +112,7 @@ export default function Exercise() {
         };
     }, [exerciseData?.description]);
 
-    
+
 
     const handlePlayClick = () => {
         if (!audioRef.current || !containerRef.current) return;
@@ -130,54 +130,55 @@ export default function Exercise() {
 
         if (audioRef.current.paused) {
             audioRef.current.play();
-            root.render(<PauseIcon />);
+            root.render(<PlayIcon />);
         } else {
             audioRef.current.pause();
-            root.render(<PlayIcon />);
+            root.render(<PauseIcon />);
+
         }
     };
-    
+
     const handleMuteClick = () => {
         if (!audioRef.current || !containerRef.current) return;
-    
+
         audioRef.current.muted = !audioRef.current.muted;
-    
+
         const muteBtn = containerRef.current.querySelector('.mute-btn') as HTMLElement;
         if (!muteBtn) return;
-    
+
         let root = (muteBtn as any)._reactRoot as Root;
-    
+
         if (!root) {
             root = createRoot(muteBtn);
             (muteBtn as any)._reactRoot = root;
         }
-    
-        root.render(audioRef.current.muted ? <MuteIcon /> : <UnmuteIcon />);
+
+        root.render(audioRef.current.muted ? <UnmuteIcon /> : <MuteIcon /> );
     };
-    
+
 
     const handleProgressClick = (e: MouseEvent) => {
         if (!audioRef.current || !containerRef.current) return;
-    
+
         const progressContainer = containerRef.current.querySelector<HTMLElement>('.progress-bar-container_a');
         if (!progressContainer) return;
-    
+
         const rect = progressContainer.getBoundingClientRect();
         const pos = (e.clientX - rect.left) / rect.width;
         if (!isNaN(audioRef.current.duration)) {
             audioRef.current.currentTime = pos * audioRef.current.duration;
         }
     };
-    
+
     const updateProgressBar = () => {
         if (!audioRef.current || !containerRef.current) return;
-    
+
         const progressBar = containerRef.current.querySelector<HTMLElement>('.progress-bar_a');
         if (progressBar && !isNaN(audioRef.current.duration)) {
             const percentage = (audioRef.current.currentTime / audioRef.current.duration) * 100;
             progressBar.style.width = `${percentage}%`;
         }
-    
+
         const currentTimeDisplay = containerRef.current.querySelector<HTMLElement>('.current-time');
         if (currentTimeDisplay) {
             currentTimeDisplay.textContent = formatTime(audioRef.current.currentTime);
@@ -186,7 +187,7 @@ export default function Exercise() {
 
     const updateDurationDisplay = () => {
         if (!audioRef.current || !containerRef.current) return;
-    
+
         const durationDisplay = containerRef.current.querySelector<HTMLElement>('.duration');
         if (durationDisplay && !isNaN(audioRef.current.duration)) {
             durationDisplay.textContent = formatTime(audioRef.current.duration);
@@ -277,13 +278,13 @@ export default function Exercise() {
             console.error("Slug is undefined. Cannot navigate.");
             return;
         }
-    
+
         try {
             setLoading(true); // Show loading state
             const result = await submitAnswers(selectedAnswers);
             console.log('Answers submitted:', result);
             console.log('Navigating to slug:', slug);
-    
+
             await router.push(`${slug}`); // Navigate after submission
         } catch (error: any) {
             console.error('Error submitting answers:', error?.message || error);
@@ -292,7 +293,7 @@ export default function Exercise() {
             setLoading(false); // End loading state
         }
     };
-    
+
     return (
         loading ? (
             <div className="flex items-center justify-center min-h-screen">
@@ -303,7 +304,7 @@ export default function Exercise() {
                 <div className="container">
                     {(exerciseData?.excercise_type == 'image and audio') ?
                         <div className="deutsch-b1-horen">
-                            <div ref={containerRef} dangerouslySetInnerHTML={{ __html: exerciseData?.description || ''}} />
+                            <div ref={containerRef} dangerouslySetInnerHTML={{ __html: exerciseData?.description || '' }} />
                         </div>
                         :
                         <div className="align-detailed-boxes">
@@ -313,7 +314,7 @@ export default function Exercise() {
 
                             <div className="listing-detailed-boxes">
                                 <div className="detailed-box-main">
-                                    <div ref={containerRef} dangerouslySetInnerHTML={{ __html: exerciseData?.description || ''}} />
+                                    <div ref={containerRef} dangerouslySetInnerHTML={{ __html: exerciseData?.description || '' }} />
                                 </div>
                                 {/* <SafeHtmlParser htmlString={exerciseData?.description || ""} /> */}
 
@@ -355,7 +356,7 @@ export default function Exercise() {
                                                                             {/* ✅ Checkbox question (multiple options) */}
                                                                             {question?.question_type === 'radio' && question.options.map((option, idx) => {
                                                                                 // Check result for current question
-                                                                                const answers = (Array.isArray(checkResults[question.id]) ? checkResults[question.id] : []) as Array<{option_id: number; is_correct: boolean}>;
+                                                                                const answers = (Array.isArray(checkResults[question.id]) ? checkResults[question.id] : []) as Array<{ option_id: number; is_correct: boolean }>;
                                                                                 const answerResult = answers.find((ans) => ans.option_id === option.id);
                                                                                 const isChecked = Array.isArray(selected) && selected.includes(option.id);
                                                                                 const isCorrect = answerResult?.is_correct === true;
@@ -432,43 +433,60 @@ export default function Exercise() {
                                                 <div className="option-fields-align">
                                                     <ul>
                                                         {exerciseData?.questions.map((question, index) => {
-                                                            const selectedOption = selectedAnswers[question.id];
-                                                            const isCorrect = checkResults?.[question.id];
-                                                            return (
-                                                                <li key={question.id || index}>
-                                                                    <div className="title-option-field">
-                                                                        <h3>{question.description}</h3>
+                                                            if (question?.question_type === 'notebook') {
+                                                                return (
+                                                                    <div className="notizen" key={`notebook-${question.id || index}`}>
+                                                                        <div dangerouslySetInnerHTML={{ __html: question?.description || '' }} />
+                                                                        {/* <div className="titel"><b>Steuerberater Müller</b></div>
+                                                                        <div className="uebung_text">3. Februar, 16 Uhr</div>
+                                                                        <div className="uebung_text">Was mitbringen?</div> */}
+                                                                        <div className="uebung_text"><input type="text" name="antwort" className={`${showResults ? (checkResults[question.id] === true ? 'border-green' : 'border-red') : ''}`} onChange={(e) =>
+                                                                            setSelectedAnswers((prev) => ({
+                                                                                ...prev,
+                                                                                [question.id]: e.target.value,
+                                                                            }))
+                                                                        } /></div>
                                                                     </div>
-                                                                    <div className="options-main">
-                                                                        {question.options.map((option) => {
-                                                                            const isSelected = selectedOption === option.id;
+                                                                );
+                                                            } else {
+                                                                const selectedOption = selectedAnswers[question.id];
+                                                                const isCorrect = checkResults?.[question.id];
+                                                                return (
+                                                                    <li key={question.id || index}>
+                                                                        <div className="title-option-field">
+                                                                            <h3>{question.description}</h3>
+                                                                        </div>
+                                                                        <div className="options-main">
+                                                                            {question.options.map((option) => {
+                                                                                const isSelected = selectedOption === option.id;
 
-                                                                            let className = "option-field-main";
+                                                                                let className = "option-field-main";
 
-                                                                            if (showResults && isSelected !== undefined) {
-                                                                                if (isSelected && isCorrect) {
-                                                                                    className += " active green-option";
+                                                                                if (showResults && isSelected !== undefined) {
+                                                                                    if (isSelected && isCorrect) {
+                                                                                        className += " active green-option";
+                                                                                    }
+                                                                                    if (isSelected && isCorrect === false) {
+                                                                                        className += " error";
+                                                                                    }
                                                                                 }
-                                                                                if (isSelected && isCorrect === false) {
-                                                                                    className += " error";
-                                                                                }
-                                                                            }
-                                                                            return (
-                                                                                <div className={className} key={option.id}>
-                                                                                    <input
-                                                                                        type="radio"
-                                                                                        name={`option-${question.id}`}
-                                                                                        onChange={() => handleOptionChange(question.id, option.id, 'radio')}
-                                                                                        checked={isSelected}
-                                                                                        disabled={showResults}
-                                                                                    />
-                                                                                    <label>{option.description}</label>
-                                                                                </div>
-                                                                            );
-                                                                        })}
-                                                                    </div>
-                                                                </li>
-                                                            );
+                                                                                return (
+                                                                                    <div className={className} key={option.id}>
+                                                                                        <input
+                                                                                            type="radio"
+                                                                                            name={`option-${question.id}`}
+                                                                                            onChange={() => handleOptionChange(question.id, option.id, 'radio')}
+                                                                                            checked={isSelected}
+                                                                                            disabled={showResults}
+                                                                                        />
+                                                                                        <label>{option.description}</label>
+                                                                                    </div>
+                                                                                );
+                                                                            })}
+                                                                        </div>
+                                                                    </li>
+                                                                );
+                                                            }
                                                         })}
 
 
