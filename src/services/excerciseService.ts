@@ -29,7 +29,7 @@ export const getQuestionsByExcercises = async (params: GetExcerciseParams) => {
 
 };
 interface SelectedAnswers {
-  [questionId: string]: string | number;  // Question ID as string or number, and Option ID as string or number
+  [questionId: string]: string | number | number[]; // Question ID as string or number, and Option ID as string or number
 }
 
 export const submitAnswers = async (selectedAnswers: SelectedAnswers) => {

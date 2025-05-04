@@ -9,6 +9,7 @@ interface Chapter {
     title: string;
     description: string;
     progress: number;
+    name: string;
 }
 
 interface Exercise {
@@ -29,7 +30,10 @@ export default function Category() {
     useEffect(() => {
         const fetchChapters = async () => {
             try {
-                const response = await getChapters({ exam, course, category });
+                const response = await getChapters({
+                    exam: exam as string, 
+                    course: course as string, 
+                    category: category as string });
                 setChapters(response.data);
                 if (response.data.length > 0) {
                     const firstChapterId = response.data[0].id;

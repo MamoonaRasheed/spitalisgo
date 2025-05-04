@@ -17,7 +17,13 @@ export default function Page() {
                             <div className="banner-content">
                                 <h1>Dein Weg zum Prüfungserfolg - mit uns an deiner Seite</h1>
                                 <p>Wir bereiten dich vor - bis du bereit bist, versprachen.</p>
-                                <button type="button" className="btn btn-primary">Jetzt starten</button>
+                                <button 
+                                    type="button" 
+                                    className="btn btn-primary" 
+                                    onClick={() => window.location.href = "/A1"}
+                                >
+                                    Jetzt starten
+                                </button>
                             </div>
                             <div className="banner-img">
                                 <Image

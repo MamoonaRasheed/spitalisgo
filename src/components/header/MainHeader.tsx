@@ -36,12 +36,14 @@ export default function MainHeader() {
     <section id="main-header">
       <div className="container">
           <div className="align-logo-top">
-              <div className="top-logo">
-                  <Image src="/assets/img/spitalsgo-logo.webp" alt="SpitalsGo Logo" width={150} height={60} />
-              </div>
+                <div className="top-logo">
+                  <a href="/">
+                    <Image src="/assets/img/spitalsgo-logo.webp" alt="SpitalsGo Logo" width={150} height={60} />
+                  </a>
+                </div>
               <div className="header-links">
                   <ul>
-                      <li><a href="#"> Heim </a></li>
+                      <li><a href=""> Heim </a></li>
                       <li><a href="#"> B1 Probeprüfung </a></li>
                       <li><a href="#"> B2 Probeprüfung </a></li>
                       <li><a href="#"> Einstufungstest </a></li>

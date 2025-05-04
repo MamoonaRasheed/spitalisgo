@@ -2,6 +2,8 @@ import React from "react";
 import Image from 'next/image';
 import MainHeader from "@/components/header/MainHeader";
 import MainFooter from "@/components/footer/Footer";
+import { AuthProvider } from "@/context/AuthContext";
+
 
 export default function FullWidthPageLayout({
   children,
@@ -10,13 +12,16 @@ export default function FullWidthPageLayout({
 }) {
   return (
     <div id="home-page">
-      <MainHeader />
-      
-      <div className="content-wrapper">
-        {children}
-      </div>
+      <AuthProvider>
 
-      <MainFooter />
+        <MainHeader />
+
+        <div className="content-wrapper">
+          {children}
+        </div>
+
+        <MainFooter />
+      </AuthProvider>
     </div>
   );
 }

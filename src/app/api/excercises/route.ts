@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    console.log('backendResponse',backendResponse)
+    // console.log('backendResponse',backendResponse)
     const data = await backendResponse.json();
 
     return NextResponse.json(data, { status: backendResponse.status });

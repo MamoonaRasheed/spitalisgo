@@ -1,9 +1,10 @@
 "use client";
+
 import React, { useRef, useState, useEffect } from "react";
 import { useParams } from 'next/navigation';
 import { getQuestionsByExcercises, submitAnswers } from '@/services/excerciseService';
 import { checkQuestionAnswers } from '@/services/questionService';
-import { createRoot } from 'react-dom/client';
+import { createRoot, Root } from 'react-dom/client';
 import { PlayIcon, PauseIcon, MuteIcon, UnmuteIcon } from "@/icons";
 import { useRouter } from 'next/navigation';
 import ExerciseRenderer from "@/components/common/ExerciseRenderer";
@@ -20,6 +21,7 @@ interface Question {
     correct_option: number;
     question_type: string;
     is_static: number;
+    value: string;
 }
 
 interface Exercise {
@@ -36,6 +38,8 @@ interface Exercise {
     prev_chapter_id: number;
     next_slug: string;
     next_chapter_id: number;
+    description: string;
+    question_description: string;
 }
 export default function Exercise() {
     const router = useRouter();
@@ -48,55 +52,59 @@ export default function Exercise() {
     useEffect(() => {
         const fetchExercise = async () => {
             try {
-                const response = await getQuestionsByExcercises({ slug });
-                setExercise(response.data);
+                if (typeof slug === 'string') {
+                    const response = await getQuestionsByExcercises({ slug });
+                    setExercise(response.data);
+                }
             } catch (error) {
                 console.error('Error fetching exercise:', error);
-            }
-            finally {
+            } finally {
                 setLoading(false);
             }
         };
-
+    
         if (slug) {
             fetchExercise();
         }
     }, [slug]);
 
-    const containerRef = useRef(null);
-    const audioRef = useRef(null);
-
+    const containerRef = useRef<HTMLDivElement | null>(null);
+    const audioRef = useRef<HTMLAudioElement | null>(null);
+    
     useEffect(() => {
         if (!containerRef.current) return;
-
+    
         const container = containerRef.current;
-
-        // Event delegation for play button
-        container.addEventListener('click', (e) => {
-            if (e.target.closest('.play-btn')) {
+    
+        const handleClick = (e: MouseEvent) => {
+            const target = e.target as HTMLElement;
+    
+            if (target.closest('.play-btn')) {
                 handlePlayClick();
             }
-            if (e.target.closest('.mute-btn')) {
+            if (target.closest('.mute-btn')) {
                 handleMuteClick();
             }
-            if (e.target.closest('.progress-bar_a')) {
+            if (target.closest('.progress-bar_a')) {
                 handleProgressClick(e);
             }
-        });
-
+        };
+    
+        container.addEventListener('click', handleClick);
+    
         // Find and store the audio element reference
         const audioElement = container.querySelector('audio');
-        if (audioElement) {
+        if (audioElement instanceof HTMLAudioElement) {
             audioRef.current = audioElement;
-
+    
             // Add timeupdate event for progress bar
             audioElement.addEventListener('timeupdate', updateProgressBar);
             audioElement.addEventListener('loadedmetadata', updateDurationDisplay);
         }
-
+    
         // Cleanup
         return () => {
-            container.removeEventListener('click', () => { });
+            container.removeEventListener('click', handleClick);
             if (audioRef.current) {
                 audioRef.current.removeEventListener('timeupdate', updateProgressBar);
                 audioRef.current.removeEventListener('loadedmetadata', updateDurationDisplay);
@@ -104,66 +112,73 @@ export default function Exercise() {
         };
     }, [exerciseData?.description]);
 
+    
+
     const handlePlayClick = () => {
-        if (!audioRef.current) return;
+        if (!audioRef.current || !containerRef.current) return;
+
+        const playBtn = containerRef.current.querySelector('.play-btn') as HTMLElement;
+        if (!playBtn) return;
+
+        // Store the root once, as a property on the element or in a ref
+        let root = (playBtn as any)._reactRoot as Root;
+
+        if (!root) {
+            root = createRoot(playBtn);
+            (playBtn as any)._reactRoot = root;
+        }
 
         if (audioRef.current.paused) {
             audioRef.current.play();
-            // Update play button UI
-            const playBtn = containerRef.current.querySelector('.play-btn');
-            if (playBtn) {
-                const root = createRoot(playBtn);
-                root.render(<PlayIcon />);
-
-            }
+            root.render(<PauseIcon />);
         } else {
             audioRef.current.pause();
-            // Update play button UI
-            const playBtn = containerRef.current.querySelector('.play-btn');
-            if (playBtn) {
-                const root = createRoot(playBtn);
-                root.render(<PauseIcon />);
-            }
+            root.render(<PlayIcon />);
         }
     };
-
+    
     const handleMuteClick = () => {
-        if (!audioRef.current) return;
-
-        audioRef.current.muted = !audioRef.current.muted;
-        // Update mute button UI
-        const muteBtn = containerRef.current.querySelector('.mute-btn');
-        if (muteBtn) {
-            const root = createRoot(muteBtn);
-            muteBtn.innerHTML = audioRef.current.muted
-                ? root.render(<UnmuteIcon />)
-                :
-                root.render(<MuteIcon />);
-        }
-    };
-
-    const handleProgressClick = (e) => {
         if (!audioRef.current || !containerRef.current) return;
+    
+        audioRef.current.muted = !audioRef.current.muted;
+    
+        const muteBtn = containerRef.current.querySelector('.mute-btn') as HTMLElement;
+        if (!muteBtn) return;
+    
+        let root = (muteBtn as any)._reactRoot as Root;
+    
+        if (!root) {
+            root = createRoot(muteBtn);
+            (muteBtn as any)._reactRoot = root;
+        }
+    
+        root.render(audioRef.current.muted ? <MuteIcon /> : <UnmuteIcon />);
+    };
+    
 
-        const progressContainer = containerRef.current.querySelector('.progress-bar-container_a');
+    const handleProgressClick = (e: MouseEvent) => {
+        if (!audioRef.current || !containerRef.current) return;
+    
+        const progressContainer = containerRef.current.querySelector<HTMLElement>('.progress-bar-container_a');
         if (!progressContainer) return;
-
+    
         const rect = progressContainer.getBoundingClientRect();
         const pos = (e.clientX - rect.left) / rect.width;
-        audioRef.current.currentTime = pos * audioRef.current.duration;
+        if (!isNaN(audioRef.current.duration)) {
+            audioRef.current.currentTime = pos * audioRef.current.duration;
+        }
     };
-
+    
     const updateProgressBar = () => {
         if (!audioRef.current || !containerRef.current) return;
-
-        const progressBar = containerRef.current.querySelector('.progress-bar_a');
-        if (progressBar) {
+    
+        const progressBar = containerRef.current.querySelector<HTMLElement>('.progress-bar_a');
+        if (progressBar && !isNaN(audioRef.current.duration)) {
             const percentage = (audioRef.current.currentTime / audioRef.current.duration) * 100;
             progressBar.style.width = `${percentage}%`;
         }
-
-        // Update current time display
-        const currentTimeDisplay = containerRef.current.querySelector('.current-time');
+    
+        const currentTimeDisplay = containerRef.current.querySelector<HTMLElement>('.current-time');
         if (currentTimeDisplay) {
             currentTimeDisplay.textContent = formatTime(audioRef.current.currentTime);
         }
@@ -171,21 +186,20 @@ export default function Exercise() {
 
     const updateDurationDisplay = () => {
         if (!audioRef.current || !containerRef.current) return;
-
-        const durationDisplay = containerRef.current.querySelector('.duration');
-        if (durationDisplay) {
+    
+        const durationDisplay = containerRef.current.querySelector<HTMLElement>('.duration');
+        if (durationDisplay && !isNaN(audioRef.current.duration)) {
             durationDisplay.textContent = formatTime(audioRef.current.duration);
         }
     };
 
-    const formatTime = (seconds) => {
+    const formatTime = (seconds: number): string => {
         const minutes = Math.floor(seconds / 60);
         const secs = Math.floor(seconds % 60);
         return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
     };
 
     const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number | number[] | string>>({});
-
 
 
     const handleOptionChange = (questionId: number, optionId: number, type: string) => {
@@ -258,23 +272,27 @@ export default function Exercise() {
         setShowResults(false);
     };
 
-    const handleSubmitAnswers = async (slug) => {
-        try {
-          setLoading(true);  // Show loading state
-          const result = await submitAnswers(selectedAnswers);
-          console.log('Answers submitted:', result);
-          console.log('Navigating to slug:', slug);
-          await router.push(`${slug}`); // Ensure navigation happens after submission
-          console.log('Navigating to slug1:', slug);
-        } catch (error) {
-          // Display the error message
-          console.error('Error submitting answers:', error.message);
-          alert(`Error: ${error.message}`); // You can replace this with a more user-friendly error display
-        } finally {
-          setLoading(false);  // Set loading to false after operation completes
+    const handleSubmitAnswers = async (slug: string | undefined) => {
+        if (!slug) {
+            console.error("Slug is undefined. Cannot navigate.");
+            return;
         }
-      };
-
+    
+        try {
+            setLoading(true); // Show loading state
+            const result = await submitAnswers(selectedAnswers);
+            console.log('Answers submitted:', result);
+            console.log('Navigating to slug:', slug);
+    
+            await router.push(`${slug}`); // Navigate after submission
+        } catch (error: any) {
+            console.error('Error submitting answers:', error?.message || error);
+            alert(`Error: ${error?.message || "Something went wrong."}`);
+        } finally {
+            setLoading(false); // End loading state
+        }
+    };
+    
     return (
         loading ? (
             <div className="flex items-center justify-center min-h-screen">
@@ -285,7 +303,7 @@ export default function Exercise() {
                 <div className="container">
                     {(exerciseData?.excercise_type == 'image and audio') ?
                         <div className="deutsch-b1-horen">
-                            <div ref={containerRef} dangerouslySetInnerHTML={{ __html: exerciseData?.description }} />
+                            <div ref={containerRef} dangerouslySetInnerHTML={{ __html: exerciseData?.description || ''}} />
                         </div>
                         :
                         <div className="align-detailed-boxes">
@@ -295,7 +313,7 @@ export default function Exercise() {
 
                             <div className="listing-detailed-boxes">
                                 <div className="detailed-box-main">
-                                    <div ref={containerRef} dangerouslySetInnerHTML={{ __html: exerciseData?.description }} />
+                                    <div ref={containerRef} dangerouslySetInnerHTML={{ __html: exerciseData?.description || ''}} />
                                 </div>
                                 {/* <SafeHtmlParser htmlString={exerciseData?.description || ""} /> */}
 
@@ -337,7 +355,7 @@ export default function Exercise() {
                                                                             {/* ✅ Checkbox question (multiple options) */}
                                                                             {question?.question_type === 'radio' && question.options.map((option, idx) => {
                                                                                 // Check result for current question
-                                                                                const answers = Array.isArray(checkResults[question.id]) ? checkResults[question.id] : [];
+                                                                                const answers = (Array.isArray(checkResults[question.id]) ? checkResults[question.id] : []) as Array<{option_id: number; is_correct: boolean}>;
                                                                                 const answerResult = answers.find((ans) => ans.option_id === option.id);
                                                                                 const isChecked = Array.isArray(selected) && selected.includes(option.id);
                                                                                 const isCorrect = answerResult?.is_correct === true;

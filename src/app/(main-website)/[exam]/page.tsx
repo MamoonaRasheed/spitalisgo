@@ -48,7 +48,7 @@ export default function Course() {
                     </div>
                     <div className="providers-btns">
                         {courses?.data?.map((course, index) => (
-                            <a href={`${exam}/${course?.slug}`}>
+                            <a key={course?.slug} href={`${exam}/${course?.slug}`}>
                                 {course?.name}
                             </a>
                         ))}

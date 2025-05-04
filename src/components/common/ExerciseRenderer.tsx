@@ -13,7 +13,7 @@ interface Question {
 interface ExerciseRendererProps {
   question_description: string;
   questions: Question[];
-  selectedAnswers?: Record<number, number>;
+  selectedAnswers?: { [questionId: number]: string | number | number[] };
   onAnswerChange?: (questionId: number, selectedOptionId: number, type: string) => void;
   checkResults?: Record<number, boolean>; // Changed from { [questionId: number]: boolean } to Record<number, boolean>
 }
