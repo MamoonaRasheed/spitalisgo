@@ -3,15 +3,14 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
-    // 1. Validate environment and parameters
     if (!process.env.NEXT_PUBLIC_API_URL) {
       throw new Error('API base URL is not configured');
     }
 
-    const exerciseId = params.id;
+    const exerciseId = context.params.id;
     if (!exerciseId || isNaN(Number(exerciseId))) {
       return NextResponse.json(
         { status: false, message: 'Invalid exercise ID' },
@@ -19,9 +18,7 @@ export async function GET(
       );
     }
 
-    // 2. Get authorization token
-    const token = req.headers.get("authorization"); // Extract token from "Bearer <token>"
-    
+    const token = req.headers.get("authorization");
     if (!token) {
       return NextResponse.json(
         { status: false, message: 'Authorization token is required' },
@@ -29,7 +26,6 @@ export async function GET(
       );
     }
 
-    // 3. Make request to backend API
     const backendResponse = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/admin/excercises/${exerciseId}`,
       {
@@ -42,10 +38,7 @@ export async function GET(
       }
     );
 
-    // 4. Handle response
     const contentType = backendResponse.headers.get('content-type');
-    
-    // Check if response is JSON
     if (!contentType || !contentType.includes('application/json')) {
       const text = await backendResponse.text();
       throw new Error(`Unexpected response: ${text.substring(0, 100)}...`);
@@ -79,7 +72,7 @@ export async function GET(
 
 export async function PATCH(
     req: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: { id: string | string[] } }
   ) {
     try {
       // 1. Validate environment and parameters

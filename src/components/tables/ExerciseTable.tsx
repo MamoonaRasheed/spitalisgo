@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import { getExercises } from '@/services/excerciseService';
+import { getExercises } from '@/services/admin/excerciseService';
 import Link from "next/link";
 
 interface Exercise {
