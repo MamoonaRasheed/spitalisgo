@@ -1,33 +1,44 @@
 import React, { useState } from "react";
-
-interface Option {
-  value: string;
+interface Option<T = string> {
+  value: number | T;
   label: string;
 }
 
-interface SelectProps {
-  options: Option[];
+interface SelectProps<T = string> {
+  options: Option<T>[];
   placeholder?: string;
-  onChange: (value: string) => void;
+  onChange: (value: T) => void;
   className?: string;
-  defaultValue?: string;
+  defaultValue?: T;
+  value?: string | number; 
 }
 
-const Select: React.FC<SelectProps> = ({
+const Select = <T extends string | number = string>({
   options,
   placeholder = "Select an option",
   onChange,
   className = "",
-  defaultValue = "",
-}) => {
-  // Manage the selected value
-  const [selectedValue, setSelectedValue] = useState<string>(defaultValue);
+  defaultValue,
+  value,
+}: SelectProps<T>) => {
+  const [internalValue, setInternalValue] = useState<T>(
+    defaultValue ?? ("" as T)
+  );
 
-  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;
-    setSelectedValue(value);
-    onChange(value); // Trigger parent handler
-  };
+  const selectedValue = value ?? internalValue ?? ("" as T);
+
+const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const value = e.target.value;
+  const typedValue = typeof defaultValue === 'number' 
+    ? Number(value) as T 
+    : value as T;
+  if (typeof value === 'string' && value === '') return;
+  if (value === undefined) return;
+
+  if (value === undefined) setInternalValue(typedValue); // only update internal state if uncontrolled
+  onChange(typedValue);
+};
+
 
   return (
     <select

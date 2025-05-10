@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import ComponentCard from "../../common/ComponentCard";
 import Radio from "../input/Radio";
 
 export default function RadioButtons() {
@@ -10,8 +9,7 @@ export default function RadioButtons() {
     setSelectedValue(value);
   };
   return (
-    <ComponentCard title="Status">
-      <div className="flex flex-wrap items-center gap-8">
+    <div className="flex flex-wrap items-center gap-8">
       <Radio
           id="radio1"
           name="group1"
@@ -26,10 +24,9 @@ export default function RadioButtons() {
           value="option2"
           checked={selectedValue === "option2"}
           onChange={handleRadioChange}
-          label="Inactive"
+          label="InActive"
         />
       </div>
-    </ComponentCard>
   );
 }
 

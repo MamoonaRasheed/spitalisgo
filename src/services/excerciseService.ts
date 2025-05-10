@@ -66,4 +66,3 @@ export const submitAnswers = async (selectedAnswers: SelectedAnswers) => {
 };
 
 
-
