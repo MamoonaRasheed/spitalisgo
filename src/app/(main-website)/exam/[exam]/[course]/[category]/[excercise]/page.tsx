@@ -70,7 +70,9 @@ export default function Exercise() {
 
     const containerRef = useRef<HTMLDivElement | null>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
-
+    const [showResults, setShowResults] = useState(false);
+    const [checkResults, setCheckResults] = useState<Record<number, boolean>>({});
+    
     useEffect(() => {
         if (!containerRef.current) return;
 
@@ -85,7 +87,7 @@ export default function Exercise() {
             if (target.closest('.mute-btn')) {
                 handleMuteClick();
             }
-            if (target.closest('.progress-bar_a')) {
+            if (target.closest('.progress-bar-container_a')) {
                 handleProgressClick(e);
             }
         };
@@ -110,7 +112,7 @@ export default function Exercise() {
                 audioRef.current.removeEventListener('loadedmetadata', updateDurationDisplay);
             }
         };
-    }, [exerciseData?.description]);
+    }, [exerciseData?.description, showResults]);
 
 
 
@@ -231,8 +233,7 @@ export default function Exercise() {
     }, [selectedAnswers]);
 
 
-    const [showResults, setShowResults] = useState(false);
-    const [checkResults, setCheckResults] = useState<Record<number, boolean>>({});
+    
 
     const handleCheck = async () => {
         try {
@@ -271,7 +272,7 @@ export default function Exercise() {
         setSelectedAnswers({});
         setShowResults(false);
     };
-
+    
     const handleSubmitAnswers = async (slug: string | undefined) => {
         if (!slug) {
             console.error("Slug is undefined. Cannot navigate.");
@@ -313,7 +314,9 @@ export default function Exercise() {
 
                             <div className="listing-detailed-boxes">
                                 <div className="detailed-box-main">
-                                    <div ref={containerRef} dangerouslySetInnerHTML={{ __html: exerciseData?.description || '' }} />
+                                <div ref={containerRef} dangerouslySetInnerHTML={{ __html: exerciseData?.description || '' }} />
+
+                                    {/* <div ref={containerRef} dangerouslySetInnerHTML={{ __html: exerciseData?.description || '' }} /> */}
                                 </div>
                                 {/* <SafeHtmlParser htmlString={exerciseData?.description || ""} /> */}
 
@@ -373,9 +376,6 @@ export default function Exercise() {
                                                                                 );
                                                                             })}
 
-
-
-
                                                                             {/* ✅ Text input question */}
                                                                             {(question?.question_type === 'input_field' && question?.is_static != 1) && (
                                                                                 <div className="form_input">
@@ -397,7 +397,6 @@ export default function Exercise() {
                                                                                     </span>
                                                                                 </div>
                                                                             )}
-
 
                                                                             {(question?.question_type === 'input_field' && question?.is_static == 1) && (
                                                                                 <div className="form_input">

@@ -3,7 +3,7 @@
 import { ReactNode, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-
+import LoadingSpinner from "@/components/loader/Loader";
 const ProtectedRoute = ({ children }: { children: ReactNode }) => {
   const { user } = useAuth();
   const router = useRouter();
@@ -27,7 +27,7 @@ const ProtectedRoute = ({ children }: { children: ReactNode }) => {
           // console.log("This is not an admin path");
           router.push(`/signin?callbackUrl=${encodeURIComponent(currentPath)}`);
         }
-        
+
       } else {
         setIsLoading(false);
       }
@@ -37,7 +37,9 @@ const ProtectedRoute = ({ children }: { children: ReactNode }) => {
   }, [user, router, isMounted]);
 
   if (!isMounted || isLoading) {
-    return <div>Loading...</div>;
+    return <div className="flex items-center justify-center min-h-screen">
+      <LoadingSpinner />
+    </div>;
   }
 
   return <>{children}</>;

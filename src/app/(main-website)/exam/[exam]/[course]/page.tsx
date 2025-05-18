@@ -18,7 +18,7 @@ interface CategoryResponse {
 
 export default function Course() {
     const params = useParams();
-    const { course } = params;
+    const { exam, course } = params;
     const [categories, setCategories] = useState<CategoryResponse | null>(null); // Define state inside the component
     const [loading, setLoading] = useState<boolean>(true);
     useEffect(() => {
@@ -49,8 +49,8 @@ export default function Course() {
                 <div className="align-choose-category">
                     <div className="ctaegory-choose-title">
                         <h2>
-                            <span>A1 Übungen</span>
-                            für Telc Prüfung
+                            <span>{exam} Übungen</span>
+                            für {course} Prüfung
                         </h2>
                     </div>
                     <div className="choose-category-boxes-align">

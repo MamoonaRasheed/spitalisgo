@@ -2377,12 +2377,17 @@ color: var(--primary-orange);
   width: 250px;
   text-align: center;
   font-weight: bold;
+  background-color: #ffffff;
+  border: 2px solid #cccccc;
 }
 
 form .action-btns {
   margin-top: 3rem !important;
 }
 
+.list-style-test{
+  list-style: disc;
+}
 /* Select dropdown */
 
 .block__select .span-select {
@@ -2637,7 +2642,9 @@ section#home-categories {
 .category-box:nth-child(6) a {
   background: transparent;
 }
-
+* > .list__ {
+    counter-increment: labelCounter;
+}
 .category-box:nth-child(5) a svg ,
 
 .category-box:nth-child(6) a svg {
