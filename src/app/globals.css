@@ -2645,6 +2645,9 @@ section#home-categories {
 * > .list__ {
     counter-increment: labelCounter;
 }
+.group:hover .group-hover\:block {
+    display: block;
+}
 .category-box:nth-child(5) a svg ,
 
 .category-box:nth-child(6) a svg {

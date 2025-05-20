@@ -61,10 +61,10 @@ console.log('checkResults1', checkResults)
       const option_q = question?.option_q || [];
       const questionId = question?.question_id;
       const selectedOptionId = selectedAnswers?.[questionId || 0];
-      console.log(selectedOptionId,"selectedOptionId");
+      // console.log(selectedOptionId,"selectedOptionId");
       const show = question?.showResults;
       const isCorrect = checkResults?.[questionId || 0];
-      console.log(isCorrect,"isCorrect");
+      // console.log(isCorrect,"isCorrect");
       const selectedOptionText = option_q.find(opt => opt.id === selectedOptionId)?.description || '';
 
       let dropdownClass = "";

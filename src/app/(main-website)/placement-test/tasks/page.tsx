@@ -18,11 +18,13 @@ interface Task {
     slug: string;
     description: string;
     question_description: string;
-    img_url: string,
-    audio_url: string,
-    sort_items: [],
-    drag_items: [],
+    img_url: string;
+    audio_url: string;
+    sort_items: [];
+    drag_items: [];
+    selected_answer: string[] | Record<number, number>;
     questions: Question[];
+    correct_options: [];
     prev_slug: string;
     next_slug: string;
 }
@@ -36,39 +38,121 @@ interface Question {
     value: string;
 }
 interface Option {
-    id: number,
+    id: number;
     description: string;
 }
-export default function Task() {
-    const params = useParams();
-    const router = useRouter();
-    const { slug } = params;
-    const [taskData, setTask] = useState<Task | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
-    useEffect(() => {
-        const fetchExercise = async () => {
-            try {
-                if (typeof slug === 'string') {
-                    const response = await getQuestionByTask({ slug });
-                    setTask(response.data);
-                }
-            } catch (error) {
-                console.error('Error fetching exercise:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
 
-        if (slug) {
-            fetchExercise();
+interface allTaskData {
+    tasks: Task[];
+}
+export default function Task() {
+    const router = useRouter();
+    const [taskData, setTasks] = useState<Task | null>(null);
+    const [allTaskData, setAllTaskData] = useState<allTaskData>({ tasks: [] });
+    const [loading, setLoading] = useState<boolean>(true);
+
+    const addTask = (newTask: Task) => {
+        setAllTaskData(prevData => {
+            // Check if task already exists by ID
+            const taskExists = prevData.tasks.some(task => task.id === newTask.id);
+
+            if (taskExists) {
+                return prevData; // Do not update if already exists
+            }
+            if (newTask.task_type == "drag_drop" || newTask.task_type == "sorting" || newTask.task_type == "input_field") {
+                return {
+                    tasks: [...prevData.tasks, { ...newTask, selected_answer: [] }]
+                };
+            } else {
+                return {
+                    tasks: [...prevData.tasks, { ...newTask, selected_answer: {} }]
+                };
+            }
+
+        });
+    };
+    function isStringArray(value: any): value is string[] {
+        return Array.isArray(value) && value.every(item => typeof item === 'string');
+    }
+    const updateSelectedAnswer = (taskKey: string, newAnswers: string[] | Record<number, number>) => {
+        setAllTaskData(prevData => {
+            const updatedTasks = prevData.tasks.map(task => {
+                const currentTaskKey = `task-${task.id}`;
+
+                if (currentTaskKey !== taskKey) return task;
+
+                let updatedSelectedAnswers: string[] | Record<number, number>;
+
+                if (Array.isArray(newAnswers)) {
+                    // Initialize with empty array or existing value if needed
+                    updatedSelectedAnswers = Array.isArray(task.selected_answer)
+                        ? [...task.selected_answer]
+                        : [];
+
+                    newAnswers.forEach(ans => {
+                        if (!(updatedSelectedAnswers as string[]).includes(ans)) {
+                            (updatedSelectedAnswers as string[]).push(ans);
+                        }
+                    });
+
+                } else {
+                    // Handle object merge
+                    updatedSelectedAnswers = newAnswers
+                }
+
+                return { ...task, selected_answer: updatedSelectedAnswers };
+            });
+            return {
+                ...prevData,
+                tasks: updatedTasks
+            };
+        });
+    };
+
+
+    const fetchTask = async (slug: string) => {
+        try {
+            if (typeof slug === 'string') {
+                setLoading(true);
+                if (taskData?.id !== undefined) {
+                    console.log('taskAnswers--->slug', taskAnswers[`task-${taskData.id}`])
+                    if (taskData.task_type == "drag_drop" || taskData.task_type == "sorting" || taskData.task_type == "input_field") {
+                        await updateSelectedAnswer(`task-${taskData.id}`, taskAnswers[`task-${taskData.id}`]);
+                    } else {
+                        const questionIds = taskData.questions.map(q => q.id);
+
+                        // Step 2: selectedAnswers me se sirf wo filter karo jinki key questionIds me hai
+                        const filteredAnswers = Object.fromEntries(
+                            Object.entries(selectedAnswers).filter(([key]) =>
+                                questionIds.includes(Number(key))
+                            )
+                        );
+                        await updateSelectedAnswer(`task-${taskData.id}`, filteredAnswers);
+                    }
+
+                }
+                const response = await getQuestionByTask({ slug });
+                setTasks(response.data);
+                addTask(response.data);
+            }
+        } catch (error) {
+            console.error('Error fetching exercise:', error);
+        } finally {
+            setLoading(false);
         }
-    }, [slug]);
+    };
+    useEffect(() => {
+        fetchTask('task-1');
+    }, []);
+
     const [showResults, setShowResults] = useState(false);
     const [checkResults, setCheckResults] = useState<Record<number, boolean>>({});
-    const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number | number[] | string>>({});
+    const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
     const containerRef = useRef<HTMLDivElement | null>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
-
+    useEffect(() => {
+        console.log('selectedAnswers========>', selectedAnswers)
+    }, [selectedAnswers])
     useEffect(() => {
         if (!containerRef.current) return;
 
@@ -201,22 +285,10 @@ export default function Task() {
         setSelectedAnswers((prevSelectedAnswers) => {
             const prev = prevSelectedAnswers[questionId];
 
-            if (type === 'checkbox') {
-                const current = Array.isArray(prev) ? prev : [];
-                const updated = current.includes(optionId)
-                    ? current.filter(id => id !== optionId)
-                    : [...current, optionId];
-
-                return {
-                    ...prevSelectedAnswers,
-                    [questionId]: updated,
-                };
-            } else {
-                return {
-                    ...prevSelectedAnswers,
-                    [questionId]: optionId,
-                };
-            }
+            return {
+                ...prevSelectedAnswers,
+                [questionId]: optionId,
+            };
         });
     };
 
@@ -225,12 +297,13 @@ export default function Task() {
         console.log(selectedAnswers, "selectedAnswers updated");
     }, [selectedAnswers]);
 
-
-
+    const [isSubmitted, setIsSubmitted] = useState(false);
 
     const handleCheck = async () => {
         try {
             setLoading(true);
+            setIsSubmitted(true);
+            // dropdown, radio
             const payload = {
                 question_answers: taskData?.questions
                     .filter((question) => selectedAnswers.hasOwnProperty(question.id))
@@ -262,64 +335,80 @@ export default function Task() {
         console.log("checkResults p", checkResults);
     }, [checkResults]);
 
-    const [answers, setAnswers] = useState<string[]>(Array(50).fill(''));
-    const [wordPositions, setWordPositions] = useState<{ [word: string]: number | null }>({});
+    const [taskAnswers, setTaskAnswers] = useState<{ [slug: string]: string[] }>({});
+    const [taskWordPositions, setTaskWordPositions] = useState<{ [slug: string]: { [word: string]: number | null } }>({});
+
+    const slug = taskData?.slug || ''; // or taskData.id if you're using ID
+    const answers = taskAnswers[slug] || [];
+    const wordPositions = taskWordPositions[slug] || {};
 
 
-    const handleWordClick = (word: string) => {
-        const currentIndex = wordPositions[word];
-        if (currentIndex !== undefined && currentIndex !== null) {
-            const updatedAnswers = [...answers];
-            updatedAnswers[currentIndex] = '';
+    useEffect(() => {
+        if (taskData) {
+            const slug = taskData.slug || '';
+            // Check if we already have saved answers
+            if (!taskAnswers[slug]) {
+                let totalBlanks = 0;
+                taskData.questions.forEach((q) => {
+                    const matches = q.description.match(/<span[^>]*id=['"]fill_in_blanks['"][^>]*>/g);
+                    totalBlanks += matches ? matches.length : 0;
+                });
 
-            setAnswers(updatedAnswers);
-            setWordPositions((prev) => ({ ...prev, [word]: null }));
-        } else {
-            const nextEmptyIndex = answers.findIndex((ans) => ans === '');
-            if (nextEmptyIndex !== -1) {
-                const updatedAnswers = [...answers];
-                updatedAnswers[nextEmptyIndex] = word;
-
-                setAnswers(updatedAnswers);
-                setWordPositions((prev) => ({ ...prev, [word]: nextEmptyIndex }));
+                // Initialize for new task
+                setTaskAnswers(prev => ({ ...prev, [slug]: Array(totalBlanks).fill('') }));
+                setTaskWordPositions(prev => ({ ...prev, [slug]: {} }));
             }
         }
+        // console.log('taskData', JSON.stringify(taskData));
+    }, [taskData]);
+
+    // Handle word click for drag & drop
+    const handleWordClick = (word: string) => {
+        const currentIndex = wordPositions[word];
+
+        const updatedAnswers = [...answers];
+        const updatedPositions = { ...wordPositions };
+
+        if (currentIndex !== undefined && currentIndex !== null) {
+            updatedAnswers[currentIndex] = '';
+            updatedPositions[word] = null;
+        } else {
+            const nextEmptyIndex = updatedAnswers.findIndex((ans) => ans === '');
+            if (nextEmptyIndex !== -1) {
+                updatedAnswers[nextEmptyIndex] = word;
+                updatedPositions[word] = nextEmptyIndex;
+            }
+        }
+
+        setTaskAnswers(prev => ({ ...prev, [slug]: updatedAnswers }));
+        setTaskWordPositions(prev => ({ ...prev, [slug]: updatedPositions }));
     };
 
-
+    // Remove word from answers
     const handleWordRemove = (index: number) => {
         const updatedAnswers = [...answers];
         const removedWord = updatedAnswers[index];
-
         updatedAnswers[index] = '';
 
         const updatedPositions = { ...wordPositions };
         if (removedWord) updatedPositions[removedWord] = null;
 
-        setAnswers(updatedAnswers);
-        setWordPositions(updatedPositions);
+        setTaskAnswers(prev => ({ ...prev, [slug]: updatedAnswers }));
+        setTaskWordPositions(prev => ({ ...prev, [slug]: updatedPositions }));
     };
 
-
-
-    const handleInputChange = (index: number, value: string) => {
+    // Input field change handler
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
         const newAnswers = [...answers];
+        newAnswers[index] = e.target.value;
 
-        // Clear existing word mapping
-        const newWordPositions = { ...wordPositions };
-        const oldWord = newAnswers[index];
-        if (oldWord && newWordPositions[oldWord] === index) {
-            newWordPositions[oldWord] = null;
-        }
-
-        newAnswers[index] = value;
-        setAnswers(newAnswers);
-        setWordPositions(newWordPositions);
+        setTaskAnswers(prev => ({ ...prev, [slug]: newAnswers }));
     };
-    const processDescription = (html: string, questionIndex: number) => {
+
+    // Process description with inputs or drag-drop placeholders
+    const processDescription = (html: string, questionIndex: number, taskType: string) => {
         let localIndex = 0;
 
-        // Count all previous blanks to get a base index offset
         const getPlaceholderOffset = () => {
             let offset = 0;
             for (let i = 0; i < questionIndex; i++) {
@@ -342,30 +431,90 @@ export default function Task() {
                     const actualIndex = baseIndex + localIndex;
                     localIndex++;
 
-                    const word = answers[actualIndex];
+                    if (taskType === 'input_field') {
+                        const correctAnswer = taskData?.correct_options?.[actualIndex];
+                        const userAnswer = answers[actualIndex] || '';
+                        const isCorrect = userAnswer === correctAnswer;
+                        return (
+                            <>
 
-                    return word ? (
-                        <button
-                            key={`btn-${actualIndex}`}
-                            onClick={() => handleWordRemove(actualIndex)}
-                            className="bg-blue-200 px-2 mx-1 rounded"
-                        >
-                            {word}
-                        </button>
-                    ) : (
-                        <input
-                            key={`input-${actualIndex}`}
-                            readOnly
-                            className="border px-2 mx-1 min-w-[100px]"
-                        />
-                    );
+                                <div key={`input-${actualIndex}`} className="inline-block relative mx-1 group">
+                                    <input
+                                        value={userAnswer}
+                                        onChange={(e) => handleInputChange(e, actualIndex)}
+                                        disabled={isSubmitted}
+                                        className={`border px-2 min-w-[100px] rounded
+      ${isSubmitted
+                                                ? isCorrect
+                                                    ? 'bg-green-200 text-green-800 border-green-500'
+                                                    : 'bg-red-200 text-red-800 border-red-500'
+                                                : ''}
+    `}
+                                    />
+
+                                    {isSubmitted && !isCorrect && (
+                                        <>
+                                            <span className="absolute -top-2 -right-3 text-blue-600 cursor-default text-sm z-40">🛈</span>
+
+                                            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 hidden group-hover:block bg-white text-sm text-green-700 border border-green-500 px-2 py-1 rounded shadow whitespace-nowrap z-50">
+                                                ✅ Correct: {correctAnswer}
+                                            </div>
+                                        </>
+                                    )}
+                                </div>
+
+                            </>
+                        );
+                    }
+
+                    // drag_drop logic
+                    const word = answers[actualIndex];
+                    const correctAnswer = taskData?.correct_options[actualIndex];
+                    const isCorrect = word === correctAnswer;
+
+                    if (word) {
+                        return (
+                            <div key={`btn-${actualIndex}`} className="relative inline-block group mx-1">
+                                <button
+                                    onClick={() => !isSubmitted && handleWordRemove(actualIndex)}
+                                    disabled={isSubmitted}
+                                    className={`px-2 rounded ${isSubmitted
+                                        ? isCorrect
+                                            ? 'bg-green-200 text-green-800'
+                                            : 'bg-red-200 text-red-800'
+                                        : 'bg-blue-200'
+                                        }`}
+                                >
+                                    {word}
+                                </button>
+
+                                {isSubmitted && !isCorrect && (
+                                    <>
+                                        <span className="absolute -top-2 -right-3 text-blue-600 cursor-default text-sm">
+                                            🛈
+                                        </span>
+                                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 hidden group-hover:block bg-white text-sm text-green-700 border border-green-500 px-2 py-1 rounded shadow whitespace-nowrap z-10">
+                                            ✅ Correct: {correctAnswer}
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                        );
+                    } else {
+                        return <input key={`input-${actualIndex}`} readOnly className="border px-2 mx-1 min-w-[100px]" />;
+                    }
                 }
             },
         });
     };
 
+    useEffect(() => {
+        console.log('allTaskData', allTaskData)
+    }, [allTaskData])
 
-
+    useEffect(() => {
+        console.log('taskAnswers', JSON.stringify(taskAnswers))
+    }, [taskAnswers])
 
     if (taskData === null) {
         return (
@@ -415,7 +564,7 @@ export default function Task() {
                                             const selectedOption = selectedAnswers[question.id];
                                             const isCorrect = checkResults?.[question.id];
                                             return (
-                                                <>
+                                                <div key={`${question.id}-${index}`}>
                                                     <div className="title-option-field">
                                                         <h3> <div dangerouslySetInnerHTML={{ __html: question?.description || '' }} /></h3>
                                                     </div>
@@ -447,7 +596,7 @@ export default function Task() {
                                                             );
                                                         })}
                                                     </div>
-                                                </>
+                                                </div>
                                             );
                                         })}
 
@@ -523,6 +672,13 @@ export default function Task() {
                         </>
                     )}
 
+
+
+
+                    {taskData?.task_type === 'sorting' && (
+                        <DraggableBlock backendItems={taskData?.sort_items} />
+                    )}
+
                     {taskData?.task_type === 'drag_drop' && (
                         <>
                             <div className="flex flex-wrap gap-3">
@@ -540,9 +696,8 @@ export default function Task() {
                                 ))}
                             </div>
 
-
                             {taskData?.questions.map((question, idx) => (
-                                <div key={idx}>{processDescription(question.description, idx)}</div>
+                                <div key={idx}>{processDescription(question.description, idx, taskData.task_type)}</div>
                             ))}
 
                             {taskData?.img_url && (
@@ -556,23 +711,17 @@ export default function Task() {
                         </>
                     )}
 
-
-                    {taskData?.task_type === 'sorting' && (
-                        <DraggableBlock backendItems={taskData?.sort_items} />
-                    )}
-
-                    {taskData?.task_type === 'input_field' && (
+                    {taskData?.task_type === 'input_field' &&
                         taskData?.questions.map((question, idx) => (
-                            <div key={idx}>{processDescription(question.description, idx)}</div>
-                        ))
-                    )}
+                            <div key={idx}>{processDescription(question.description, idx, taskData.task_type)}</div>
+                        ))}
 
                 </>
 
 
 
                 <div className="action-btns">
-                    <button type="button" onClick={() => router.push(`${taskData?.prev_slug}`)}>
+                    <button type="button" onClick={() => fetchTask(taskData?.prev_slug)}>
                         <svg
                             width="27"
                             height="16"
@@ -590,7 +739,8 @@ export default function Task() {
                         </svg>
                         Zurück
                     </button>
-                    <button type="button" onClick={() => router.push(`${taskData?.next_slug}`)}>Weiter</button>
+                    <button type="button" onClick={() => fetchTask(taskData?.next_slug)}>Weiter</button>
+                    <button type="button" onClick={handleCheck}>Weiter</button>
 
                 </div>
             </div>
