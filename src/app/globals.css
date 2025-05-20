@@ -2896,4 +2896,33 @@ section#services {
 }
 
 
+/* hahhaha */
+
+.drag_drop p{
+  flex-direction: column;
+    width: fit-content;
+    color: black;
+    margin: 20px 0;
+}
+
+
+.drag_drop button{
+  margin-left: 20px;
+  height: 34px;
+}
+
+.drag_drop input{
+  margin-left: 20px;
+  height: 34px;
+  padding: 8px 10px;
+  border-radius: 4px;
+  border: 1px solid #00001e8f;
+}
+
+.german-exercise-container{
+ display: flex;
+ flex-direction: column;
+ margin-top: 40px;
+ gap: 20px;
+}
 

@@ -701,8 +701,8 @@ export default function Task() {
                     )}
 
                     {taskData?.task_type === 'drag_drop' && (
-                        <>
-                            <div className="flex flex-wrap gap-3">
+                        <div className="drag_drop">
+                            <div className="flex flex-wrap gap-3 ">
                                 {taskData?.drag_items.map((word, idx) => (
                                     <button
                                         key={idx}
@@ -729,7 +729,7 @@ export default function Task() {
                                     height={300}
                                 />
                             )}
-                        </>
+                        </div>
                     )}
 
                     {taskData?.task_type === 'input_field' &&
