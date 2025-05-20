@@ -690,7 +690,14 @@ export default function Task() {
 
 
                     {taskData?.task_type === 'sorting' && (
-                        <DraggableBlock backendItems={taskData?.sort_items} />
+                        <DraggableBlock
+                            backendItems={taskData?.sort_items}
+
+                            onAnswerUpdate={(sortedArray) => {
+                                console.log("Sorted array for", `task-${taskData.id}`, sortedArray); // 👈 Debug here
+                                setTaskAnswers(prev => ({ ...prev, [`task-${taskData.id}`]: sortedArray }));
+                            }}
+                        />
                     )}
 
                     {taskData?.task_type === 'drag_drop' && (
