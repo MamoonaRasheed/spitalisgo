@@ -6,7 +6,7 @@ import { getQuestionByTask } from '@/services/taskService';
 import LoadingSpinner from "@/components/loader/Loader";
 import ExerciseRenderer from "@/components/common/ExerciseRenderer";
 import DraggableBlock from "@/components/common/DraggableBlock";
-import { checkQuestionAnswers } from '@/services/questionService';
+import { checkQuestionAnswers, getResult } from '@/services/questionService';
 import { createRoot, Root } from 'react-dom/client';
 import { PlayIcon, PauseIcon, MuteIcon, UnmuteIcon } from "@/icons";
 import Image from 'next/image';
@@ -323,6 +323,20 @@ export default function Task() {
 
             setCheckResults(mappedResults);
             setShowResults(true);
+        } catch (error) {
+            console.error('Error submitting answers:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const submitAll = async () => {
+        try {
+            const payload = {
+                allTaskData
+            };
+            console.log("payload", payload);
+            const response = await getResult(payload);
         } catch (error) {
             console.error('Error submitting answers:', error);
         } finally {
@@ -741,6 +755,7 @@ export default function Task() {
                     </button>
                     <button type="button" onClick={() => fetchTask(taskData?.next_slug)}>Weiter</button>
                     <button type="button" onClick={handleCheck}>Weiter</button>
+                    <button type="button" onClick={submitAll}>Submit All</button>
 
                 </div>
             </div>

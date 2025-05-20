@@ -110,7 +110,7 @@ export default function Course() {
                     </button>
 
                     {/* <button type="button">Weiter</button> */}
-                    <a href="placement-test/task-1">
+                    <a href="placement-test/tasks">
                         <button type="button">Zum Einstufungstest</button>
                     </a>
 

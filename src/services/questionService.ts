@@ -27,5 +27,31 @@ export const checkQuestionAnswers = async (payload: any) => {
     }
   };
 
+  
+
+export const getResult = async (payload: any) => {
+  if (typeof window === 'undefined') {
+    throw new Error("localStorage is not available on the server side");
+  }
+
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    throw new Error("Token not found in localStorage");
+  }
+  try {
+    const response = await axios.post("/get-result", payload, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+console.log(response,"responseservice");
+    return response.data;
+  } catch (error) {
+    console.error('Error checking answers:', error);
+    throw error;
+  }
+};
+
 
   
