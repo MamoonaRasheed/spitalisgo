@@ -338,7 +338,7 @@ export default function Task() {
             console.log("payload", payload);
             const response = await getResult(payload);
             console.log("response---->", response);
-            if(response.status) {
+            if (response.status) {
                 router.replace("/placement-test/result");
             }
         } catch (error) {
@@ -554,7 +554,8 @@ export default function Task() {
                                 taskData?.audio_url &&
                                 <div className="custom-audio-wrapper" ref={containerRef}>
                                     <audio controls>
-                                        <source src={taskData?.audio_url} type="audio/mpeg" />
+                                        <source src={`tasks/${taskData?.audio_url}`} type="audio/mpeg" />
+
                                     </audio>
                                     <div className="audio-player" ref={containerRef}>
                                         <span className="play-btn">
@@ -625,11 +626,11 @@ export default function Task() {
                             {
                                 taskData?.img_url &&
                                 <Image
-                                    src={`/placement-test/${taskData?.img_url}`}
+                                    src={`/placement-test/tasks/${taskData?.img_url}`}
                                     alt="Example Image"
                                     width={500}
                                     height={300}
-                                     style={{marginLeft: 'auto', marginTop: '20px'}}
+                                    style={{ marginLeft: 'auto', marginTop: '20px' }}
                                 />
                             }
                         </>
@@ -641,7 +642,8 @@ export default function Task() {
                                 taskData?.audio_url &&
                                 <div className="custom-audio-wrapper" ref={containerRef}>
                                     <audio controls>
-                                        <source src={taskData?.audio_url} type="audio/mpeg" />
+                                        <source src={`tasks/${taskData?.audio_url}`} type="audio/mpeg" />
+
                                     </audio>
                                     <div className="audio-player" ref={containerRef}>
                                         <span className="play-btn">
@@ -682,11 +684,11 @@ export default function Task() {
                             {
                                 taskData?.img_url &&
                                 <Image
-                                    src={`/placement-test/${taskData?.img_url}`}
+                                    src={`/placement-test/tasks/${taskData?.img_url}`}
                                     alt="Example Image"
                                     width={500}
                                     height={300}
-                                     style={{marginLeft: 'auto', marginTop: '20px'}}
+                                    style={{ marginLeft: 'auto', marginTop: '20px' }}
                                 />
                             }
                         </>
@@ -729,11 +731,11 @@ export default function Task() {
 
                             {taskData?.img_url && (
                                 <Image
-                                    src={`/placement-test/${taskData?.img_url}`}
+                                    src={`/placement-test/tasks/${taskData?.img_url}`}
                                     alt="Example Image"
                                     width={500}
                                     height={300}
-                                    style={{marginLeft: 'auto', marginTop: '20px'}}
+                                    style={{ marginLeft: 'auto', marginTop: '20px' }}
                                 />
                             )}
                         </div>
