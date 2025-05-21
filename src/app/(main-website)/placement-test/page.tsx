@@ -62,29 +62,6 @@ export default function Course() {
                         <li className="list-style-test">Sie können den Test zu jeder Zeit abbrechen und auswerten lassen. Es werden alle Antworten gewertet, die Sie bis zu diesem Zeitpunkt gegeben haben.</li>
                         <li className="list-style-test">Möchten Sie den Test abschließen, klicken Sie bitte auf "Alles Einreichen", um Ihr Ergebnis zu erhalten.</li>
                     </ul>
-                    <div className="auth-fields">
-                        <div className="auth-fields">
-                            <label htmlFor="email">Name</label>
-                            <div className="input-field-align">
-                                <input
-                                    type="text"
-                                    id="name"
-                                    placeholder="example"
-                                />
-                            </div>
-                        </div>
-
-                        <div className="auth-fields">
-                            <label htmlFor="email">E-mail address</label>
-                            <div className="input-field-align">
-                                <input
-                                    type="email"
-                                    id="email"
-                                    placeholder="example@example.com"
-                                />
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 <div className="action-btns">
