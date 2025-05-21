@@ -70,7 +70,6 @@ export default function Course() {
                                     type="text"
                                     id="name"
                                     placeholder="example"
-                                    value=""
                                 />
                             </div>
                         </div>
@@ -82,7 +81,6 @@ export default function Course() {
                                     type="email"
                                     id="email"
                                     placeholder="example@example.com"
-                                    value=""
                                 />
                             </div>
                         </div>

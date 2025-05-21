@@ -457,7 +457,7 @@ export default function Task() {
                                         value={userAnswer}
                                         onChange={(e) => handleInputChange(e, actualIndex)}
                                         disabled={isSubmitted}
-                                        className={`border px-2 min-w-[100px] rounded
+                                        className={`border px-2 min-w-[100px] rounded mb-2
       ${isSubmitted
                                                 ? isCorrect
                                                     ? 'bg-green-200 text-green-800 border-green-500'
@@ -492,7 +492,7 @@ export default function Task() {
                                 <button
                                     onClick={() => !isSubmitted && handleWordRemove(actualIndex)}
                                     disabled={isSubmitted}
-                                    className={`px-2 rounded ${isSubmitted
+                                    className={`px-2 rounded mb-2 ${isSubmitted
                                         ? isCorrect
                                             ? 'bg-green-200 text-green-800'
                                             : 'bg-red-200 text-red-800'
@@ -515,7 +515,7 @@ export default function Task() {
                             </div>
                         );
                     } else {
-                        return <input key={`input-${actualIndex}`} readOnly className="border px-2 mx-1 min-w-[100px]" />;
+                        return <input key={`input-${actualIndex}`} readOnly className="border rounded px-2 mx-1 min-w-[100px] mb-2" />;
                     }
                 }
             },
@@ -541,8 +541,8 @@ export default function Task() {
         <section className="header-space section-space">
             <div className="container">
                 <>
-                    <h1>Aufgabe {taskData?.question_no}</h1>
-                    <div dangerouslySetInnerHTML={{ __html: taskData?.description || '' }} />
+                    <h1 className="main-heading">Aufgabe {taskData?.question_no}</h1>
+                    <div className="mb-5" dangerouslySetInnerHTML={{ __html: taskData?.description || '' }} />
 
                     {taskData?.task_type === 'radio' && (
                         <>
@@ -625,6 +625,7 @@ export default function Task() {
                                     alt="Example Image"
                                     width={500}
                                     height={300}
+                                     style={{marginLeft: 'auto', marginTop: '20px'}}
                                 />
                             }
                         </>
@@ -681,6 +682,7 @@ export default function Task() {
                                     alt="Example Image"
                                     width={500}
                                     height={300}
+                                     style={{marginLeft: 'auto', marginTop: '20px'}}
                                 />
                             }
                         </>
@@ -701,7 +703,7 @@ export default function Task() {
                     )}
 
                     {taskData?.task_type === 'drag_drop' && (
-                        <div className="drag_drop">
+                        <div >
                             <div className="flex flex-wrap gap-3 ">
                                 {taskData?.drag_items.map((word, idx) => (
                                     <button
@@ -718,7 +720,7 @@ export default function Task() {
                             </div>
 
                             {taskData?.questions.map((question, idx) => (
-                                <div key={idx}>{processDescription(question.description, idx, taskData.task_type)}</div>
+                                <div key={idx} className="drag_drop mt-5">{processDescription(question.description, idx, taskData.task_type)}</div>
                             ))}
 
                             {taskData?.img_url && (
@@ -727,6 +729,7 @@ export default function Task() {
                                     alt="Example Image"
                                     width={500}
                                     height={300}
+                                    style={{marginLeft: 'auto', marginTop: '20px'}}
                                 />
                             )}
                         </div>
@@ -761,8 +764,8 @@ export default function Task() {
                         Zurück
                     </button>
                     <button type="button" onClick={() => fetchTask(taskData?.next_slug)}>Weiter</button>
-                    <button type="button" onClick={handleCheck}>Weiter</button>
-                    <button type="button" onClick={submitAll}>Submit All</button>
+                    {/* <button type="button" onClick={handleCheck}>Weiter</button> */}
+                    {taskData?.id == 64 && <button type="button" onClick={submitAll}>Submit All</button>}
 
                 </div>
             </div>
