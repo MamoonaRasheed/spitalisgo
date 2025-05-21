@@ -1,9 +1,13 @@
 // app/api/tasks/[slug]/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(req: NextRequest, { params }: { params: { slug: string } }) {
+export async function GET(
+    req: NextRequest, 
+    { params }: { params: Promise<{ slug: string }> }
+    ) 
+{
     try {
-        const { slug } = params;
+        const { slug} = await params;
 
         if (!slug) {
             return NextResponse.json({ message: 'Missing slug' }, { status: 400 });

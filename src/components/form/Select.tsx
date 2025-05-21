@@ -10,7 +10,9 @@ interface SelectProps<T = string> {
   onChange: (value: T) => void;
   className?: string;
   defaultValue?: T;
-  value?: string | number; 
+  value?: string | number | any; 
+  required?: boolean;
+  disabled?: boolean;
 }
 
 const Select = <T extends string | number = string>({
@@ -20,6 +22,8 @@ const Select = <T extends string | number = string>({
   className = "",
   defaultValue,
   value,
+  required = false,
+  disabled = false,
 }: SelectProps<T>) => {
   const [internalValue, setInternalValue] = useState<T>(
     defaultValue ?? ("" as T)
@@ -49,6 +53,8 @@ const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
       } ${className}`}
       value={selectedValue}
       onChange={handleChange}
+      disabled={disabled}
+      required={required}
     >
       {/* Placeholder option */}
       <option
