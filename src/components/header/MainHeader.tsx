@@ -62,7 +62,7 @@ export default function MainHeader() {
                       <li><a href=""> Heim </a></li>
                       <li><a href="#"> B1 Probeprüfung </a></li>
                       <li><a href="#"> B2 Probeprüfung </a></li>
-                      <li><a href="#"> Einstufungstest </a></li>
+                      <li><a href="/placement-test"> Einstufungstest </a></li>
                       <li className="login-button">
                           {username ? (
                               <div className="relative" ref={dropdownRef}>
