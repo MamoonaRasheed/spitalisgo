@@ -2844,7 +2844,9 @@ section#services {
 }
 
 
-
+.mobile-nav-toggler {
+  display: none;
+}
 
 @media screen and (max-width: 991px) {
     .mobile-nav-toggler {
