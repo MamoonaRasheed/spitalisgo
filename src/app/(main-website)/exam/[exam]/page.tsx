@@ -44,7 +44,7 @@ export default function Course() {
             <div className="container">
                 <div className="align-providers">
                     <div className="ctaegory-choose-title">
-                        <h2>A1 Übungen  <span>{exam}-Prüfung:</span></h2>
+                        <h2>Wähle deinen Kurs für die <span>{exam}-Prüfung:</span></h2>
                     </div>
                     <div className="providers-btns">
                         {courses?.data?.map((course, index) => (

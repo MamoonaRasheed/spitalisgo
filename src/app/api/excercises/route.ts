@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
 
     if (slug) {
       // Specific exercise ka data lana slug ke through
-      backendUrl = new URL(`${process.env.NEXT_PUBLIC_API_URL}/excercises/${slug}`);
+      backendUrl = new URL(`${process.env.NEXT_PUBLIC_API_URL}/excercises?${slug}`);
     } else {
       // Saare exercises lana chapter ke through
       backendUrl = new URL(`${process.env.NEXT_PUBLIC_API_URL}/excercises`);

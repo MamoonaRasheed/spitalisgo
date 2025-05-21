@@ -3,14 +3,15 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(
   req: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id: exerciseId } = await params;
+
     if (!process.env.NEXT_PUBLIC_API_URL) {
       throw new Error('API base URL is not configured');
     }
 
-    const exerciseId = context.params.id;
     if (!exerciseId || isNaN(Number(exerciseId))) {
       return NextResponse.json(
         { status: false, message: 'Invalid exercise ID' },
@@ -70,17 +71,19 @@ export async function GET(
   }
 }
 
+
 export async function PATCH(
     req: NextRequest,
-    { params }: { params: { id: string | string[] } }
+    { params }: { params: Promise<{ id: string | string[] }> }
   ) {
     try {
       // 1. Validate environment and parameters
       if (!process.env.NEXT_PUBLIC_API_URL) {
         throw new Error('API base URL is not configured');
       }
-  
-      const exerciseId = params.id;
+      const { id } = await params; 
+
+      const exerciseId = id;
       if (!exerciseId || isNaN(Number(exerciseId))) {
         return NextResponse.json(
           { status: false, message: 'Invalid exercise ID' },

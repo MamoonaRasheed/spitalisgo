@@ -32,6 +32,22 @@ export default function MainHeader() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const [menuVisible, setMenuVisible] = useState(false);
+
+  useEffect(() => {
+    if (menuVisible) {
+      document.body.classList.add('menu-show');
+    } else {
+      document.body.classList.remove('menu-show');
+    }
+  }, [menuVisible]);
+
+    const toggleMenu = () => {
+    setMenuVisible(prev => !prev);
+  };
+
+
   return (
     <section id="main-header">
       <div className="container">
@@ -42,7 +58,7 @@ export default function MainHeader() {
                   </a>
                 </div>
               <div className="header-links">
-                  <ul>
+                  <ul>  
                       <li><a href=""> Heim </a></li>
                       <li><a href="#"> B1 Probeprüfung </a></li>
                       <li><a href="#"> B2 Probeprüfung </a></li>
@@ -75,8 +91,12 @@ export default function MainHeader() {
                       </li>
                   </ul>
               </div>
+              <div className="mobile-nav-toggler" onClick={toggleMenu}>
+                <i className="bx bx-menu"></i>
+              </div>
           </div>
       </div>
+      <div className="overlay-menu" onClick={toggleMenu}></div>
     </section>
   );
 }

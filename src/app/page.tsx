@@ -43,27 +43,27 @@ export default function Page() {
                     <div className="container">
                         <div className="home-categories-align">
                             <div className="category-box">
-                                <a href="/A1">
+                                <a href="exam/A1">
                                     A1
                                 </a>
                             </div>
                             <div className="category-box">
-                                <a href="/A2">
+                                <a href="exam/A2">
                                     A2
                                 </a>
                             </div>
                             <div className="category-box">
-                                <a href="/B1">
+                                <a href="exam/B1">
                                     B1
                                 </a>
                             </div>
                             <div className="category-box">
-                                <a href="/B2">
+                                <a href="exam/B2">
                                     B2
                                 </a>
                             </div>
                             <div className="category-box">
-                                <a href="#">
+                                <a href="/placement-test">
                                     <svg width="512" height="512" viewBox="0 0 64 64" enableBackground="new 0 0 512 512" className="">
                                         <g>
                                             <path d="M58.99 21.63 32.71 10.52a1.626 1.626 0 0 0-1.28 0L5.02 21.59a1.68 1.68 0 0 0-.01 3.07c1.561.669 10.698 4.502 11.98 5.06l14.44 6.09a1.694 1.694 0 0 0 1.28-.01c4.64-1.958 16.614-7.02 21.07-8.91-.01 1.238.008 11.676 0 13.19-1.986.501-2.793 3.887-1.68 5.72l-1.47 6.6a.976.976 0 0 0 .43 1.05.989.989 0 0 0 1.14-.04 4.3 4.3 0 0 1 2.45-.84 4.24 4.24 0 0 1 2.61.85 1.01 1.01 0 0 0 1.56-1.08l-1.87-6.57c.962-1.65.439-4.613-1.17-5.44.009-1.527-.006-13.078 0-14.28l3.21-1.36a1.676 1.676 0 0 0 0-3.06z" fill="#fdb020" />
