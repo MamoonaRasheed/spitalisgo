@@ -3138,4 +3138,7 @@ section#detailed-boxes {
     .providers-btns {
       gap: 20px;
     }
+    #home-page::before {
+      display: none;
+    }
 }
