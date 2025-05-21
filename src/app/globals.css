@@ -2829,7 +2829,7 @@ section#services {
 
 .german-exercise-container{
  display: flex;
- /* flex-direction: column; */
+ flex-direction: column;
  margin-top: 40px;
  gap: 3px;
 }
