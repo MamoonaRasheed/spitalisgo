@@ -131,3 +131,19 @@ export const updateExercise = async (id: number, exerciseData: ExerciseData) => 
   }
   throw new Error('localStorage is not available on the server side');
 }
+
+export const getExerciseOption = async () => {
+  if (typeof window !== 'undefined') {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error('Token not found in localStorage');
+    }
+    const { data } = await axios.get("/admin/exercise-option", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return data;
+  }
+  throw new Error('localStorage is not available on the server side');
+};

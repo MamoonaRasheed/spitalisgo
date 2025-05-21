@@ -12,15 +12,15 @@ export const checkQuestionAnswers = async (payload: any) => {
     if (!token) {
       throw new Error("Token not found in localStorage");
     }
-    console.log(payload,"payloadservice");
+    
     try {
       const response = await axios.post("/correct-answers", payload, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-  console.log(response,"responseservice");
-      return response.data;
+      
+      return response;
     } catch (error) {
       console.error('Error checking answers:', error);
       throw error;

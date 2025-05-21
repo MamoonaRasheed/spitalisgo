@@ -2653,6 +2653,10 @@ section#home-categories {
   fill: #13313b;
 }
 
+.Toastify__toast-container.Toastify__toast-container--top-right {
+  z-index: 9999999;
+}
+
 section#services {
   padding-bottom: 100px;
 }
