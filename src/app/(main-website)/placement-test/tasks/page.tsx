@@ -337,9 +337,9 @@ export default function Task() {
             };
             console.log("payload", payload);
             const response = await getResult(payload);
-            if(response.status === 200) {
-                console.log("response", response);
-                router.push(`/placement-test/result`);
+            console.log("response---->", response);
+            if(response.status) {
+                router.replace("/placement-test/result");
             }
         } catch (error) {
             console.error('Error submitting answers:', error);
