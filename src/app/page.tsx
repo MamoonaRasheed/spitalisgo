@@ -17,9 +17,9 @@ export default function Page() {
                             <div className="banner-content">
                                 <h1>Dein Weg zum Prüfungserfolg - mit uns an deiner Seite</h1>
                                 <p>Wir bereiten dich vor - bis du bereit bist, versprachen.</p>
-                                <button 
-                                    type="button" 
-                                    className="btn btn-primary" 
+                                <button
+                                    type="button"
+                                    className="btn btn-primary"
                                     onClick={() => window.location.href = "/A1"}
                                 >
                                     Jetzt starten
@@ -63,7 +63,7 @@ export default function Page() {
                                 </a>
                             </div>
                             <div className="category-box">
-                                <a href="/placement-test">
+                                <a href="#">
                                     <svg width="512" height="512" viewBox="0 0 64 64" enableBackground="new 0 0 512 512" className="">
                                         <g>
                                             <path d="M58.99 21.63 32.71 10.52a1.626 1.626 0 0 0-1.28 0L5.02 21.59a1.68 1.68 0 0 0-.01 3.07c1.561.669 10.698 4.502 11.98 5.06l14.44 6.09a1.694 1.694 0 0 0 1.28-.01c4.64-1.958 16.614-7.02 21.07-8.91-.01 1.238.008 11.676 0 13.19-1.986.501-2.793 3.887-1.68 5.72l-1.47 6.6a.976.976 0 0 0 .43 1.05.989.989 0 0 0 1.14-.04 4.3 4.3 0 0 1 2.45-.84 4.24 4.24 0 0 1 2.61.85 1.01 1.01 0 0 0 1.56-1.08l-1.87-6.57c.962-1.65.439-4.613-1.17-5.44.009-1.527-.006-13.078 0-14.28l3.21-1.36a1.676 1.676 0 0 0 0-3.06z" fill="#fdb020" />
@@ -71,31 +71,36 @@ export default function Page() {
                                         </g>
                                     </svg>
                                 </a>
+
                             </div>
 
 
                             <div className="category-box">
-                                <a href="#">
-                                    <svg width="512" height="512" viewBox="0 0 58 58" className="">
-                                        <g>
-                                            <g fill="none" fillRule="nonzero">
-                                                <path fill="#f9eab0" d="M44 2a2.006 2.006 0 0 0-2-2H14.828a2 2 0 0 0-1.414.586L.586 13.414A2 2 0 0 0 0 14.828V56a2.006 2.006 0 0 0 2 2h40a2 2 0 0 0 2-2z" />
-                                                <g fill="#cbb292">
-                                                    <path d="M37 21H6a1 1 0 0 1 0-2h31a1 1 0 0 1 0 2zM29.77 26H6a1 1 0 0 1 0-2h23.77a1 1 0 0 1 0 2zM22.53 31H6a1 1 0 0 1 0-2h16.53a1 1 0 0 1 0 2zM13.52 40H6a1 1 0 0 1 0-2h7.52a1 1 0 0 1 0 2zM10.11 45H6a1 1 0 0 1 0-2h4.11a1 1 0 0 1 0 2zM15.84 50H6a1 1 0 0 1 0-2h9.84a1 1 0 0 1 0 2z" />
+                                <div className=" placement-test">
+                                    <a href="/placement-test" className="flex flex-col items-center">
+                                        <svg width="512" height="512" viewBox="0 0 58 58" className="">
+                                            <g>
+                                                <g fill="none" fillRule="nonzero">
+                                                    <path fill="#f9eab0" d="M44 2a2.006 2.006 0 0 0-2-2H14.828a2 2 0 0 0-1.414.586L.586 13.414A2 2 0 0 0 0 14.828V56a2.006 2.006 0 0 0 2 2h40a2 2 0 0 0 2-2z" />
+                                                    <g fill="#cbb292">
+                                                        <path d="M37 21H6a1 1 0 0 1 0-2h31a1 1 0 0 1 0 2zM29.77 26H6a1 1 0 0 1 0-2h23.77a1 1 0 0 1 0 2zM22.53 31H6a1 1 0 0 1 0-2h16.53a1 1 0 0 1 0 2zM13.52 40H6a1 1 0 0 1 0-2h7.52a1 1 0 0 1 0 2zM10.11 45H6a1 1 0 0 1 0-2h4.11a1 1 0 0 1 0 2zM15.84 50H6a1 1 0 0 1 0-2h9.84a1 1 0 0 1 0 2z" />
+                                                    </g>
+                                                    <path fill="#ffffff" d="M39 54h-5a1 1 0 0 1 0-2h4v-4a1 1 0 0 1 2 0v5a1 1 0 0 1-1 1z" />
+                                                    <path fill="#cbb292" d="M39 6h-8a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2zM39 10h-5a1 1 0 0 1 0-2h5a1 1 0 0 1 0 2z" />
+                                                    <path fill="#f3d55b" d="M14 .18V11a3 3 0 0 1-3 3H.18c.1-.22.24-.42.41-.59L13.41.59c.17-.17.37-.31.59-.41z" />
+                                                    <path fill="#bdc3c7" d="m57.47 22.581-2.28-3.29a3 3 0 0 0-4.17-.76l-5.76 3.98-4.11 2.84L21.56 38.9a.526.526 0 0 0-.14.12l5.67 8.19a.827.827 0 0 0 .16-.09l19.59-13.54 4.11-2.84 5.76-3.99a3 3 0 0 0 .76-4.169z" />
+                                                    <path fill="#ff5364" d="m56.71 26.751-5.76 3.99-5.69-8.23 5.76-3.98a3 3 0 0 1 4.17.76l2.28 3.29a3 3 0 0 1-.76 4.17z" />
+                                                    <path fill="#bdc3c7" d="m41.153 25.379 4.112-2.838 5.683 8.234-4.112 2.838z" />
+                                                    <path fill="#3b97d3" d="M46.84 33.581c-20.832 14.4-19.649 13.6-19.75 13.63l-5.67-8.19c.081-.1-1.193.8 19.73-13.67z" />
+                                                    <path fill="#fdd7ad" d="M27.09 47.211c-.1.061.169-.022-6.24 1.54l-3.06-4.44c3.71-5.443 3.516-5.176 3.63-5.29z" />
+                                                    <path fill="#464f5d" d="M20.85 48.751 16.09 49.9a1 1 0 0 1-1.06-1.54l2.76-4.05z" />
                                                 </g>
-                                                <path fill="#ffffff" d="M39 54h-5a1 1 0 0 1 0-2h4v-4a1 1 0 0 1 2 0v5a1 1 0 0 1-1 1z" />
-                                                <path fill="#cbb292" d="M39 6h-8a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2zM39 10h-5a1 1 0 0 1 0-2h5a1 1 0 0 1 0 2z" />
-                                                <path fill="#f3d55b" d="M14 .18V11a3 3 0 0 1-3 3H.18c.1-.22.24-.42.41-.59L13.41.59c.17-.17.37-.31.59-.41z" />
-                                                <path fill="#bdc3c7" d="m57.47 22.581-2.28-3.29a3 3 0 0 0-4.17-.76l-5.76 3.98-4.11 2.84L21.56 38.9a.526.526 0 0 0-.14.12l5.67 8.19a.827.827 0 0 0 .16-.09l19.59-13.54 4.11-2.84 5.76-3.99a3 3 0 0 0 .76-4.169z" />
-                                                <path fill="#ff5364" d="m56.71 26.751-5.76 3.99-5.69-8.23 5.76-3.98a3 3 0 0 1 4.17.76l2.28 3.29a3 3 0 0 1-.76 4.17z" />
-                                                <path fill="#bdc3c7" d="m41.153 25.379 4.112-2.838 5.683 8.234-4.112 2.838z" />
-                                                <path fill="#3b97d3" d="M46.84 33.581c-20.832 14.4-19.649 13.6-19.75 13.63l-5.67-8.19c.081-.1-1.193.8 19.73-13.67z" />
-                                                <path fill="#fdd7ad" d="M27.09 47.211c-.1.061.169-.022-6.24 1.54l-3.06-4.44c3.71-5.443 3.516-5.176 3.63-5.29z" />
-                                                <path fill="#464f5d" d="M20.85 48.751 16.09 49.9a1 1 0 0 1-1.06-1.54l2.76-4.05z" />
                                             </g>
-                                        </g>
-                                    </svg>
-                                </a>
+                                        </svg>
+                                    </a>
+                                    <p>Einstufungstest</p>
+                                </div>
+
                             </div>
 
                         </div>
@@ -204,11 +209,30 @@ export default function Page() {
                     <div className="container">
                         <div className="align-testimonials testimonials">
                             <Swiper className="testiSwiper">
-                                {[1, 2, 3, 4].map((_, index) => (
-                                    <SwiperSlide key={index}>
+                                {/* {[1, 2, 3, 4].map((_, index) => ( */}
+                                    <SwiperSlide>
                                         <div className="testimonial-item">
-                                            <Image src="/assets/img/user.jpg" className="testimonial-img" alt="User" width={80} height={80} />
-                                            <h3>Saul Goodman</h3>
+                                            <Image src="/assets/img/testimonial-1.jpg" className="testimonial-img" alt="User" width={80} height={80} />
+                                            <h3>Lukas Schneider</h3>
+                                            <h4>Berufstätige im Marketing</h4>
+                                            <div className="stars">
+                                                {Array.from({ length: 5 }).map((_, i) => (
+                                                    <i key={i} className="bx bxs-star"></i>
+                                                ))}
+                                            </div>
+                                            <p>
+                                                <i className="bx bxs-quote-left"></i>
+                                                <span>
+                                                    Als gebürtige Deutsche war ich neugierig, wie Ausländer unsere Sprache lernen. Ich muss sagen, diese Plattform vermittelt sehr interaktiv und effektiv. Sehr empfehlenswert!
+                                                </span>
+                                                <i className="bx bxs-quote-right"></i>
+                                            </p>
+                                        </div>
+                                    </SwiperSlide>
+                                    <SwiperSlide>
+                                        <div className="testimonial-item">
+                                            <Image src="/assets/img/testimonial-2.jpg" className="testimonial-img" alt="User" width={80} height={80} />
+                                            <h3>Felix Wagner</h3>
                                             <h4>CEO &amp; Founder</h4>
                                             <div className="stars">
                                                 {Array.from({ length: 5 }).map((_, i) => (
@@ -218,15 +242,51 @@ export default function Page() {
                                             <p>
                                                 <i className="bx bxs-quote-left"></i>
                                                 <span>
-                                                    Proin iaculis purus consequat sem cure digni ssim donec porttitora
-                                                    entum suscipit rhoncus. Accusantium quam, ultricies eget id, aliquam
-                                                    eget nibh et. Maecen aliquam, risus at semper.
+                                                   Mir haben die Übungsaufgaben nach jeder Unterrichtsstunde sehr gut gefallen, da sie das Gelernte festigen. Besonders hilfreich fand ich auch die Audiomaterialien Aussprache.
                                                 </span>
                                                 <i className="bx bxs-quote-right"></i>
                                             </p>
                                         </div>
                                     </SwiperSlide>
-                                ))}
+                                    <SwiperSlide>
+                                        <div className="testimonial-item">
+                                            <Image src="/assets/img/testimonial-3.jpg" className="testimonial-img" alt="User" width={80} height={80} />
+                                            <h3>Jonas Becker</h3>
+                                            <h4>CEO &amp; Founder</h4>
+                                            <div className="stars">
+                                                {Array.from({ length: 5 }).map((_, i) => (
+                                                    <i key={i} className="bx bxs-star"></i>
+                                                ))}
+                                            </div>
+                                            <p>
+                                                <i className="bx bxs-quote-left"></i>
+                                                <span>
+                                                    Ich war nervös, Deutsch zu lernen, aber dieser Kurs hat mir Spaß gemacht und mich motiviert. Jetzt kann ich mich auf Deutsch vorstellen und über meinen Alltag sprechen!
+                                                </span>
+                                                <i className="bx bxs-quote-right"></i>
+                                            </p>
+                                        </div>
+                                    </SwiperSlide>
+                                     <SwiperSlide>
+                                        <div className="testimonial-item">
+                                            <Image src="/assets/img/user.jpg" className="testimonial-img" alt="User" width={80} height={80} />
+                                            <h3>Anna Hoffmann</h3>
+                                            <h4>CEO &amp; Founder</h4>
+                                            <div className="stars">
+                                                {Array.from({ length: 5 }).map((_, i) => (
+                                                    <i key={i} className="bx bxs-star"></i>
+                                                ))}
+                                            </div>
+                                            <p>
+                                                <i className="bx bxs-quote-left"></i>
+                                                <span>
+                                                    Ich habe in Deutschland gelebt, aber beim Sprechen gehadert. Diese Plattform hat meinen Wortschatz und meine Aussprache verbessert.
+                                                </span>
+                                                <i className="bx bxs-quote-right"></i>
+                                            </p>
+                                        </div>
+                                    </SwiperSlide>
+                                {/* ))} */}
                             </Swiper>
                         </div>
                     </div>

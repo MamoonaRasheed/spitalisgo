@@ -87,7 +87,7 @@ const TestResultsPage = ({ progress = 0 }) => {
                 />
               </svg>
               <div className="absolute flex flex-col items-center justify-center">
-                <span className="text-5xl md:text-6xl lg:text-7xl font-bold">{Number(((results.userData.total_score / 240) * 100).toFixed(2))}%</span>
+                <span className="text-5xl md:text-5xl lg:text-6xl font-bold">{Number(((results.userData.total_score / 240) * 100).toFixed(2))}%</span>
                 <span className="text-xl md:text-2xl text-green-600">Bestanden</span>
               </div>
             </div>

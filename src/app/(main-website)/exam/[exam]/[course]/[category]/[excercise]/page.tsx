@@ -1,12 +1,11 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
-import { useParams } from 'next/navigation';
+import { useRouter, useParams, usePathname } from 'next/navigation';
 import { getQuestionsByExcercises, submitAnswers } from '@/services/excerciseService';
 import { checkQuestionAnswers } from '@/services/questionService';
 import { createRoot, Root } from 'react-dom/client';
 import { PlayIcon, PauseIcon, MuteIcon, UnmuteIcon } from "@/icons";
-import { useRouter } from 'next/navigation';
 import ExerciseRenderer from "@/components/common/ExerciseRenderer";
 import LoadingSpinner from "@/components/loader/Loader";
 interface Option {
@@ -43,6 +42,7 @@ interface Exercise {
 }
 export default function Exercise() {
     const router = useRouter();
+    const pathname = usePathname();
     const params = useParams();
     const paramValues = Object.values(params);
     const slug = paramValues[paramValues.length - 1];
@@ -72,7 +72,7 @@ export default function Exercise() {
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const [showResults, setShowResults] = useState(false);
     const [checkResults, setCheckResults] = useState<Record<number, boolean>>({});
-    
+
     useEffect(() => {
         if (!containerRef.current) return;
 
@@ -154,7 +154,7 @@ export default function Exercise() {
             (muteBtn as any)._reactRoot = root;
         }
 
-        root.render(audioRef.current.muted ? <UnmuteIcon /> : <MuteIcon /> );
+        root.render(audioRef.current.muted ? <UnmuteIcon /> : <MuteIcon />);
     };
 
 
@@ -233,7 +233,7 @@ export default function Exercise() {
     }, [selectedAnswers]);
 
 
-    
+
 
     const handleCheck = async () => {
         try {
@@ -272,7 +272,7 @@ export default function Exercise() {
         setSelectedAnswers({});
         setShowResults(false);
     };
-    
+
     const handleSubmitAnswers = async (slug: string | undefined) => {
         if (!slug) {
             console.error("Slug is undefined. Cannot navigate.");
@@ -293,7 +293,17 @@ export default function Exercise() {
             setLoading(false); // End loading state
         }
     };
-
+    const goToPrevious = () => {
+        if (exerciseData?.prev_slug) {
+            router.push(`${exerciseData.prev_slug}`);
+        } else {
+            // Remove the last segment from the current URL
+            const segments = pathname.split('/');
+            segments.pop(); // remove the last segment
+            const parentPath = segments.join('/') || '/'; // fallback to root if empty
+            router.push(parentPath);
+        }
+    };
     return (
         loading ? (
             <div className="flex items-center justify-center min-h-screen">
@@ -314,7 +324,7 @@ export default function Exercise() {
 
                             <div className="listing-detailed-boxes">
                                 <div className="detailed-box-main">
-                                <div ref={containerRef} dangerouslySetInnerHTML={{ __html: exerciseData?.description || '' }} />
+                                    <div ref={containerRef} dangerouslySetInnerHTML={{ __html: exerciseData?.description || '' }} />
 
                                     {/* <div ref={containerRef} dangerouslySetInnerHTML={{ __html: exerciseData?.description || '' }} /> */}
                                 </div>
@@ -497,11 +507,7 @@ export default function Exercise() {
                                     }
 
                                     <div className="action-btns">
-                                        <button type="button" onClick={() => router.push(`${exerciseData?.prev_slug}`)}
-                                            disabled={
-                                                !exerciseData?.prev_slug ||
-                                                exerciseData?.prev_chapter_id !== exerciseData?.chapter_id
-                                            }>
+                                        <button type="button" onClick={goToPrevious}>
                                             <svg
                                                 width="27"
                                                 height="16"

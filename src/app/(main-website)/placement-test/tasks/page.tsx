@@ -50,6 +50,7 @@ export default function Task() {
     const [taskData, setTasks] = useState<Task | null>(null);
     const [allTaskData, setAllTaskData] = useState<allTaskData>({ tasks: [] });
     const [loading, setLoading] = useState<boolean>(true);
+    const [isLastQuestion, setIsLastQuestion] = useState<boolean>(false);
 
     const addTask = (newTask: Task) => {
         setAllTaskData(prevData => {
@@ -112,25 +113,28 @@ export default function Task() {
 
     const fetchTask = async (slug: string) => {
         try {
+            if (taskData?.id !== undefined) {
+                if(!slug){
+                    setIsLastQuestion(true);
+                }
+                console.log('taskAnswers--->slug', taskAnswers[`task-${taskData.id}`])
+                if (taskData.task_type == "drag_drop" || taskData.task_type == "sorting" || taskData.task_type == "input_field") {
+                    await updateSelectedAnswer(`task-${taskData.id}`, taskAnswers[`task-${taskData.id}`]);
+                } else {
+                    const questionIds = taskData.questions.map(q => q.id);
+
+                    // Step 2: selectedAnswers me se sirf wo filter karo jinki key questionIds me hai
+                    const filteredAnswers = Object.fromEntries(
+                        Object.entries(selectedAnswers).filter(([key]) =>
+                            questionIds.includes(Number(key))
+                        )
+                    );
+                    await updateSelectedAnswer(`task-${taskData.id}`, filteredAnswers);
+                }
+
+            }
             if (typeof slug === 'string') {
                 setLoading(true);
-                if (taskData?.id !== undefined) {
-                    console.log('taskAnswers--->slug', taskAnswers[`task-${taskData.id}`])
-                    if (taskData.task_type == "drag_drop" || taskData.task_type == "sorting" || taskData.task_type == "input_field") {
-                        await updateSelectedAnswer(`task-${taskData.id}`, taskAnswers[`task-${taskData.id}`]);
-                    } else {
-                        const questionIds = taskData.questions.map(q => q.id);
-
-                        // Step 2: selectedAnswers me se sirf wo filter karo jinki key questionIds me hai
-                        const filteredAnswers = Object.fromEntries(
-                            Object.entries(selectedAnswers).filter(([key]) =>
-                                questionIds.includes(Number(key))
-                            )
-                        );
-                        await updateSelectedAnswer(`task-${taskData.id}`, filteredAnswers);
-                    }
-
-                }
                 const response = await getQuestionByTask({ slug });
                 setTasks(response.data);
                 addTask(response.data);
@@ -142,7 +146,7 @@ export default function Task() {
         }
     };
     useEffect(() => {
-        fetchTask('task-1');
+        fetchTask('task-63');
     }, []);
 
     const [showResults, setShowResults] = useState(false);
@@ -339,7 +343,7 @@ export default function Task() {
             const response = await getResult(payload);
             console.log("response---->", response);
             if (response.status) {
-                router.replace("/placement-test/result");
+                router.replace("/placement-test/score");
             }
         } catch (error) {
             console.error('Error submitting answers:', error);
@@ -462,12 +466,12 @@ export default function Task() {
                                         onChange={(e) => handleInputChange(e, actualIndex)}
                                         disabled={isSubmitted}
                                         className={`border px-2 min-w-[100px] rounded mb-2
-      ${isSubmitted
+                                        ${isSubmitted
                                                 ? isCorrect
                                                     ? 'bg-green-200 text-green-800 border-green-500'
                                                     : 'bg-red-200 text-red-800 border-red-500'
                                                 : ''}
-    `}
+                                        `}
                                     />
 
                                     {isSubmitted && !isCorrect && (
@@ -544,9 +548,11 @@ export default function Task() {
     return (
         <section className="header-space section-space">
             <div className="container">
+
                 <>
                     <h1 className="main-heading">Aufgabe {taskData?.question_no}</h1>
-                    <div className="mb-5" dangerouslySetInnerHTML={{ __html: taskData?.description || '' }} />
+
+                    <div className="mb-5 task-description" dangerouslySetInnerHTML={{ __html: taskData?.description || '' }} />
 
                     {taskData?.task_type === 'radio' && (
                         <>
@@ -694,9 +700,6 @@ export default function Task() {
                         </>
                     )}
 
-
-
-
                     {taskData?.task_type === 'sorting' && (
                         <DraggableBlock
                             backendItems={taskData?.sort_items}
@@ -724,31 +727,39 @@ export default function Task() {
                                     </button>
                                 ))}
                             </div>
+                            <div className="flex gap-6 items-start">
+                                {/* Left side: Questions */}
+                                <div className="flex-1">
+                                    {taskData?.questions.map((question, idx) => (
+                                        <div key={idx} className="drag_drop mt-5">
+                                            {processDescription(question.description, idx, taskData.task_type)}
+                                        </div>
+                                    ))}
+                                </div>
 
-                            {taskData?.questions.map((question, idx) => (
-                                <div key={idx} className="drag_drop mt-5">{processDescription(question.description, idx, taskData.task_type)}</div>
-                            ))}
+                                {/* Right side: Image */}
+                                {taskData?.img_url && (
+                                    <div className="ml-auto">
+                                        <Image
+                                            src={`/placement-test/tasks/${taskData.img_url}`}
+                                            alt="Example Image"
+                                            width={500}
+                                            height={300}
+                                        />
+                                    </div>
+                                )}
+                            </div>
 
-                            {taskData?.img_url && (
-                                <Image
-                                    src={`/placement-test/tasks/${taskData?.img_url}`}
-                                    alt="Example Image"
-                                    width={500}
-                                    height={300}
-                                    style={{ marginLeft: 'auto', marginTop: '20px' }}
-                                />
-                            )}
                         </div>
                     )}
 
                     {taskData?.task_type === 'input_field' &&
                         taskData?.questions.map((question, idx) => (
                             <div key={idx}>{processDescription(question.description, idx, taskData.task_type)}</div>
-                        ))}
+                        )
+                        )}
 
                 </>
-
-
 
                 <div className="action-btns">
                     <button type="button" onClick={() => fetchTask(taskData?.prev_slug)}>
@@ -769,10 +780,11 @@ export default function Task() {
                         </svg>
                         Zurück
                     </button>
-                    <button type="button" onClick={() => fetchTask(taskData?.next_slug)}>Weiter</button>
-                    {/* <button type="button" onClick={handleCheck}>Weiter</button> */}
-                    {taskData?.id == 64 && <button type="button" onClick={submitAll}>Submit All</button>}
-
+                    {
+                        isLastQuestion ? 
+                        taskData?.id == 64 && <button type="button" onClick={submitAll}>Submit All</button> :
+                        <button type="button" onClick={() => fetchTask(taskData?.next_slug)}>Weiter</button>
+                    }
                 </div>
             </div>
         </section>
