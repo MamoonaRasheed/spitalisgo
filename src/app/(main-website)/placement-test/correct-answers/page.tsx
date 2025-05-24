@@ -151,7 +151,7 @@ export default function Task() {
         } catch (error) {
             console.error('Error fetching exercise:', error);
         } finally {
-            // setLoading(false);
+            setLoading(false);
         }
     };
     useEffect(() => {
@@ -161,7 +161,6 @@ export default function Task() {
     const fetchCorrectAnswers = async (slug: string) => {
         try {
             if (typeof slug === 'string') {
-                setLoading(true);
                 const response = await getCorrectAnswersByTask({ slug });
                 setCorrectOptions(response?.correct_options);
                 setTaskAnswers(response?.selected_answers);
@@ -182,6 +181,7 @@ export default function Task() {
     useEffect(() => {
         if (Object.keys(selectedAnswers).length > 0 && taskData?.questions) {
             handleCheck();
+            // setLoading(false);
         }
     }, [selectedAnswers, taskData?.questions]);
 
@@ -337,7 +337,6 @@ export default function Task() {
 
     const handleCheck = async () => {
         try {
-            setLoading(true);
             // dropdown, radio
             const payload = {
                 question_answers: taskData?.questions
