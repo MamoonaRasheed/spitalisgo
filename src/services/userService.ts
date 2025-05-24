@@ -108,4 +108,38 @@ export const getCorrectAnswers = async (questionIds: number[]) => {
   }
 };
 
+interface GetCorrectAnswersParams {
+    slug: string;
+}
+
+interface GetCorrectAnswersParams {
+  slug: string;
+}
+
+export const getCorrectAnswersByTask = async ({ slug }: GetCorrectAnswersParams) => {
+  try {
+    // Check if we're in the browser environment
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        throw new Error('Token not found in localStorage');
+      }
+
+      const { data } = await axios.get(`/show-selected-answers/${slug}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      return data;
+    } else {
+      throw new Error("This function must be run in the browser.");
+    }
+  } catch (error) {
+    console.error('Error checking answers:', error);
+    throw error;
+  }
+};
+
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import parse from 'html-react-parser';
 
 interface Question {
@@ -8,14 +8,16 @@ interface Question {
   description: string;
   options: string[];
   option_q: { id: number; description: string }[];
-  showResults?: boolean;
+  showResults: boolean;
 }
 interface ExerciseRendererProps {
   question_description: string;
   questions: Question[];
   selectedAnswers?: { [questionId: number]: string | number | number[] };
   onAnswerChange?: (questionId: number, selectedOptionId: number, type: string) => void;
-  checkResults?: Record<number, boolean>; // Changed from { [questionId: number]: boolean } to Record<number, boolean>
+  checkResults?: Record<number, { option_id: number; is_correct: boolean }[]>;
+  isSubmitted: boolean;
+  correctOption?: Record<number, number>;
 }
 
 const ExerciseRenderer = ({
@@ -23,7 +25,9 @@ const ExerciseRenderer = ({
   questions = [],
   selectedAnswers = {},
   onAnswerChange,
-  checkResults
+  checkResults = {},
+  isSubmitted = false,
+  correctOption = {}
 }: ExerciseRendererProps) => {
 
   const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
@@ -36,12 +40,7 @@ const ExerciseRenderer = ({
     }
   };
 
-  useEffect(()=>{
-console.log('checkResults1', checkResults)
-  }, [checkResults])
-
   useEffect(() => {
-
     document.addEventListener("click", handleClickOutside, true);
     return () => {
       document.removeEventListener("click", handleClickOutside, true);
@@ -49,7 +48,8 @@ console.log('checkResults1', checkResults)
   }, []);
 
   const toggleDropdown = (e: React.MouseEvent) => {
-    e.stopPropagation(); // prevent bubbling
+    e.stopPropagation();
+    if (isSubmitted) return;
     const clickedId = (e.currentTarget as HTMLElement).id;
     setOpenDropdownId(prev => (prev === clickedId ? null : clickedId));
   };
@@ -61,14 +61,23 @@ console.log('checkResults1', checkResults)
       const option_q = question?.option_q || [];
       const questionId = question?.question_id;
       const selectedOptionId = selectedAnswers?.[questionId || 0];
-      // console.log(selectedOptionId,"selectedOptionId");
-      const show = question?.showResults;
-      const isCorrect = checkResults?.[questionId || 0];
-      // console.log(isCorrect,"isCorrect");
-      const selectedOptionText = option_q.find(opt => opt.id === selectedOptionId)?.description || '';
+ const show = question?.showResults;
+      let isCorrect = false;
+      let correctAnswerText;
 
+      if (typeof questionId === "number") {
+        const resultArray = checkResults[questionId];
+        const selectedResult = resultArray?.find(r => r.option_id === selectedOptionId);
+        isCorrect = selectedResult?.is_correct || false;
+
+        const correctOptionId = resultArray?.find(r => r.is_correct)?.option_id;
+        correctAnswerText = correctOption?.[questionId];
+      }
+
+      const selectedOptionText = option_q.find(opt => opt.id === selectedOptionId)?.description || '';
       let dropdownClass = "";
-      if (show && selectedOptionId) {
+
+      if ((isSubmitted && selectedOptionId) || (show && selectedOptionId)) {
         dropdownClass = isCorrect ? "green-option" : "error";
       }
 
@@ -78,8 +87,19 @@ console.log('checkResults1', checkResults)
           id={divId}
           onClick={toggleDropdown}
         >
-          <span className={`span-select ${dropdownClass}`}>
+          <span className={`span-select ${dropdownClass} relative group`}>
             <span className="num">{selectedOptionText}</span>
+
+            {/* Tooltip */}
+            {isSubmitted && selectedOptionId && !isCorrect && correctAnswerText && (
+              <>
+                <span className="absolute -top-2 -right-3 text-blue-600 text-sm cursor-default z-20">🛈</span>
+                <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 hidden group-hover:block bg-white text-sm text-green-700 border border-green-500 px-2 py-1 rounded shadow whitespace-nowrap z-50">
+                  ✅ Correct: {correctAnswerText}
+                </span>
+              </>
+            )}
+
             <svg
               width="32"
               height="32"
@@ -98,7 +118,7 @@ console.log('checkResults1', checkResults)
           </span>
 
           {openDropdownId === divId && (
-            <span className="ul">
+            <span className="ul z-30">
               {option_q.map((option) => (
                 <span
                   key={`${divId}-${option.id}`}
@@ -106,11 +126,11 @@ console.log('checkResults1', checkResults)
                   className="li"
                   onClick={(e) => {
                     e.stopPropagation();
+                    if (isSubmitted) return;
                     if (questionId != null) {
                       onAnswerChange?.(questionId, option.id, 'dropdown');
                     }
                     setOpenDropdownId(null);
-                    // setNewSelectedOption(option.description)
                   }}
                 >
                   {option.description}

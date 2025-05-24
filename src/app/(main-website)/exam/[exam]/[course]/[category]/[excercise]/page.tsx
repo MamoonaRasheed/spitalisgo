@@ -72,6 +72,8 @@ export default function Exercise() {
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const [showResults, setShowResults] = useState(false);
     const [checkResults, setCheckResults] = useState<Record<number, boolean>>({});
+    const [checkDropdownResults, setCheckDropdownResults] = useState<Record<number, { option_id: number; is_correct: boolean }[]>>({});
+
 
     useEffect(() => {
         if (!containerRef.current) return;
@@ -256,6 +258,7 @@ export default function Exercise() {
             }, {});
 
             setCheckResults(mappedResults);
+        setCheckDropdownResults(mappedResults);
             setShowResults(true);
         } catch (error) {
             console.error('Error submitting answers:', error);
@@ -347,7 +350,8 @@ export default function Exercise() {
                                                 })) || []}
                                                 selectedAnswers={selectedAnswers}
                                                 onAnswerChange={handleOptionChange}
-                                                checkResults={checkResults} // Fixed: Pass checkResults directly, not as an object
+                                                isSubmitted={false}
+                                                checkResults={checkDropdownResults} 
                                             />
                                         )}
                                     {exerciseData?.excercise_type == 'input field' &&

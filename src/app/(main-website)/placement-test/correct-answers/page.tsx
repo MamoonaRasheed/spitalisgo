@@ -7,6 +7,7 @@ import LoadingSpinner from "@/components/loader/Loader";
 import ExerciseRenderer from "@/components/common/ExerciseRenderer";
 import DraggableBlock from "@/components/common/DraggableBlock";
 import { checkQuestionAnswers, getResult } from '@/services/questionService';
+import { getCorrectAnswersByTask } from '@/services/userService';
 import { createRoot, Root } from 'react-dom/client';
 import { PlayIcon, PauseIcon, MuteIcon, UnmuteIcon } from "@/icons";
 import Image from 'next/image';
@@ -51,7 +52,13 @@ export default function Task() {
     const [allTaskData, setAllTaskData] = useState<allTaskData>({ tasks: [] });
     const [loading, setLoading] = useState<boolean>(true);
     const [isLastQuestion, setIsLastQuestion] = useState<boolean>(false);
-
+    const [correctOptions, setCorrectOptions] = useState<Record<number, number>>({});
+    const [showResults, setShowResults] = useState(false);
+    const [checkResults, setCheckResults] = useState<Record<number, boolean>>({});
+     const [checkDropdownResults, setCheckDropdownResults] = useState<Record<number, { option_id: number; is_correct: boolean }[]>>({});
+    const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
+    const containerRef = useRef<HTMLDivElement | null>(null);
+    const audioRef = useRef<HTMLAudioElement | null>(null);
     const addTask = (newTask: Task) => {
         setAllTaskData(prevData => {
             // Check if task already exists by ID
@@ -113,8 +120,10 @@ export default function Task() {
 
     const fetchTask = async (slug: string) => {
         try {
+            fetchCorrectAnswers(slug);
+
             if (taskData?.id !== undefined) {
-                if(!slug){
+                if (!slug) {
                     setIsLastQuestion(true);
                 }
                 console.log('taskAnswers--->slug', taskAnswers[`task-${taskData.id}`])
@@ -142,21 +151,41 @@ export default function Task() {
         } catch (error) {
             console.error('Error fetching exercise:', error);
         } finally {
-            setLoading(false);
+            // setLoading(false);
         }
     };
     useEffect(() => {
         fetchTask('task-1');
     }, []);
 
-    
+    const fetchCorrectAnswers = async (slug: string) => {
+        try {
+            if (typeof slug === 'string') {
+                setLoading(true);
+                const response = await getCorrectAnswersByTask({ slug });
+                setCorrectOptions(response?.correct_options);
+                setTaskAnswers(response?.selected_answers);
+                setTaskAnswersDropDown(response?.selected_answers);
+                setSelectedAnswers(response?.selected_answers);
+            }
+        } catch (error) {
+            console.error('Error fetching correct answers:', error);
+        } finally {
+            // setLoading(false);
+        }
+    };
 
-    const [showResults, setShowResults] = useState(false);
-    const [checkResults, setCheckResults] = useState<Record<number, boolean>>({});
-     const [checkDropdownResults, setCheckDropdownResults] = useState<Record<number, { option_id: number; is_correct: boolean }[]>>({});
-    const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
-    const containerRef = useRef<HTMLDivElement | null>(null);
-    const audioRef = useRef<HTMLAudioElement | null>(null);
+    useEffect(() => {
+        fetchCorrectAnswers('task-1');
+    }, []);
+
+    useEffect(() => {
+        if (Object.keys(selectedAnswers).length > 0 && taskData?.questions) {
+            handleCheck();
+        }
+    }, [selectedAnswers, taskData?.questions]);
+
+
     useEffect(() => {
         console.log('selectedAnswers========>', selectedAnswers)
     }, [selectedAnswers])
@@ -304,12 +333,11 @@ export default function Task() {
         console.log(selectedAnswers, "selectedAnswers updated");
     }, [selectedAnswers]);
 
-    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(true);
 
     const handleCheck = async () => {
         try {
             setLoading(true);
-            setIsSubmitted(true);
             // dropdown, radio
             const payload = {
                 question_answers: taskData?.questions
@@ -334,7 +362,7 @@ export default function Task() {
         } catch (error) {
             console.error('Error submitting answers:', error);
         } finally {
-            setLoading(false);
+            // setLoading(false);
         }
     };
 
@@ -352,7 +380,7 @@ export default function Task() {
         } catch (error) {
             console.error('Error submitting answers:', error);
         } finally {
-            setLoading(false);
+            // setLoading(false);
         }
     };
 
@@ -362,6 +390,7 @@ export default function Task() {
     }, [checkResults]);
 
     const [taskAnswers, setTaskAnswers] = useState<{ [slug: string]: string[] }>({});
+    const [taskAnswersDropDown, setTaskAnswersDropDown] = useState<{ [questionId: number]: string | number | number[] }>({});;
     const [taskWordPositions, setTaskWordPositions] = useState<{ [slug: string]: { [word: string]: number | null } }>({});
 
     const slug = taskData?.slug || ''; // or taskData.id if you're using ID
@@ -387,49 +416,6 @@ export default function Task() {
         }
         // console.log('taskData', JSON.stringify(taskData));
     }, [taskData]);
-
-    // Handle word click for drag & drop
-    const handleWordClick = (word: string) => {
-        const currentIndex = wordPositions[word];
-
-        const updatedAnswers = [...answers];
-        const updatedPositions = { ...wordPositions };
-
-        if (currentIndex !== undefined && currentIndex !== null) {
-            updatedAnswers[currentIndex] = '';
-            updatedPositions[word] = null;
-        } else {
-            const nextEmptyIndex = updatedAnswers.findIndex((ans) => ans === '');
-            if (nextEmptyIndex !== -1) {
-                updatedAnswers[nextEmptyIndex] = word;
-                updatedPositions[word] = nextEmptyIndex;
-            }
-        }
-
-        setTaskAnswers(prev => ({ ...prev, [slug]: updatedAnswers }));
-        setTaskWordPositions(prev => ({ ...prev, [slug]: updatedPositions }));
-    };
-
-    // Remove word from answers
-    const handleWordRemove = (index: number) => {
-        const updatedAnswers = [...answers];
-        const removedWord = updatedAnswers[index];
-        updatedAnswers[index] = '';
-
-        const updatedPositions = { ...wordPositions };
-        if (removedWord) updatedPositions[removedWord] = null;
-
-        setTaskAnswers(prev => ({ ...prev, [slug]: updatedAnswers }));
-        setTaskWordPositions(prev => ({ ...prev, [slug]: updatedPositions }));
-    };
-
-    // Input field change handler
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-        const newAnswers = [...answers];
-        newAnswers[index] = e.target.value;
-
-        setTaskAnswers(prev => ({ ...prev, [slug]: newAnswers }));
-    };
 
     // Process description with inputs or drag-drop placeholders
     const processDescription = (html: string, questionIndex: number, taskType: string) => {
@@ -457,68 +443,57 @@ export default function Task() {
                     const actualIndex = baseIndex + localIndex;
                     localIndex++;
 
+                    const rawUserAnswer = taskAnswers?.[actualIndex];
+                    const rawCorrectAnswer = correctOptions?.[actualIndex];
+
+                    const userAnswer = Array.isArray(rawUserAnswer) ? rawUserAnswer[0] : rawUserAnswer || '';
+                    const correctAnswer = Array.isArray(rawCorrectAnswer) ? rawCorrectAnswer[0] : rawCorrectAnswer || '';
+
+                    const isCorrect = userAnswer.trim() === correctAnswer.trim();
+
                     if (taskType === 'input_field') {
-                        const correctAnswer = taskData?.correct_options?.[actualIndex];
-                        const userAnswer = answers[actualIndex] || '';
-                        const isCorrect = userAnswer === correctAnswer;
                         return (
-                            <>
-
-                                <div key={`input-${actualIndex}`} className="inline-block relative mx-1 group">
-                                    <input
-                                        value={userAnswer}
-                                        onChange={(e) => handleInputChange(e, actualIndex)}
-                                        disabled={isSubmitted}
-                                        className={`border px-2 min-w-[100px] rounded mb-2
-                                        ${isSubmitted
-                                                ? isCorrect
-                                                    ? 'bg-green-200 text-green-800 border-green-500'
-                                                    : 'bg-red-200 text-red-800 border-red-500'
-                                                : ''}
-                                        `}
-                                    />
-
-                                    {isSubmitted && !isCorrect && (
-                                        <>
-                                            <span className="absolute -top-2 -right-3 text-blue-600 cursor-default text-sm z-40">🛈</span>
-
-                                            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 hidden group-hover:block bg-white text-sm text-green-700 border border-green-500 px-2 py-1 rounded shadow whitespace-nowrap z-50">
-                                                ✅ Correct: {correctAnswer}
-                                            </div>
-                                        </>
-                                    )}
-                                </div>
-
-                            </>
+                            <div key={`input-${actualIndex}`} className="inline-block relative mx-1 group">
+                                <input
+                                    value={userAnswer}
+                                    disabled={isSubmitted}
+                                    className={`border px-2 min-w-[100px] rounded mb-2
+                                ${isSubmitted
+                                            ? isCorrect
+                                                ? 'bg-green-200 text-green-800 border-green-500'
+                                                : 'bg-red-200 text-red-800 border-red-500'
+                                            : ''}`}
+                                />
+                                {isSubmitted && !isCorrect && (
+                                    <>
+                                        <span className="absolute -top-2 -right-3 text-blue-600 cursor-default text-sm z-40">🛈</span>
+                                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 hidden group-hover:block bg-white text-sm text-green-700 border border-green-500 px-2 py-1 rounded shadow whitespace-nowrap z-50">
+                                            ✅ Correct: {correctAnswer}
+                                        </div>
+                                    </>
+                                )}
+                            </div>
                         );
                     }
 
-                    // drag_drop logic
-                    const word = answers[actualIndex];
-                    const correctAnswer = taskData?.correct_options[actualIndex];
-                    const isCorrect = word === correctAnswer;
-
+                    // DRAG & DROP
+                    const word = userAnswer;
                     if (word) {
                         return (
                             <div key={`btn-${actualIndex}`} className="relative inline-block group mx-1">
                                 <button
-                                    onClick={() => !isSubmitted && handleWordRemove(actualIndex)}
                                     disabled={isSubmitted}
                                     className={`px-2 rounded mb-2 ${isSubmitted
                                         ? isCorrect
                                             ? 'bg-green-200 text-green-800'
                                             : 'bg-red-200 text-red-800'
-                                        : 'bg-blue-200'
-                                        }`}
+                                        : 'bg-blue-200'}`}
                                 >
                                     {word}
                                 </button>
-
                                 {isSubmitted && !isCorrect && (
                                     <>
-                                        <span className="absolute -top-2 -right-3 text-blue-600 cursor-default text-sm">
-                                            🛈
-                                        </span>
+                                        <span className="absolute -top-2 -right-3 text-blue-600 cursor-default text-sm">🛈</span>
                                         <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 hidden group-hover:block bg-white text-sm text-green-700 border border-green-500 px-2 py-1 rounded shadow whitespace-nowrap z-10">
                                             ✅ Correct: {correctAnswer}
                                         </div>
@@ -530,9 +505,10 @@ export default function Task() {
                         return <input key={`input-${actualIndex}`} readOnly className="border rounded px-2 mx-1 min-w-[100px] mb-2" />;
                     }
                 }
-            },
+            }
         });
     };
+
 
     useEffect(() => {
         console.log('allTaskData', allTaskData)
@@ -540,9 +516,10 @@ export default function Task() {
 
     useEffect(() => {
         console.log('taskAnswers', JSON.stringify(taskAnswers))
+        console.log('correctoptions', JSON.stringify(correctOptions))
     }, [taskAnswers])
 
-    if (taskData === null) {
+    if (loading === true) {
         return (
             <div className="flex items-center justify-center min-h-screen">
                 <LoadingSpinner />
@@ -590,35 +567,39 @@ export default function Task() {
                                 <div className="option-fields-align">
                                     <ul>
                                         {taskData?.questions.map((question, index) => {
-                                            const selectedOption = selectedAnswers[question.id];
-                                            const isCorrect = checkResults?.[question.id];
+                                            // Normalize selectedOption to a single string or number
+                                            const rawSelected = taskAnswers[question.id];
+                                            const selectedOption = Array.isArray(rawSelected) ? rawSelected[0] : rawSelected;
+
+                                            const correctOption = correctOptions?.[question.id];
+
                                             return (
                                                 <div key={`${question.id}-${index}`}>
                                                     <div className="title-option-field">
-                                                        <h3> <div dangerouslySetInnerHTML={{ __html: question?.description || '' }} /></h3>
+                                                        <h3>
+                                                            <div dangerouslySetInnerHTML={{ __html: question?.description || '' }} />
+                                                        </h3>
                                                     </div>
                                                     <div className="options-main">
                                                         {question.options.map((option) => {
-                                                            const isSelected = selectedOption === option.id;
+                                                            const isSelected = String(selectedOption) === String(option.id);
+                                                            const isCorrect = String(correctOption) === String(option.id);
 
                                                             let className = "option-field-main";
 
-                                                            if (showResults && isSelected !== undefined) {
-                                                                if (isSelected && isCorrect) {
-                                                                    className += " active green-option";
-                                                                }
-                                                                if (isSelected && isCorrect === false) {
-                                                                    className += " error";
+                                                            if (showResults) {
+                                                                if (isCorrect) {
+                                                                    className += " active green-option"; // correct option gets green border
                                                                 }
                                                             }
+
                                                             return (
                                                                 <div className={className} key={option.id}>
                                                                     <input
                                                                         type="radio"
                                                                         name={`option-${question.id}`}
-                                                                        onChange={() => handleOptionChange(question.id, option.id, 'radio')}
                                                                         checked={isSelected}
-                                                                        disabled={showResults}
+                                                                        disabled
                                                                     />
                                                                     <label>{option.description}</label>
                                                                 </div>
@@ -628,7 +609,6 @@ export default function Task() {
                                                 </div>
                                             );
                                         })}
-
 
                                     </ul>
                                 </div>
@@ -684,14 +664,15 @@ export default function Task() {
                                     option_q: Array.isArray(q.options) ? q.options.map(opt => ({
                                         id: opt.id, description: opt.description
                                     })) : [],
-                                    // correct_option: q.correct_option,
                                     showResults: showResults,
                                 })) || []}
-                                selectedAnswers={selectedAnswers}
-                                onAnswerChange={handleOptionChange}
-                                isSubmitted={false}
+                                selectedAnswers={taskAnswersDropDown}
+                                // onAnswerChange={handleOptionChange}
                                 checkResults={checkDropdownResults}
+                                isSubmitted={isSubmitted}
+                                correctOption={correctOptions}
                             />
+
                             {
                                 taskData?.img_url &&
                                 <Image
@@ -722,7 +703,6 @@ export default function Task() {
                                 {taskData?.drag_items.map((word, idx) => (
                                     <button
                                         key={idx}
-                                        onClick={() => handleWordClick(word)}
                                         className={`px-4 py-2 rounded ${wordPositions[word] !== undefined && wordPositions[word] !== null
                                             ? 'bg-green-200'
                                             : 'bg-gray-200 hover:bg-gray-300'
@@ -767,7 +747,8 @@ export default function Task() {
                 </>
 
                 <div className="action-btns">
-                    <button type="button" onClick={() => fetchTask(taskData?.prev_slug)}>
+                    <button type="button" onClick={() => taskData?.prev_slug && fetchTask(taskData.prev_slug)}>
+
                         <svg
                             width="27"
                             height="16"
@@ -786,10 +767,10 @@ export default function Task() {
                         Zurück
                     </button>
                     {
-                        isLastQuestion ? 
-                        taskData?.id == 64 &&  <button type="button" onClick={submitAll}>Submit All</button> :
-                        <button type="button" onClick={() => fetchTask(taskData?.next_slug)}>Weiter</button>
-                   }
+                        isLastQuestion ?
+                            taskData?.id == 64 && <button type="button" onClick={submitAll}>Submit All</button> :
+                            <button type="button" onClick={() => taskData?.next_slug && fetchTask(taskData?.next_slug)}>Weiter</button>
+                    }
                 </div>
             </div>
         </section>
