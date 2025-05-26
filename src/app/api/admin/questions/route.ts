@@ -3,33 +3,34 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
   try {
-    // Extract query parameters
     const searchParams = req.nextUrl.searchParams;
     const token = req.headers.get("authorization");
 
-    // Validate backend URL
     if (!process.env.NEXT_PUBLIC_API_URL) {
       throw new Error('API base URL is not configured');
     }
 
-    // Build the backend URL with query params
+    // Build backend URL
     const backendUrl = new URL(`${process.env.NEXT_PUBLIC_API_URL}/admin/questions`);
+
+    // Append all query parameters (e.g., ?page=2)
+    for (const [key, value] of searchParams.entries()) {
+      backendUrl.searchParams.append(key, value);
+    }
 
     const backendResponse = await fetch(backendUrl.toString(), {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
+        "Authorization": `Bearer ${token}`,
       },
       cache: 'no-store'
     });
 
-    console.log('Backend response:', backendResponse);
-
     if (!backendResponse.ok) {
       const errorData = await backendResponse.json();
       return NextResponse.json(
-        { status: false, message: errorData.message || 'Failed to fetch exercises' },
+        { status: false, message: errorData.message || 'Failed to fetch questions' },
         { status: backendResponse.status }
       );
     }
@@ -38,7 +39,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(data, { status: 200 });
 
   } catch (error) {
-    console.error('GET exercises error:', error);
+    console.error('GET questions error:', error);
     return NextResponse.json(
       { status: false, message: 'Internal server error' },
       { status: 500 }

@@ -7,8 +7,8 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import { getChapters } from '@/services/chapterService';
-import Badge from "../ui/badge/Badge";
+import { getChapters } from '@/services/admin/chapterService';
+import Pagination from "./Pagination";
 
 interface Data {
   id: number,
@@ -27,22 +27,31 @@ interface DataResponse {
   data: Data[];
 }
 
+interface PaginationResponse {
+  current_page: number;
+  last_page: number;
+  total: number;
+}
 
 export default function ChapterTable() {
   const [data, setData] = useState<DataResponse | null>(null); // Define state inside the component
+    const [paginationData, setPaginationData] = useState<PaginationResponse | null>(null);
+    const [currentPage, setCurrentPage] = useState(1);
+  
 
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchChapters = async () => {
       try {
-        const data = await getChapters();
+        const data = await getChapters({ page: currentPage });
         setData(data);
+        setPaginationData(data);
       } catch (error) {
-        console.error('Error fetching users:', error);
+        console.error('Error fetching Chapters:', error);
       }
     };
 
-    fetchUsers();
-  }, []);
+    fetchChapters();
+  }, [currentPage]);
   
 
   return (
@@ -110,6 +119,13 @@ export default function ChapterTable() {
             </TableBody>
           </Table>
         </div>
+      </div>
+      <div className="flex justify-center items-center px-4 py-2">
+        <Pagination 
+          totalPages={paginationData?.last_page ?? 0}
+          currentPage={paginationData?.current_page ?? 1}
+          onPageChange={(page) => setCurrentPage(page)}
+        />
       </div>
     </div>
   );

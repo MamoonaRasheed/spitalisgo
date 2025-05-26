@@ -9,6 +9,7 @@ import {
 } from "../ui/table";
 import { getExercises } from '@/services/admin/excerciseService';
 import Link from "next/link";
+import Pagination from "./Pagination";
 
 interface Exercise {
   id: number,
@@ -26,23 +27,31 @@ interface ExercisesResponse {
   data: Exercise[];
 }
 
+interface PaginationResponse {
+  current_page: number;
+  last_page: number;
+  total: number;
+}
 
 export default function ExercisesTable() {
-  const [exercises, setExercises] = useState<ExercisesResponse | null>(null); 
+    const [exercises, setExercises] = useState<ExercisesResponse | null>(null); 
+    const [paginationData, setPaginationData] = useState<PaginationResponse | null>(null);
+    const [currentPage, setCurrentPage] = useState(1);
+  
 
   useEffect(() => {
-    const fetchExercises = async () => {
-      try {
-        const data = await getExercises();
-        setExercises(data);
-      } catch (error) {
-        console.error('Error fetching users:', error);
-      }
-    };
+  const fetchExercises = async () => {
+    try {
+      const data = await getExercises({ page: currentPage }); 
+      setExercises(data);
+      setPaginationData(data);
+    } catch (error) {
+      console.error('Error fetching exercises:', error);
+    }
+  };
 
-    fetchExercises();
-  }, []);
-  
+  fetchExercises();
+}, [currentPage]);
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
@@ -112,6 +121,13 @@ export default function ExercisesTable() {
             </TableBody>
           </Table>
         </div>
+      </div>
+      <div className="flex justify-center items-center px-4 py-2">
+        <Pagination 
+          totalPages={paginationData?.last_page ?? 0}
+          currentPage={paginationData?.current_page ?? 1}
+          onPageChange={(page) => setCurrentPage(page)}
+        />
       </div>
     </div>
   );

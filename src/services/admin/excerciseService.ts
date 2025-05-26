@@ -3,6 +3,7 @@ import axios from '@/utils/axios';
 
 interface ExerciseParams {
   chapter_id?: number;
+  page?: number;
 }
 
 interface ExerciseData {
@@ -14,29 +15,31 @@ interface ExerciseData {
   sort?: number;
   status?: boolean;
 }
-
 export const getExercises = async (params?: ExerciseParams) => {
   if (typeof window !== 'undefined') {
     const token = localStorage.getItem("token");
     if (!token) {
       throw new Error('Token not found in localStorage');
     }
-    if (!params || !params.chapter_id) {
-      const { data } = await axios.get("/excercises", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      return data;
+
+    const queryParams: any = {};
+    if (params?.chapter_id) {
+      queryParams.chapter_id = params.chapter_id;
     }
-    const { data } = await axios.get("/excercises", {
-      params: { chapter_id: params.chapter_id }, 
+    if (params?.page) {
+      queryParams.page = params.page;
+    }
+
+    const { data } = await axios.get("/admin/excercises", {
+      params: queryParams,
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
+
     return data;
   }
+
   throw new Error('localStorage is not available on the server side');
 };
 
@@ -92,7 +95,7 @@ export const getExercise = async (id: number) => {
     if (!token) {
       throw new Error('Token not found in localStorage');
     }
-    const { data } = await axios.get(`/excercises/${id}`, {
+    const { data } = await axios.get(`/admin/excercises/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

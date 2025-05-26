@@ -28,14 +28,14 @@ interface UpdateQuestionPayload {
   }[];
 }
 
-export const getQuestions = async () => {
+export const getQuestions = async (page = 1) => {
   if (typeof window !== 'undefined') {
     const token = localStorage.getItem("token");
     if (!token) {
       throw new Error('Token not found in localStorage');
     }
     
-    const { data } = await axios.get("/admin/questions", {
+    const { data } = await axios.get(`/admin/questions?page=${page}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -44,6 +44,7 @@ export const getQuestions = async () => {
   }
   throw new Error('localStorage is not available on the server side');
 };
+
 
 export const createQuestion = async (questionData: QuestionData) => {
   if (typeof window !== 'undefined') {

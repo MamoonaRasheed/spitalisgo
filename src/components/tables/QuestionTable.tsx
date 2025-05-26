@@ -44,22 +44,22 @@ interface PaginationResponse {
 export default function QuestionTable() {
   const [questions, setQuestions] = useState<QuestionsResponse | null>(null);
   const [paginationData, setPaginationData] = useState<PaginationResponse | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    const fetchQuestions = async () => {
-      try {
-        const data = await getQuestions();
-        console.log(data, "data from api");
-        setQuestions(data.data);
-        setPaginationData(data.data);
-      } catch (error) {
-        console.error('Error fetching users:', error);
-      }
-    };
+  const fetchQuestions = async () => {
+    try {
+      const data = await getQuestions(currentPage);
+      console.log(data, "data from api");
+      setQuestions(data.data);
+      setPaginationData(data.data);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
+  };
 
-    fetchQuestions();
-  }, []);
-  
+  fetchQuestions();
+}, [currentPage]); 
 
   return (
     <div className="flex flex-col gap-4">
@@ -135,10 +135,9 @@ export default function QuestionTable() {
       </div>
       <div className="flex justify-center items-center px-4 py-2">
         <Pagination 
-          totalPages={paginationData?.last_page && 0}
-          // currentPage={paginationData?.current_page && paginationData?.current_page} 
-          currentPage={1} 
-          onPageChange={(page) => console.log(page)}
+          totalPages={paginationData?.last_page ?? 0}
+          currentPage={paginationData?.current_page ?? 1}
+          onPageChange={(page) => setCurrentPage(page)}
         />
       </div>
     </div>

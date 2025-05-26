@@ -6,6 +6,7 @@ export async function GET(req: NextRequest) {
     // Extract query parameters
     const searchParams = req.nextUrl.searchParams;
     const chapter_id = searchParams.get('chapter_id');
+    const page = searchParams.get('page');
     const token = req.headers.get("authorization");
 
     // Validate backend URL
@@ -15,8 +16,8 @@ export async function GET(req: NextRequest) {
 
     // Build the backend URL with query params
     const backendUrl = new URL(`${process.env.NEXT_PUBLIC_API_URL}/admin/excercises`);
-    
     if (chapter_id) backendUrl.searchParams.append('chapter_id', chapter_id);
+    if (page) backendUrl.searchParams.append('page', page);
 
     const backendResponse = await fetch(backendUrl.toString(), {
       method: "GET",
