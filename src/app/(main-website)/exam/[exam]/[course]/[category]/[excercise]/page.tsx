@@ -258,7 +258,7 @@ export default function Exercise() {
             }, {});
 
             setCheckResults(mappedResults);
-        setCheckDropdownResults(mappedResults);
+            setCheckDropdownResults(mappedResults);
             setShowResults(true);
         } catch (error) {
             console.error('Error submitting answers:', error);
@@ -351,7 +351,7 @@ export default function Exercise() {
                                                 selectedAnswers={selectedAnswers}
                                                 onAnswerChange={handleOptionChange}
                                                 isSubmitted={false}
-                                                checkResults={checkDropdownResults} 
+                                                checkResults={checkDropdownResults}
                                             />
                                         )}
                                     {exerciseData?.excercise_type == 'input field' &&
@@ -510,7 +510,28 @@ export default function Exercise() {
                                         </>
                                     }
 
-                                    <div className="action-btns">
+                                    <div className="action-btns flex flex-wrap gap-2 items-center justify-start">
+
+                                        {/* WhatsApp Button */}
+                                        <a
+                                            href={`https://wa.me/491234567890?text=Ich arbeite an der Übung: ${encodeURIComponent(exerciseData?.title || '')}. Hilf mir dabei.`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md flex items-center gap-2 text-sm md:text-base transition duration-200 h-10"
+                                        >
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                width="20"
+                                                height="20"
+                                                fill="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path d="M20.52 3.48A11.92 11.92 0 0012 .01 12 12 0 000 12a11.89 11.89 0 001.66 6L0 24l6.4-1.68A12 12 0 1012 .01a11.9 11.9 0 008.52 3.47zM12 22a10.16 10.16 0 01-5.21-1.43l-.37-.22-3.81 1 .99-3.7-.24-.38A9.93 9.93 0 012.05 12 9.94 9.94 0 1112 22zm5.46-7.3c-.3-.15-1.75-.86-2.02-.96s-.47-.15-.67.15-.77.96-.94 1.15-.35.22-.65.07a8.26 8.26 0 01-2.43-1.5 9.22 9.22 0 01-1.71-2.12c-.18-.3 0-.46.13-.6s.3-.34.45-.51.2-.3.3-.5.05-.38-.02-.53-.66-1.58-.9-2.17-.5-.5-.67-.5h-.56c-.2 0-.53.08-.8.38a3.35 3.35 0 00-1.03 2.5 5.88 5.88 0 001.24 2.47 13.49 13.49 0 005.26 4.72c.73.3 1.3.47 1.75.6a4.19 4.19 0 001.92.12 3.2 3.2 0 002.1-1.5 2.6 2.6 0 00.18-1.5c-.07-.13-.25-.2-.54-.35z" />
+                                            </svg>
+                                            WhatsApp
+                                        </a>
+
+
                                         <button type="button" onClick={goToPrevious}>
                                             <svg
                                                 width="27"
@@ -529,28 +550,28 @@ export default function Exercise() {
                                             </svg>
                                             Zurück
                                         </button>
-                                        {
-                                            showResults ? (
-                                                <>
-                                                    <button type="button" onClick={handleReset}>Zurücksetzen</button>
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => handleSubmitAnswers(exerciseData?.next_slug)}  // Wrap function call
-                                                        disabled={
-                                                            !exerciseData?.next_slug ||
-                                                            exerciseData?.next_chapter_id !== exerciseData?.chapter_id
-                                                        }
-                                                    >
-                                                        Nächste
-                                                    </button>
+
+                                        {showResults ? (
+                                            <>
+                                                <button type="button" onClick={handleReset}>Zurücksetzen</button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleSubmitAnswers(exerciseData?.next_slug)}
+                                                    disabled={
+                                                        !exerciseData?.next_slug ||
+                                                        exerciseData?.next_chapter_id !== exerciseData?.chapter_id
+                                                    }
+                                                >
+                                                    Nächste
+                                                </button>
+                                            </>
+                                        ) : (
+                                            <button type="button" onClick={handleCheck}>Prüfen</button>
+                                        )}
 
 
-                                                </>
-                                            ) : (
-                                                <button type="button" onClick={handleCheck}>Prüfen</button>
-                                            )
-                                        }
                                     </div>
+
 
 
                                 </div>

@@ -9,22 +9,22 @@ export async function GET(req: NextRequest) {
     let backendUrl: URL;
 
     if (slug) {
-      // Specific exercise ka data lana slug ke through
       backendUrl = new URL(`${process.env.NEXT_PUBLIC_API_URL}/excercises/${slug}`);
     } else {
-      // Saare exercises lana chapter ke through
       backendUrl = new URL(`${process.env.NEXT_PUBLIC_API_URL}/excercises`);
       if (chapter_id) backendUrl.searchParams.append('chapter_id', chapter_id);
     }
+
+    const token = req.headers.get('authorization'); // ← Extract incoming token
 
     const backendResponse = await fetch(backendUrl.toString(), {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        ...(token && { Authorization: token }), // ← Forward token if present
       },
     });
 
-    // console.log('backendResponse',backendResponse)
     const data = await backendResponse.json();
 
     return NextResponse.json(data, { status: backendResponse.status });

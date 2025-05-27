@@ -6,13 +6,16 @@ interface ExcerciseParams {
 }
 
 export const getExcercises = async (params: ExcerciseParams) => {
+  const token = localStorage.getItem("token");
 
   const { data } = await axios.get("/excercises", {
-    params: params,
+    params,
+    headers: {
+      ...(token && { Authorization: `Bearer ${token}` }),
+    },
   });
-
+  console.log("data recieved in exercise service----------==----",data)
   return data;
-
 };
 
 interface GetExcerciseParams {
