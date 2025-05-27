@@ -3,14 +3,15 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(
   req: NextRequest,
-  context: { params: { id: string } }
 ) {
   try {
+    const { searchParams } = new URL(req.url);
+
     if (!process.env.NEXT_PUBLIC_API_URL) {
       throw new Error('API base URL is not configured');
     }
 
-    const questionId = context.params.id;
+    const questionId = searchParams.get('id');
     if (!questionId || isNaN(Number(questionId))) {
       return NextResponse.json(
         { status: false, message: 'Invalid Question ID' },
@@ -71,10 +72,10 @@ export async function GET(
 }
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string | string[] } }
 ) {
   try {
-    const questionId = params.id;
+     const { searchParams } = new URL(req.url);
+    const questionId = searchParams.get('id');
     if (!questionId || isNaN(Number(questionId))) {
       return NextResponse.json(
         { status: false, message: 'Invalid question ID' },
