@@ -55,12 +55,15 @@ export default function SignInForm() {
     try {
       const response = await axios.post('/login', { email, password });
       const data = response.data;
+      console.log("user data in login request=====================", data);
 
-      login(data.access_token, { email }); // you can expand this user data based on your API response
-
+      login(data.access_token, {
+        email: data.user.email,
+        role: data.user.role
+      });
+      
       toast.success(data.message);
       router.push("/admin");
-      
     } catch (err: any) {
       console.error(err);
       const errorMessage = err?.response?.data?.message || 'An unexpected error occurred';
@@ -68,6 +71,7 @@ export default function SignInForm() {
     } finally {
       setIsLoading(false);
     }
+
   };
 
   if (isLoading) {
