@@ -39,6 +39,7 @@
     "react-dropzone": "^14.3.5",
     "react-toastify": "^11.0.5",
     "summernote": "^0.9.1",
+    "sweetalert2": "^11.22.0",
     "swiper": "^11.2.0",
     "tailwind-merge": "^2.6.0"
   },

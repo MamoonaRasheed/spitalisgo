@@ -117,3 +117,22 @@ export const updateQuestion = async (
   }
   throw new Error('localStorage is not available on the server side');
 };
+
+export const deleteQuestion = async ({ id }: { id: number }) => {
+  if (typeof window !== 'undefined') {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error('Token not found in localStorage');
+    }
+
+    const { data } = await axios.delete(`/admin/questions/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return data;
+  }
+
+  throw new Error('localStorage is not available on the server side');
+};

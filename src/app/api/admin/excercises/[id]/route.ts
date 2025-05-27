@@ -191,3 +191,78 @@ export async function PATCH(
       );
     }
 }
+
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id: exerciseId } = await params;
+
+    if (!process.env.NEXT_PUBLIC_API_URL) {
+      throw new Error('API base URL is not configured');
+    }
+
+    if (!exerciseId || isNaN(Number(exerciseId))) {
+      return NextResponse.json(
+        { status: false, message: 'Invalid exercise ID' },
+        { status: 400 }
+      );
+    }
+
+    const token = req.headers.get("authorization");
+    if (!token) {
+      return NextResponse.json(
+        { status: false, message: 'Authorization token is required' },
+        { status: 401 }
+      );
+    }
+
+    const backendResponse = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/admin/excercises/${exerciseId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+      }
+    );
+
+    const contentType = backendResponse.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      const text = await backendResponse.text();
+      throw new Error(`Unexpected response: ${text.substring(0, 100)}...`);
+    }
+
+    const data = await backendResponse.json();
+
+    if (!backendResponse.ok) {
+      return NextResponse.json(
+        {
+          status: false,
+          message: data.message || `Backend error: ${backendResponse.statusText}`,
+        },
+        { status: backendResponse.status }
+      );
+    }
+
+    return NextResponse.json(
+      {
+        status: true,
+        message: 'Exercise deleted successfully',
+        data,
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error('DELETE exercise error:', error);
+    return NextResponse.json(
+      {
+        status: false,
+        message: error instanceof Error ? error.message : 'Internal server error',
+      },
+      { status: 500 }
+    );
+  }
+}

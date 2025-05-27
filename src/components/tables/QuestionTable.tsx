@@ -7,9 +7,10 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import { getQuestions } from '@/services/admin/questionService';
+import { getQuestions, deleteQuestion } from '@/services/admin/questionService';
 import Link from "next/link";
 import Pagination from "./Pagination";
+import Swal from 'sweetalert2';
 
 
 interface excercise {
@@ -46,11 +47,10 @@ export default function QuestionTable() {
   const [paginationData, setPaginationData] = useState<PaginationResponse | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
-  useEffect(() => {
   const fetchQuestions = async () => {
     try {
       const data = await getQuestions(currentPage);
-      console.log(data, "data from api");
+      console.log(data.data, "data from api");
       setQuestions(data.data);
       setPaginationData(data.data);
     } catch (error) {
@@ -58,8 +58,36 @@ export default function QuestionTable() {
     }
   };
 
-  fetchQuestions();
-}, [currentPage]); 
+  const handleDelete = async (id: number) => {
+    const result = await Swal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#3085d6',
+          confirmButtonText: 'Yes, delete it!'
+        });
+    
+        if (result.isConfirmed) {
+          try {
+            const data = await deleteQuestion({ id });
+            if (data.status === false) {
+              Swal.fire('Error!', data.message, 'error');
+              return;
+            }else{
+              fetchQuestions(); // Refresh the list after deletion
+              Swal.fire('Deleted!', 'The question has been deleted.', 'success');
+            }
+          } catch (error) {
+            Swal.fire('Error!', 'Something went wrong while deleting.', 'error');
+            console.error(error);
+          }
+        }
+  };
+  useEffect(() => {
+    fetchQuestions();
+  }, [currentPage]); 
 
   return (
     <div className="flex flex-col gap-4">
@@ -122,7 +150,7 @@ export default function QuestionTable() {
                     <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                       <div className="flex items-center gap-2">
                         <Link className="text-blue-500 hover:text-blue-700" href={`/admin/questions/update/${question.id}`}>Edit</Link>
-                        <button className="text-red-500 hover:text-red-700">Delete</button>
+                         <button className="text-red-500 hover:text-red-700" onClick={() => handleDelete(question.id)}>Delete</button>
                       </div>
                     </TableCell>
                   </TableRow>
