@@ -1,120 +1,76 @@
 "use client";
-import React, { useEffect, useState, use } from "react";
+import React, { useEffect, useState, use  } from "react";
 import Label from "@/components/form/Label";
 import Select from "@/components/form/Select";
 import { ChevronDownIcon } from "@/icons";
 import Input from '@/components/form/input/InputField';
-import RadioButtons from "@/components/form/form-elements/RadioButtons";
-import { getExerciseTypes, updateExercise, getExercise } from '@/services/admin/excerciseService';
-import { getChapters } from '@/services/chapterService';
+import Radio from "@/components/form/input/Radio";
+import { getQuestionTypes } from '@/services/admin/questionTypeService';
+import { getExerciseOption, getExerciseTypes } from '@/services/admin/excerciseService';
+import { updateQuestion, getQuestion } from '@/services/admin/questionService';
 import $ from 'jquery';
 import 'summernote/dist/summernote-lite.css';
 import 'summernote/dist/summernote-lite.js';
 import { toast } from 'react-toastify';
 import { useRouter, notFound } from "next/navigation";
-import LoadingSpinner from "@/components/loader/Loader";
-interface ExerciseType {
+import { stringify } from "querystring";
+
+interface QuestionType {
   id: number;
   name: string;
 }
 
-interface Chapter {
+interface Exercise {
   id: number;
   title: string;
+  chapter: string;
+  excercise_type: string;
+  exercise_no: string;
+}
+
+interface option {
+  id: number;
+  description: string;
+}
+
+interface Question {
+  description: string;
+  options: option[];
+  question_type_id?: number | null;
+  correctOption: number | string;
 }
 
 interface FormData {
-  excercise_type_id: number | null;
-  chapter_id: number | null;
-  exercise_no: string;
-  title: string;
+  exercise_id: number | null;
+  questions: Question[];
+  excercise_type: string;
   description: string;
-  sort: number;
   status: boolean;
 }
-
-export default function UpdateExercise({ params }: { params: Promise<{ id: string }> }) {
+export default function UpdateQuestion({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const exerciseId = parseInt(id);
-  
-  const [excerciseTypes, setExcerciseTypes] = useState<ExerciseType[]>([]);
-  const [chapters, setChapters] = useState<Chapter[]>([]);
-  const [formData, setFormData] = useState<FormData>({
-    excercise_type_id: null,
-    chapter_id: null,
-    exercise_no: '',
-    title: '',
-    description: '',
-    sort: 0,
-    status: true
-  });
-  const router = useRouter();
+  const questionId = parseInt(id);
   const [isLoading, setIsLoading] = useState(true);
-// Fetch exercise data and initialize form
-useEffect(() => {
-  const fetchExerciseData = async () => {
-    try {
-      if (isNaN(exerciseId)) {
-        notFound();
-        return;
+
+  const [questionTypes, setQuestionTypes] = useState<QuestionType[]>([]);
+  const [exerciseOption, setExerciseOption] = useState<Exercise[]>([]);
+  const [formData, setFormData] = useState<FormData>({
+    exercise_id: null,
+    questions: [
+      {
+        description: '',
+        options: [],
+        question_type_id: null,
+        correctOption: 0,
       }
+    ],
+    description: '',
+    status: true,
+    excercise_type: ''
+  });
 
-      // Fetch exercise data
-      const exercise = await getExercise(exerciseId);
-      console.log('Exercise data:', exercise);
-      if (exercise.status) {
-        // Initialize form with exercise data
-        setFormData({
-          excercise_type_id: exercise?.data?.excercise_type_id,
-          chapter_id: exercise?.data?.chapter_id,
-          exercise_no: exercise?.data?.excercise_no,
-          title: exercise?.data?.title,
-          description: exercise?.data?.description,
-          sort: exercise?.data?.sort,
-          status: exercise?.data?.status
-        });
-
-        // Initialize Summernote with the exercise description
-        ($('#summernote') as any).summernote('code', exercise?.data?.description);
-      }else{
-        notFound();
-        return;
-      }
-
-      // Fetch dropdown options
-      const [typesData, chaptersData] = await Promise.all([
-        getExerciseTypes(),
-        getChapters()
-      ]);
-
-      // Set dropdown options
-      if (typesData.status) {
-        setExcerciseTypes(typesData.data.map((type: any) => ({
-          id: type.id,
-          name: type.name
-        })));
-      }
-
-      if (chaptersData.status) {
-        setChapters(chaptersData.data.map((chapter: any) => ({
-          id: chapter.id,
-          title: chapter.chapter
-        })));
-      }
-
-      
-
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      notFound();
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  fetchExerciseData();
-}, [exerciseId]);
-
+  const router = useRouter();
+  
   // Initialize Summernote
   useEffect(() => {
     const summernote = ($('#summernote') as any).summernote({
@@ -122,7 +78,9 @@ useEffect(() => {
       height: 200,
       toolbar: [
         ['style', ['bold', 'italic', 'underline', 'clear']],
-        ['view', ['codeview']]
+        ['font', ['strikethrough', 'superscript', 'subscript']],
+        ['insert', ['link', 'picture', 'video']],
+        ['view', ['codeview', 'help']]
       ],
       callbacks: {
         onChange: (content: string) => {
@@ -134,163 +92,455 @@ useEffect(() => {
     return () => summernote.summernote('destroy');
   }, []);
 
+  // Fetch initial data
+  
+  useEffect(() => {
+    const fetchQuestionData = async () => {
+      try {
+        console.log('questionId:', questionId);
+  
+        if (isNaN(questionId)) {
+          console.warn('Invalid questionId');
+          notFound();
+          return;
+        }
+  
+        // Fetch question data
+        const question = await getQuestion(questionId);
+        console.log('Fetched question:', question);
+  
+        // Fetch dropdown data regardless of question status
+        const [questionTypesData, exerciseOptionData] = await Promise.all([
+          getQuestionTypes(),
+          getExerciseOption(),
+        ]);
+        console.log('Fetched question types:', questionTypesData);
+        console.log('Fetched exercise options:', exerciseOptionData);
+  
+        // Set dropdown options
+        setQuestionTypes(
+          questionTypesData.data.map((type: any) => ({
+            id: type.id,
+            name: type.name,
+          }))
+        );
+  
+        setExerciseOption(
+          exerciseOptionData.data.map((exerciseOption: any) => ({
+            id: exerciseOption.id,
+            title: exerciseOption.title,
+            chapter: exerciseOption.chapter,
+            excercise_type: exerciseOption.excercise_type,
+          }))
+        );
+  
+        // Only proceed with form if question exists
+        if (question.status) {
+          const correctOptionId = question.data.correct_option;
+        
+          const options = question.data.options.map((opt: any) => ({
+            id: opt.id,
+            description: opt.description,
+          }));
+        
+          const correctIndex = options.findIndex((opt: option) => opt.id === correctOptionId);
+        
+          setFormData({
+            exercise_id: question.data.excercise_id,
+            questions: [
+              {
+                description: question.data.description,
+                options,
+                question_type_id: question.data.question_type_id || null,
+                correctOption: question.data.is_static ? question.data.correct_option :  correctIndex >= 0 ? correctIndex : 0,
+              }
+            ],
+            description: question.data.description,
+            status: question.data.status === 1 || question.data.status === true,
+            excercise_type: question.data.excercise_type,
+          });
+        } else {
+          console.warn('Question not found, calling notFound()');
+          notFound();
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        notFound();
+      } finally {
+        setIsLoading(false);
+      }
+    };
+  
+    fetchQuestionData();
+  }, [questionId]);
+  
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleNumberInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: Number(value) }));
-  };
-
-  const handleSelectChange = (
-    name: keyof Pick<FormData, 'chapter_id' | 'excercise_type_id'>,
-    value: number
-  ) => {
-    setFormData(prev => ({
-      ...prev,
-      [name]: value ? null : Number(value)
+  const addQuestion = () => {
+    const hasEmptyDescription = formData.questions.some(
+      question => question.description.trim() === ''
+    );
+  
+    if (hasEmptyDescription) {
+      toast.error('Please fill all question descriptions before adding a new one.');
+      return;
+    }
+    
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      questions: [
+        ...prevFormData.questions,
+        {
+          description: '',
+          options: [],
+          question_type_id: null,
+          correctOption: 0,
+        }
+      ]
     }));
   };
 
+  const removeQuestion = (index: number) => {
+    if (formData.questions.length === 1) return;
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      questions: prevFormData.questions.filter((_, i) => i !== index)
+    }));
+  };
+
+  // Add Option to specific question
+  const addOption = (qIndex: number) => {
+    const currentOptions = formData.questions[qIndex].options;
+  
+    // Check for empty descriptions
+    const hasEmpty = currentOptions.some(opt => opt.description.trim() === '');
+    if (hasEmpty) {
+      toast.error('Please fill all existing options before adding a new one.');
+      return;
+    }
+  
+    const updatedQuestions = [...formData.questions];
+  
+    updatedQuestions[qIndex].options.push({
+      id: Date.now(), // temporary unique ID; replace with backend ID if needed
+      description: '',
+    });
+  
+    setFormData({ ...formData, questions: updatedQuestions });
+  };
+
+  // Remove Option from specific question
+  const removeOption = (qIndex: number, optIndex: number) => {
+    const updatedQuestions = [...formData.questions];
+    if (updatedQuestions[qIndex].options.length === 1) return;
+    updatedQuestions[qIndex].options.splice(optIndex, 1);
+    setFormData({ ...formData, questions: updatedQuestions });
+  };
+
+  // Update Option Value
+  const updateOption = (qIndex: number, optIndex: number, value: string) => {
+    const updatedQuestions = [...formData.questions];
+  
+    updatedQuestions[qIndex].options[optIndex] = {
+      ...updatedQuestions[qIndex].options[optIndex],
+      description: value,
+    };
+  
+    setFormData({ ...formData, questions: updatedQuestions });
+  };
+
+  const handleSelectChange = (name: string, value: string) => {
+    console.log('Selected value:', value);
+    // return false;
+    // if(name === 'exercise_id') {
+    //   const exercise = exerciseOption.find(ex => ex.id === Number(value));
+    //   console.log('Selected exercise:', exercise);
+    //   if (exercise) {
+    //     setFormData(prev => ({ ...prev, ['excercise_type']: exercise.excercise_type }));
+    //   }
+    // }
+    
+    // setFormData(prev => ({ ...prev, [name]: Number(value) }));
+  };
+  
+  const handleQuestionTypeChange = (qIndex: number, value: string) => {
+    console.log('Selected question type:', value);
+    return false
+    const updatedQuestions = [...formData.questions];
+    updatedQuestions[qIndex].question_type_id = Number(value);
+    setFormData({ ...formData, questions: updatedQuestions });
+  };
+
+  const updateCorrectOption = (qIndex: number, optIndex: number) => {
+    const updatedQuestions = [...formData.questions];
+    updatedQuestions[qIndex].correctOption = optIndex;
+    setFormData({ ...formData, questions: updatedQuestions });
+  };
+
+  const updateCorrectOptionForInputField = (qIndex: number, optValue: string) => {
+    const updatedQuestions = [...formData.questions];
+    updatedQuestions[qIndex].correctOption = optValue;
+    setFormData({ ...formData, questions: updatedQuestions });
+  };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form data:', formData);
-    if (!formData.excercise_type_id || !formData.chapter_id || !formData.title || !formData.exercise_no) {
-        toast.error('Please fill all required fields');
+    console.log('Form data:', JSON.stringify(formData));
+    
+    if (!formData.exercise_id) {
+        toast.error('Please select an exercise');
         return;
     }
+    
+    // Check if all questions have a question type
+    const hasEmptyQuestionType = formData.questions.some(
+      question => !question.question_type_id
+    );
+    
+    if (hasEmptyQuestionType) {
+      toast.error('Please select a question type for all questions');
+      return;
+    }
+    console.log('Form data:', formData);
+    // return;
     try {
-        const response = await updateExercise(exerciseId, {
-            ...formData,
-            excercise_type_id: formData.excercise_type_id as number,
-            chapter_id: formData.chapter_id as number
-          });
-        console.log('Exercise created:', response);
+      const response = await updateQuestion(questionId, {
+        exercise_id: formData.exercise_id!,
+        description: formData.description,
+        status: formData.status,
+        excercise_type: formData.excercise_type,
+        questions: formData.questions.map((question) => ({
+          description: question.description,
+          options:
+            question.question_type_id === 3
+              ? [] // Static questions don't have options
+              : question.options.map((opt) =>
+                  typeof opt === 'string' ? opt : { id: opt.id, description: opt.description }
+                ),
+          question_type_id: question.question_type_id ?? 0,
+          correctOption: question.correctOption,
+        })),
+      });
+        
+        console.log('Questions Updated:', response);
+        
         if(response.status === false) {
           toast.error(response.message);
           return;
-
-        }else{
-            toast.success('Exercise created successfully');
-            router.push("/admin/exercise");
+        } else {
+            toast.success('Questions updated successfully');
+            router.push("/admin/questions");
         }
-      } catch (error) {
-        console.error('Error creating exercise:', error);
-      }
+    } catch (error) {
+        console.error('Error updating questions:', error);
+        toast.error('Failed to update questions');
+    }
   };
 
-  const exerciseTypeOptions = excerciseTypes.map(type => ({
+  // Convert data to Select options format
+  const questionTypeOptions = questionTypes.map(type => ({
     value: type.id,
     label: type.name
   }));
 
-  const chapterOptions = chapters.map(chapter => ({
-    value: chapter.id,
-    label: chapter.title
+  const exerciseOptionsData = exerciseOption.map(exercise => ({
+    value: exercise.id,
+    label: exercise.title
   }));
-
-
 
   return (
     <form onSubmit={handleSubmit}>
       <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-6">
         <h3 className="mb-5 text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-7">
-          Update Exercise
+          Update Question
         </h3>
-       
+
         {/* Required Fields */}
-        <div className="flex gap-20 mx-9 mb-8">
+        <div className="flex gap-10 mx-9 mb-8">
           <div className="flex-1">
-            <Label>Exercise Type*</Label>
+            <Label>Exercise*</Label>
             <div className="relative">
               <Select
-                options={exerciseTypeOptions}
-                placeholder="Select Exercise Type"
-                onChange={(value: number) => handleSelectChange('excercise_type_id', value)}
+                options={exerciseOptionsData}
+                placeholder="Select Exercise"
                 className="dark:bg-dark-900"
-                value={formData.excercise_type_id}
-                required
+                value={formData.exercise_id}
+                onChange={(value: string) => handleSelectChange('exercise_id', value)}
+                required={true}
+                disabled={true}
               />
               <ChevronDownIcon className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400" />
             </div>
           </div>
 
           <div className="flex-1">
-            <Label>Chapter*</Label>
+            <Label>Exercise Type*</Label>
             <div className="relative">
-            <Select
-              options={chapterOptions}
-              placeholder="Select Chapter"
-              onChange={(value: number) => handleSelectChange('chapter_id', value)}
-              value={formData.chapter_id}
-              required
-            />
-              <ChevronDownIcon className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400" />
+              <Input
+                type="text"
+                name="title"
+                placeholder="Exercise Type"
+                value={formData.excercise_type}
+                disabled={true}
+              />
             </div>
           </div>
         </div>
-        
-        <div className="flex gap-10 mx-9 mb-8">
-          <div className="flex-1">
-            <Label>Exercise Number*</Label>
-            <Input
-              type="text"
-              name="exercise_no"
-              placeholder="e.g., EX-001"
-              value={formData.exercise_no}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <div className="flex-1">
-            <Label>Sort Order</Label>
-            <Input
-              type="number"
-              name="sort"
-              placeholder="Order number"
-              value={formData.sort}
-              onChange={handleNumberInputChange}
-            />
-          </div>
-        </div>
 
-        <div className="flex gap-10 mx-9 mb-8">
-          <div className="flex-1">
-            <Label>Title*</Label>
-            <Input
-              type="text"
-              name="title"
-              placeholder="Exercise title"
-              value={formData.title}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-        </div>
+        <div className="mx-9 mb-8">
+          <Label>Question Description*</Label>
+          {formData.questions.map((question, qIndex) => (
+            <div key={qIndex} className="mb-4 border p-4 rounded">
+              {/* Question Type dropdown moved inside each question card */}
+              <div className="mb-3">
+                <Label>Question Type*</Label>
+                <div className="relative mb-3">
+                  <Select
+                    options={questionTypeOptions}
+                    placeholder="Select Question Type"
+                    className="dark:bg-dark-900"
+                    value={question.question_type_id}
+                    onChange={(value: string) => handleQuestionTypeChange(qIndex, value)}
+                    required={true}
+                    disabled={true}
+                  />
+                  <ChevronDownIcon className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400" />
+                </div>
+              </div>
+              
 
-        <div className="flex gap-10 mx-9 mb-8">
-          <div className="flex-1">
-            <Label>Description</Label>
-            <textarea id="summernote"></textarea>
-          </div>
+              {(question.question_type_id === 1 || question.question_type_id === 2)  && (
+                <div className="mb-3">
+                  <label className="text-gray-700">Question Title</label>
+                  <div className="flex items-center mb-3">
+                    <input
+                      type="text"
+                      placeholder={`Question ${qIndex + 1}`}
+                      value={question.description}
+                      onChange={(e) => {
+                        const updatedQuestions = [...formData.questions];
+                        updatedQuestions[qIndex].description = e.target.value;
+                        setFormData({ ...formData, questions: updatedQuestions });
+                      }}
+                      className="border p-2 rounded w-full mr-2"
+                    />
+                    {/* {formData.questions.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => removeQuestion(qIndex)}
+                        className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                      > - </button>
+                    )} */}
+                  </div>
+                
+                  <div className="mt-3 ml-4">
+                    <Label>Options</Label>
+                    {question.options.map((option, optIndex) => (
+                      <div key={optIndex} className="flex items-center gap-2 mb-2">
+                        <input
+                          type="text"
+                          value={option.description}
+                          onChange={(e) => updateOption(qIndex, optIndex, e.target.value)}
+                          placeholder={`Option ${optIndex + 1}`}
+                          className="border p-2 rounded w-full"
+                        />
+
+                        {/* Correct option radio button */}
+                        <input
+                          type="radio"
+                          name={`correctOption-${qIndex}`}
+                          checked={question.correctOption === optIndex}
+                          onChange={() => updateCorrectOption(qIndex, optIndex)}
+                          className="accent-green-600"
+                          title="Mark as Correct"
+                        />
+
+                        {question.options.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => removeOption(qIndex, optIndex)}
+                            className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                          > - </button>
+                        )}
+                      </div>
+                    ))}
+
+                    {/* <button
+                      type="button"
+                      onClick={() => addOption(qIndex)}
+                      className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 mt-2"
+                    >
+                      Add Option
+                    </button> */}
+                  </div>
+                </div>
+              ) }
+              {(question.question_type_id === 3)  && (
+                <div className="mb-3">
+                  <label className="text-gray-700">Question Title</label>
+                  <div className="flex items-center mb-3">
+                    <input
+                      type="text"
+                      placeholder={`Question ${qIndex + 1}`}
+                      value={question.description}
+                      onChange={(e) => {
+                        const updatedQuestions = [...formData.questions];
+                        updatedQuestions[qIndex].description = e.target.value;
+                        setFormData({ ...formData, questions: updatedQuestions });
+                      }}
+                      className="border p-2 rounded w-full mr-2"
+                    />
+                    {/* {formData.questions.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => removeQuestion(qIndex)}
+                        className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                      > - </button>
+                    )} */}
+                  </div>
+
+                  <div className="mt-3 ml-4">
+                    <Label>Answer</Label>
+                    <input
+                          type="text"
+                          name={`correctOption-${qIndex}`}
+                          value={question.correctOption}
+                          onChange={(e) => updateCorrectOptionForInputField(qIndex, e.target.value)}
+                          placeholder={`Answer`}
+                          className="border p-2 rounded w-[40%] mr-2"
+                        />
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+
+          {/* <button
+            type="button"
+            onClick={addQuestion}
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          >
+            Add Question
+          </button> */}
         </div>
 
         <div className="flex justify-end mt-6">
           <button
             type="submit"
-            className="px-6 py-2 text-white bg-green-600 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2"
+            className="px-6 py-2 text-white bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2"
           >
             Update
           </button>
           <button
             type="button"
-            onClick={() => router.push("/admin/exercise")}
-            className="px-6 py-2 text-white bg-blue-600 rounded-lg hover:bg-white-700 focus:outline-none focus:ring-2"
+            onClick={() => router.push("/admin/questions")}
+            className="px-6 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2"
           >
             Back
-          </button>          
+          </button>
         </div>
       </div>
     </form>

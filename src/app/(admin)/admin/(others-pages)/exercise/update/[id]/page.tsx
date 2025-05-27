@@ -201,7 +201,22 @@ useEffect(() => {
         </h3>
        
         {/* Required Fields */}
-        <div className="flex gap-20 mx-9 mb-8">
+        
+        <div className="flex gap-10 mx-9 mb-8">
+          <div className="flex-1">
+            <Label>Title*</Label>
+            <Input
+              type="text"
+              name="title"
+              placeholder="Exercise title"
+              value={formData.title}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+        </div>
+
+        <div className="flex gap-10 mx-9 mb-8">
           <div className="flex-1">
             <Label>Exercise Type*</Label>
             <div className="relative">
@@ -252,20 +267,6 @@ useEffect(() => {
               placeholder="Order number"
               value={formData.sort}
               onChange={handleNumberInputChange}
-            />
-          </div>
-        </div>
-
-        <div className="flex gap-10 mx-9 mb-8">
-          <div className="flex-1">
-            <Label>Title*</Label>
-            <Input
-              type="text"
-              name="title"
-              placeholder="Exercise title"
-              value={formData.title}
-              onChange={handleInputChange}
-              required
             />
           </div>
         </div>

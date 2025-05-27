@@ -3,27 +3,26 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
   try {
-    // Extract query parameters
     const searchParams = req.nextUrl.searchParams;
-    const chapter_id = searchParams.get('chapter_id');
-    const page = searchParams.get('page');
     const token = req.headers.get("authorization");
 
-    // Validate backend URL
     if (!process.env.NEXT_PUBLIC_API_URL) {
       throw new Error('API base URL is not configured');
     }
 
-    // Build the backend URL with query params
-    const backendUrl = new URL(`${process.env.NEXT_PUBLIC_API_URL}/admin/excercises`);
-    if (chapter_id) backendUrl.searchParams.append('chapter_id', chapter_id);
-    if (page) backendUrl.searchParams.append('page', page);
+    // Build backend URL
+    const backendUrl = new URL(`${process.env.NEXT_PUBLIC_API_URL}/admin/questions`);
+
+    // Append all query parameters (e.g., ?page=2)
+    for (const [key, value] of searchParams.entries()) {
+      backendUrl.searchParams.append(key, value);
+    }
 
     const backendResponse = await fetch(backendUrl.toString(), {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
+        "Authorization": `Bearer ${token}`,
       },
       cache: 'no-store'
     });
@@ -31,7 +30,7 @@ export async function GET(req: NextRequest) {
     if (!backendResponse.ok) {
       const errorData = await backendResponse.json();
       return NextResponse.json(
-        { status: false, message: errorData.message || 'Failed to fetch exercises' },
+        { status: false, message: errorData.message || 'Failed to fetch questions' },
         { status: backendResponse.status }
       );
     }
@@ -40,7 +39,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(data, { status: 200 });
 
   } catch (error) {
-    console.error('GET exercises error:', error);
+    console.error('GET questions error:', error);
     return NextResponse.json(
       { status: false, message: 'Internal server error' },
       { status: 500 }
@@ -49,6 +48,13 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+
+interface Question {
+  description: string;
+  options: string[];
+  question_type_id?: number | null;
+  correctOption: number | string;
+}
   try {
     if (!process.env.NEXT_PUBLIC_API_URL) {
       throw new Error('API base URL is not configured');
@@ -57,14 +63,26 @@ export async function POST(req: NextRequest) {
     const requestData = await req.json();
     const token = req.headers.get("authorization");
     // Validate required fields
-    if (!requestData.excercise_type_id || !requestData.chapter_id || !requestData.title || !requestData.exercise_no) {
+    if (!requestData.excercise_id) {
       return NextResponse.json(
-        { status: false, message: 'Missing required fields' },
+        { status: false, message: 'Please select an exercise' },
         { status: 400 }
       );
     }
-
-    const backendResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/excercises`, {
+    
+    // Check if all questions have a question type
+    const hasEmptyQuestionType = (requestData.questions as Question[]).some(
+      (question: Question) => !question.question_type_id
+    );
+    
+    if (hasEmptyQuestionType) {
+      return NextResponse.json(
+        { status: false, message: 'Please select a question type for all questions' },
+        { status: 400 }
+      );
+    }
+console.log('JSON.stringify(requestData)', JSON.stringify(requestData))
+    const backendResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/questions`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -77,7 +95,7 @@ export async function POST(req: NextRequest) {
     const contentType = backendResponse.headers.get('content-type');
     if (!contentType || !contentType.includes('application/json')) {
       const text = await backendResponse.text();
-      throw new Error(`Unexpected response: ${text.substring(0, 100)}...`);
+      throw new Error(`Unexpected response: ${text}...`);
     }
 
     const data = await backendResponse.json();
