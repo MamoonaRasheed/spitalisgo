@@ -9,7 +9,7 @@ import Button from "@/components/ui/button/Button";
 import { PlusIcon } from "@/icons";
 import { useRouter } from "next/navigation";
 
-export default function BasicTables() {
+export default function ExercisePage() {
   
   const router = useRouter();
 

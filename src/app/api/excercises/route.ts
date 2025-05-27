@@ -10,7 +10,9 @@ export async function GET(req: NextRequest) {
 
     if (slug) {
       // Specific exercise ka data lana slug ke through
-      backendUrl = new URL(`${process.env.NEXT_PUBLIC_API_URL}/excercises/${slug}`);
+      backendUrl = new URL(`${process.env.NEXT_PUBLIC_API_URL}/excercises`);
+      backendUrl.searchParams.append('slug', slug);
+  
     } else {
       // Saare exercises lana chapter ke through
       backendUrl = new URL(`${process.env.NEXT_PUBLIC_API_URL}/excercises`);
@@ -26,6 +28,7 @@ export async function GET(req: NextRequest) {
 
     // console.log('backendResponse',backendResponse)
     const data = await backendResponse.json();
+    
 
     return NextResponse.json(data, { status: backendResponse.status });
 
