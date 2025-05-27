@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 interface User {
   email: string;
-  // add more fields as needed
+  role: "admin" | "student";
 }
 
 interface AuthContextType {

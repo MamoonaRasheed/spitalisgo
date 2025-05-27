@@ -1,4 +1,6 @@
 import ProtectedRoute from "@/components/common/ProtectedRoute";
+import StudentProtectedRoute from "@/components/common/StudentProtectedRoute";
+import AdminProtectedRoute from "@/components/common/AdminProtectedRoute";
 import React from "react";
 
 
@@ -9,11 +11,19 @@ export default function AdminLayout({
 }) {
     return (
 
-        <ProtectedRoute>
+        // <ProtectedRoute>
+        <AdminProtectedRoute>
 
-            {children}
+            <StudentProtectedRoute>
 
-        </ProtectedRoute>
+                <>
+
+                    {children}
+                </>
+            </StudentProtectedRoute>
+        </AdminProtectedRoute>
+
+        // </ProtectedRoute>
     );
 
 }
