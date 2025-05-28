@@ -349,8 +349,9 @@ export default function Task() {
 
             console.log(payload, "payload");
             const response = await checkQuestionAnswers(payload);
+            const { correct_answers } = response.data;
 
-            const mappedResults = response.correct_answers.reduce((acc: Record<number, boolean | { option_id: number, is_correct: boolean }[]>, item: any) => {
+            const mappedResults = correct_answers.reduce((acc: Record<number, boolean | { option_id: number, is_correct: boolean }[]>, item: any) => {
                 acc[item.question_id] = item.answers ?? item.is_correct;
                 return acc;
             }, {});
