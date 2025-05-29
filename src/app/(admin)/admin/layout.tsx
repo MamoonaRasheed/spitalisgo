@@ -6,6 +6,7 @@ import AppSidebar from "@/layout/AppSidebar";
 import Backdrop from "@/layout/Backdrop";
 import React from "react";
 import ProtectedRoute from "@/components/common/ProtectedRoute";
+import AdminProtectedRoute from "@/components/common/AdminProtectedRoute";
 
 
 
@@ -24,7 +25,9 @@ export default function AdminLayout({
 
   return (
     <div className="min-h-screen xl:flex">
-      <ProtectedRoute>
+      {/* <ProtectedRoute> */}
+      <AdminProtectedRoute>
+
 
 
         <AppSidebar />
@@ -37,7 +40,10 @@ export default function AdminLayout({
             {children}
           </div>
         </div>
-      </ProtectedRoute>
+
+        
+      </AdminProtectedRoute>
+      {/* </ProtectedRoute> */}
     </div>
   );
 

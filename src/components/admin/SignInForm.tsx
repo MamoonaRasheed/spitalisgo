@@ -7,7 +7,7 @@ import { EyeCloseIcon, EyeIcon } from "@/icons";
 import Link from "next/link";
 import React, { useState } from "react";
 import { toast } from 'react-toastify';
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import axios from '@/utils/axios';
 import { useAuth } from "@/context/AuthContext";
 import LoadingSpinner from "@/components/loader/Loader"; // Assuming you have this
@@ -20,6 +20,7 @@ export default function SignInForm() {
   const [error, setError] = useState<{ email?: string; password?: string; general?: string }>({});
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { login } = useAuth();
 
   const validateForm = () => {
@@ -46,6 +47,7 @@ export default function SignInForm() {
     return isValid;
   };
 
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -55,12 +57,23 @@ export default function SignInForm() {
     try {
       const response = await axios.post('/login', { email, password });
       const data = response.data;
+      // if(data){
 
-      login(data.access_token, { email }); // you can expand this user data based on your API response
+      // }
+      console.log("user data in login request=====================", data);
+
+      login(data.access_token, {
+        email: data.user.email,
+        role: data.user.role
+      });
+      localStorage.setItem('username', data.user.name);
 
       toast.success(data.message);
-      router.push("/admin");
-      
+
+      // Get the callback URL if available
+      const callbackUrl = searchParams.get("callbackUrl");
+      console.log("callllbbbbaaacckkkkkk---------------------------==---------",callbackUrl)
+      router.push(callbackUrl || "/admin"); // Fallback to /admin if not provided
     } catch (err: any) {
       console.error(err);
       const errorMessage = err?.response?.data?.message || 'An unexpected error occurred';
@@ -69,6 +82,7 @@ export default function SignInForm() {
       setIsLoading(false);
     }
   };
+
 
   if (isLoading) {
     return (

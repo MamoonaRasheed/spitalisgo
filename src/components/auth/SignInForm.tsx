@@ -1,9 +1,10 @@
+
 "use client";
 import { EyeCloseIcon, EyeIcon } from "@/icons";
 import Link from "next/link";
 import React, { useState } from "react";
 import { toast } from 'react-toastify';
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import axios from '@/utils/axios';
 import LoadingSpinner from "@/components/loader/Loader"; // import your spinner
@@ -15,6 +16,7 @@ export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<{ email?: string; password?: string }>({});
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
 
@@ -54,11 +56,13 @@ export default function SignInForm() {
 
       localStorage.setItem('username', data.user.name);
 
-      login(data.access_token, { email }); // you can expand this user data based on your API response
+      login(data.access_token, { email: data.user.email, role: data.user.role });
 
       toast.success(data.message);
-      router.push("/");
-      
+
+      // Get callbackUrl from query params
+      const callbackUrl = searchParams.get("callbackUrl");
+      router.push(callbackUrl || "/");
     } catch (err: any) {
       console.error(err);
       const errorMessage = err?.response?.data?.message || 'An unexpected error occurred';
@@ -77,7 +81,7 @@ export default function SignInForm() {
   }
 
   return (
-    
+
     <section id="auth-main">
       <div className="container">
         <div className="auth-align">

@@ -17,8 +17,11 @@ interface Exercise {
     title: string;
     slug: string;
     excercise_no: string;
-    progress: number;
+    progress: {
+        percentage: number;
+    };
 }
+
 
 export default function Category() {
     const params = useParams();
@@ -31,14 +34,20 @@ export default function Category() {
         const fetchChapters = async () => {
             try {
                 const response = await getChapters({
-                    exam: exam as string, 
-                    course: course as string, 
-                    category: category as string });
+                    exam: exam as string,
+                    course: course as string,
+                    category: category as string
+                });
                 setChapters(response.data);
                 if (response.data.length > 0) {
                     const firstChapterId = response.data[0].id;
                     setSelectedChapterId(firstChapterId);
                     fetchExercises(firstChapterId);
+                }
+                else
+                {
+                    setExercises([]);
+                    setLoading(false);
                 }
             } catch (error) {
                 console.error('Error fetching chapters:', error);
@@ -49,6 +58,7 @@ export default function Category() {
             fetchChapters();
         }
     }, [exam, course, category]);
+
     const fetchExercises = async (chapterId: number) => {
         try {
             const response = await getExcercises({ chapter_id: chapterId });
@@ -90,45 +100,59 @@ export default function Category() {
                                 ))}
                             </ul>
                         </div>
-    
+
                         <div className="category-tab-content">
                             <div className="title-category-tab-content">
                                 <h3>{exam} <span>{category}</span> Übungen</h3>
                             </div>
-    
+
                             <div className="listing-categories-tab">
                                 {exercises?.length > 0 ? (
-                                    exercises?.map((exercise) => (
-                                        <div className="main-box-list" key={exercise.id}>
-                                            <a href={`${category}/${exercise?.slug}`}>
-                                                <div className="listig-title-left">
-                                                    <div className="checkmark-icon">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                                            <path d="M4 12.0005L8.94975 16.9502L19.5572 6.34375" stroke="#F7631B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                                        </svg>
+                                    exercises.map((exercise) => {
+
+                                        const percentage = Number(exercise.progress.percentage) || 0;
+                                        const progressColor = percentage > 0 ? '#00c853' : '#df0000';
+                                        console.log("progressStatus-------------------------------", percentage)
+
+
+                                        return (
+                                            <div className="main-box-list" key={exercise.id}>
+                                                <a href={`${category}/${exercise?.slug}`}>
+                                                    <div className="listig-title-left">
+                                                        <div className="checkmark-icon">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                                                <path
+                                                                    d="M4 12.0005L8.94975 16.9502L19.5572 6.34375"
+                                                                    stroke="#F7631B"
+                                                                    strokeWidth="2"
+                                                                    strokeLinecap="round"
+                                                                    strokeLinejoin="round"
+                                                                />
+                                                            </svg>
+                                                        </div>
+                                                        <div className="title-box-category">
+                                                            <p>{exercise.excercise_no}</p>
+                                                            <h4>{exercise.title}</h4>
+                                                        </div>
                                                     </div>
-                                                    <div className="title-box-category">
-                                                        <p>{exercise.excercise_no}</p>
-                                                        <h4>{exercise.title}</h4>
+
+                                                    <div className="listening-list__progress">
+                                                        <div
+                                                            className="progress-circle"
+                                                            style={{
+                                                                background: `conic-gradient(${progressColor} ${percentage}%, #d4cdbf 0% 100%)`,
+                                                            }}
+                                                        />
+                                                        <span>{percentage}%</span>
                                                     </div>
-                                                </div>
-    
-                                                <div className="listening-list__progress">
-                                                    <div
-                                                        className="progress-circle"
-                                                        data-progress="0"
-                                                        style={{
-                                                            background: 'conic-gradient(#df0000 4% 0%, #d4cdbf 0% 100%)'
-                                                        }}
-                                                    />
-                                                    <span>0%</span>
-                                                </div>
-                                            </a>
-                                        </div>
-                                    ))
+                                                </a>
+                                            </div>
+                                        );
+                                    })
                                 ) : (
                                     <p>No exercises found for this chapter.</p>
                                 )}
+
                             </div>
                         </div>
                     </div>
@@ -136,5 +160,5 @@ export default function Category() {
             </section>
         )
     );
-    
+
 }

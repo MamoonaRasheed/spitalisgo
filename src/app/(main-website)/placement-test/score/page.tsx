@@ -85,7 +85,7 @@ const [results, setResults] = useState({
                 </div>
                 <p >In der Ergebnisübersicht sehen Sie, welche Aufgaben Sie mit welchem Ergebnis bearbeitet haben. Diese Übersicht können Sie sich ausdrucken.</p>
                 
-                <button type="button" className="styled-button mt-4 mb-4" onClick={() => router.push('/placement-test/correct_answers')}>ERGEBNISÜBERSICHT</button>
+                <button type="button" className="styled-button mt-4 mb-4" onClick={() => router.push('/placement-test/correct-answers')}>ERGEBNISÜBERSICHT</button>
                 <p>Außerdem können Sie sich die Detailauswertung Ihres Tests sowie die richtigen Lösungen anzeigen lassen.</p>
                 <button type="button" className="styled-button mt-4 mb-4" onClick={() => router.push('/placement-test/result')}>DETAILAUSWERTUNG</button>
                 

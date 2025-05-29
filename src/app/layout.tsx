@@ -20,6 +20,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+         {/* Favicon */}
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        
         {/* CSS Links */}
         <link
           href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"

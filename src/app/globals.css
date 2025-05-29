@@ -2423,7 +2423,7 @@ input.login__form-input.border-red{
   border: 2px solid #dd0000;
 }
 .border-red{
-  border: 2px solid #dd0000;
+  border: 2px solid #dd0000 !important;
 }
 span.span-select.error {
   border: 2px solid #dd0000;
