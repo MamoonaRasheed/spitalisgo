@@ -17,8 +17,11 @@ interface Exercise {
     title: string;
     slug: string;
     excercise_no: string;
-    progress: number;
+    progress: {
+        percentage: number;
+    };
 }
+
 
 export default function Category() {
     const params = useParams();
@@ -41,6 +44,11 @@ export default function Category() {
                     setSelectedChapterId(firstChapterId);
                     fetchExercises(firstChapterId);
                 }
+                else
+                {
+                    setExercises([]);
+                    setLoading(false);
+                }
             } catch (error) {
                 console.error('Error fetching chapters:', error);
             }
@@ -50,7 +58,7 @@ export default function Category() {
             fetchChapters();
         }
     }, [exam, course, category]);
-    
+
     const fetchExercises = async (chapterId: number) => {
         try {
             const response = await getExcercises({ chapter_id: chapterId });
@@ -101,9 +109,12 @@ export default function Category() {
                             <div className="listing-categories-tab">
                                 {exercises?.length > 0 ? (
                                     exercises.map((exercise) => {
+
                                         const percentage = Number(exercise.progress.percentage) || 0;
                                         const progressColor = percentage > 0 ? '#00c853' : '#df0000';
-                                        console.log("progressStatus-------------------------------",percentage)
+                                        console.log("progressStatus-------------------------------", percentage)
+
+
                                         return (
                                             <div className="main-box-list" key={exercise.id}>
                                                 <a href={`${category}/${exercise?.slug}`}>

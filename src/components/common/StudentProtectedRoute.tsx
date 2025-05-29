@@ -18,11 +18,12 @@ const StudentProtectedRoute = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (!isMounted) return;
 
+    const currentPath = window.location.pathname;
+    const encodedPath = encodeURIComponent(currentPath);
+
     if (!user) {
-      router.push("/signin");
-    } else if (user.role !== "student") {
-      router.push("/unauthorized"); // Optional
-    } else {
+      router.push(`/signin?callbackUrl=${encodedPath}`);
+    }else {
       setIsLoading(false);
     }
   }, [user, isMounted, router]);

@@ -8,9 +8,11 @@ import { createRoot, Root } from 'react-dom/client';
 import { PlayIcon, PauseIcon, MuteIcon, UnmuteIcon } from "@/icons";
 import ExerciseRenderer from "@/components/common/ExerciseRenderer";
 import LoadingSpinner from "@/components/loader/Loader";
+import { toast } from 'react-toastify';
 interface Option {
     id: number,
     description: string;
+    is_correct?: boolean;
 }
 
 interface Question {
@@ -68,6 +70,7 @@ export default function Exercise() {
         }
     }, [slug]);
 
+    
     const containerRef = useRef<HTMLDivElement | null>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const [showResults, setShowResults] = useState(false);
@@ -249,18 +252,16 @@ export default function Exercise() {
                     })) || [],
             };
 
-            console.log(payload, "payload");
             const response = await checkQuestionAnswers(payload);
             const { correct_answers } = response.data;
 
             const mappedResults = correct_answers.reduce(
-                (acc: Record<number, boolean | { option_id: number, is_correct: boolean }[]>, item: any) => {
-                    acc[item.question_id] = item.answers ?? item.is_correct;
+                (acc: Record<number, boolean>, item: any) => {
+                    acc[item.question_id] = item.is_correct;
                     return acc;
                 },
                 {}
             );
-
 
             setCheckResults(mappedResults);
             setCheckDropdownResults(mappedResults);
@@ -289,14 +290,18 @@ export default function Exercise() {
 
         try {
             setLoading(true); // Show loading state
-            const result = await submitAnswers(selectedAnswers);
-            console.log('Answers submitted:', result);
+            const hasAnswers = Object.keys(selectedAnswers).length > 0;
+
+            if (hasAnswers) {
+                const result = await submitAnswers(selectedAnswers);
+                console.log('Answers submitted:', result);
+            }
             console.log('Navigating to slug:', slug);
 
             await router.push(`${slug}`); // Navigate after submission
         } catch (error: any) {
             console.error('Error submitting answers:', error?.message || error);
-            alert(`Error: ${error?.message || "Something went wrong."}`);
+            toast.error(error?.message || "Something went wrong.");
         } finally {
             setLoading(false); // End loading state
         }
@@ -369,40 +374,64 @@ export default function Exercise() {
                                                             <form method="post" data-gtm-form-interact-id="0">
                                                                 {exerciseData?.questions?.map((question, index) => {
                                                                     const selected = selectedAnswers[question.id];
+                                                                    const questionResult = checkResults[question.id];
 
                                                                     return (
                                                                         <div key={index} className="list__ unset-input">
                                                                             <p className="label text p2_semibold">{question?.description}</p>
 
-                                                                            {/* ✅ Checkbox question (multiple options) */}
+                                                                            {/* Checkbox question (multiple options) */}
                                                                             {question?.question_type === 'radio' && question.options.map((option, idx) => {
-                                                                                // Check result for current question
-                                                                                const answers = (Array.isArray(checkResults[question.id]) ? checkResults[question.id] : []) as Array<{ option_id: number; is_correct: boolean }>;
-                                                                                const answerResult = answers.find((ans) => ans.option_id === option.id);
-                                                                                const isChecked = Array.isArray(selected) && selected.includes(option.id);
-                                                                                const isCorrect = answerResult?.is_correct === true;
+                                                                                // For checkbox questions, selectedAnswers stores an array of selected option IDs
+                                                                                const isSelected = Array.isArray(selected)
+                                                                                    ? selected.includes(option.id)
+                                                                                    : false;
+
+                                                                                // Determine if this selected option is correct
+                                                                                let isCorrect = false;
+                                                                                if (showResults && isSelected && questionResult) {
+                                                                                    if (Array.isArray(questionResult)) {
+                                                                                        const answerInfo = questionResult.find(a => a.option_id === option.id);
+                                                                                        isCorrect = answerInfo?.is_correct ?? false;
+                                                                                    } else {
+                                                                                        // If questionResult is boolean, it applies to the entire question
+                                                                                        isCorrect = questionResult;
+                                                                                    }
+                                                                                }
 
                                                                                 return (
-                                                                                    <div key={idx} className={`option-field-main ${showResults && isChecked ? (isCorrect ? 'border-green' : 'border-red') : ''}`}>
+                                                                                    <div
+                                                                                        key={idx}
+                                                                                        className={`option-field-main ${showResults && isSelected
+                                                                                                ? (isCorrect ? 'border-green' : 'error')
+                                                                                                : ''
+                                                                                            }`}
+                                                                                    >
                                                                                         <input
                                                                                             type="checkbox"
                                                                                             name={`option_${question.id}_${option.id}`}
-                                                                                            checked={isChecked}
+                                                                                            checked={isSelected}
                                                                                             onChange={() => handleOptionChange(question.id, option.id, 'checkbox')}
+                                                                                            disabled={showResults}
                                                                                         />
                                                                                         <label>{option.description}</label>
                                                                                     </div>
                                                                                 );
                                                                             })}
 
-                                                                            {/* ✅ Text input question */}
-                                                                            {(question?.question_type === 'input_field' && question?.is_static != 1) && (
+                                                                            {/* Rest of your code for text inputs remains the same */}
+                                                                            {question?.question_type === 'input_field' && question?.is_static != 1 && (
                                                                                 <div className="form_input">
                                                                                     <span className="field">
                                                                                         <input
                                                                                             type="text"
                                                                                             name={`antwort_${question?.id ?? index}`}
-                                                                                            className={`login__form-input ${showResults ? (checkResults[question.id] === true ? 'border-green' : 'border-red') : ''}`}
+                                                                                            className={`login__form-input ${showResults
+                                                                                                    ? (questionResult === true
+                                                                                                        ? 'border-green'
+                                                                                                        : 'border-red')
+                                                                                                    : ''
+                                                                                                }`}
                                                                                             placeholder=""
                                                                                             aria-label={`antwort_${question?.id ?? index}`}
                                                                                             value={typeof selected === 'string' ? selected : ''}
@@ -412,12 +441,13 @@ export default function Exercise() {
                                                                                                     [question.id]: e.target.value,
                                                                                                 }))
                                                                                             }
+                                                                                            disabled={showResults}
                                                                                         />
                                                                                     </span>
                                                                                 </div>
                                                                             )}
 
-                                                                            {(question?.question_type === 'input_field' && question?.is_static == 1) && (
+                                                                            {question?.question_type === 'input_field' && question?.is_static == 1 && (
                                                                                 <div className="form_input">
                                                                                     <span className="field">
                                                                                         <input
@@ -427,6 +457,7 @@ export default function Exercise() {
                                                                                             placeholder=""
                                                                                             aria-label={`antwort_${question?.id ?? index}`}
                                                                                             value={question?.value}
+                                                                                            readOnly
                                                                                         />
                                                                                     </span>
                                                                                 </div>
@@ -434,9 +465,6 @@ export default function Exercise() {
                                                                         </div>
                                                                     );
                                                                 })}
-
-
-
                                                             </form>
                                                         </div>
                                                     </div>
@@ -454,20 +482,25 @@ export default function Exercise() {
                                                                 return (
                                                                     <div className="notizen" key={`notebook-${question.id || index}`}>
                                                                         <div dangerouslySetInnerHTML={{ __html: question?.description || '' }} />
-                                                                        {/* <div className="titel"><b>Steuerberater Müller</b></div>
-                                                                        <div className="uebung_text">3. Februar, 16 Uhr</div>
-                                                                        <div className="uebung_text">Was mitbringen?</div> */}
-                                                                        <div className="uebung_text"><input type="text" name="antwort" className={`${showResults ? (checkResults[question.id] === true ? 'border-green' : 'border-red') : ''}`} onChange={(e) =>
-                                                                            setSelectedAnswers((prev) => ({
-                                                                                ...prev,
-                                                                                [question.id]: e.target.value,
-                                                                            }))
-                                                                        } /></div>
+                                                                        <div className="uebung_text">
+                                                                            <input
+                                                                                type="text"
+                                                                                name="antwort"
+                                                                                className={`${showResults ? (checkResults[question.id] ? 'border-green' : 'border-red') : ''}`}
+                                                                                onChange={(e) =>
+                                                                                    setSelectedAnswers((prev) => ({
+                                                                                        ...prev,
+                                                                                        [question.id]: e.target.value,
+                                                                                    }))
+                                                                                }
+                                                                            />
+                                                                        </div>
                                                                     </div>
                                                                 );
                                                             } else {
                                                                 const selectedOption = selectedAnswers[question.id];
-                                                                const isCorrect = checkResults?.[question.id];
+                                                                const isCorrect = checkResults[question.id];
+
                                                                 return (
                                                                     <li key={question.id || index}>
                                                                         <div className="title-option-field">
@@ -476,17 +509,18 @@ export default function Exercise() {
                                                                         <div className="options-main">
                                                                             {question.options.map((option) => {
                                                                                 const isSelected = selectedOption === option.id;
-
                                                                                 let className = "option-field-main";
 
-                                                                                if (showResults && isSelected !== undefined) {
-                                                                                    if (isSelected && isCorrect) {
-                                                                                        className += " active green-option";
+                                                                                if (showResults) {
+                                                                                    if (isSelected) {
+                                                                                        className += isCorrect ? " active green-option" : " error";
                                                                                     }
-                                                                                    if (isSelected && isCorrect === false) {
-                                                                                        className += " error";
+                                                                                    // Optional: highlight correct answer if not selected
+                                                                                    else if (isCorrect && option.is_correct) {
+                                                                                        className += " green-option";
                                                                                     }
                                                                                 }
+
                                                                                 return (
                                                                                     <div className={className} key={option.id}>
                                                                                         <input
@@ -505,13 +539,9 @@ export default function Exercise() {
                                                                 );
                                                             }
                                                         })}
-
-
                                                     </ul>
                                                 </div>
                                             </div>
-
-
                                         </>
                                     }
 

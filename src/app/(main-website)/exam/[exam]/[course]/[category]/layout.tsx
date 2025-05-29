@@ -12,8 +12,7 @@ export default function AdminLayout({
     return (
 
         // <ProtectedRoute>
-        <AdminProtectedRoute>
-
+        // <AdminProtectedRoute>
             <StudentProtectedRoute>
 
                 <>
@@ -21,7 +20,7 @@ export default function AdminLayout({
                     {children}
                 </>
             </StudentProtectedRoute>
-        </AdminProtectedRoute>
+        // </AdminProtectedRoute>
 
         // </ProtectedRoute>
     );

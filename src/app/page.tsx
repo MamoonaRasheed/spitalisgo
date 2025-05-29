@@ -20,7 +20,7 @@ export default function Page() {
                                 <button
                                     type="button"
                                     className="btn btn-primary"
-                                    onClick={() => window.location.href = "/A1"}
+                                    onClick={() => window.location.href = "exam/A1"}
                                 >
                                     Jetzt starten
                                 </button>

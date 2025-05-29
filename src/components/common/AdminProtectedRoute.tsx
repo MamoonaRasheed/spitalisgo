@@ -18,17 +18,24 @@ const AdminProtectedRoute = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (!isMounted) return;
 
+    const currentPath = window.location.pathname;
+    const encodedPath = encodeURIComponent(currentPath);
+
     if (!user) {
-      router.push("/admin-signin");
+      router.push(`/admin-signin?callbackUrl=${encodedPath}`);
     } else if (user.role !== "admin") {
-      router.push("/unauthorized"); // Optional: show "Access Denied"
+      router.push("/unauthorized");
     } else {
       setIsLoading(false);
     }
   }, [user, isMounted, router]);
 
   if (!isMounted || isLoading) {
-    return <div className="flex items-center justify-center min-h-screen"><LoadingSpinner /></div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <LoadingSpinner />
+      </div>
+    );
   }
 
   return <>{children}</>;
