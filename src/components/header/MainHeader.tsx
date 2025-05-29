@@ -21,6 +21,7 @@ export default function MainHeader() {
   const handleSignOut = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("username");
+    localStorage.removeItem("user");
     setUsername(null);
     router.push("/signin");
   };

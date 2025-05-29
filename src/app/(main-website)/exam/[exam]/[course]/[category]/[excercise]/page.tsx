@@ -70,7 +70,7 @@ export default function Exercise() {
         }
     }, [slug]);
 
-    
+
     const containerRef = useRef<HTMLDivElement | null>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const [showResults, setShowResults] = useState(false);
@@ -255,16 +255,30 @@ export default function Exercise() {
             const response = await checkQuestionAnswers(payload);
             const { correct_answers } = response.data;
 
-            const mappedResults = correct_answers.reduce(
-                (acc: Record<number, boolean>, item: any) => {
-                    acc[item.question_id] = item.is_correct;
-                    return acc;
-                },
-                {}
-            );
+            if (exerciseData?.excercise_type === 'dropdown') {
+                const mappedResults = correct_answers.reduce(
+                    (acc: Record<number, { option_id: number, is_correct: boolean }[]>, item: any) => {
+                        // Ensure we always use the array format, even if the response gives us a boolean
+                        acc[item.question_id] = Array.isArray(item.answers)
+                            ? item.answers
+                            : [{ option_id: selectedAnswers[item.question_id], is_correct: item.is_correct }];
+                        return acc;
+                    },
+                    {}
+                );
+                setCheckDropdownResults(mappedResults);
+            }
+            else {
+                const mappedResults = correct_answers.reduce(
+                    (acc: Record<number, boolean>, item: any) => {
+                        acc[item.question_id] = item.is_correct;
+                        return acc;
+                    },
+                    {}
+                );
+                setCheckResults(mappedResults);
+            }
 
-            setCheckResults(mappedResults);
-            setCheckDropdownResults(mappedResults);
             setShowResults(true);
         } catch (error) {
             console.error('Error submitting answers:', error);
@@ -403,8 +417,8 @@ export default function Exercise() {
                                                                                     <div
                                                                                         key={idx}
                                                                                         className={`option-field-main ${showResults && isSelected
-                                                                                                ? (isCorrect ? 'border-green' : 'error')
-                                                                                                : ''
+                                                                                            ? (isCorrect ? 'border-green' : 'error')
+                                                                                            : ''
                                                                                             }`}
                                                                                     >
                                                                                         <input
@@ -427,10 +441,10 @@ export default function Exercise() {
                                                                                             type="text"
                                                                                             name={`antwort_${question?.id ?? index}`}
                                                                                             className={`login__form-input ${showResults
-                                                                                                    ? (questionResult === true
-                                                                                                        ? 'border-green'
-                                                                                                        : 'border-red')
-                                                                                                    : ''
+                                                                                                ? (questionResult === true
+                                                                                                    ? 'border-green'
+                                                                                                    : 'border-red')
+                                                                                                : ''
                                                                                                 }`}
                                                                                             placeholder=""
                                                                                             aria-label={`antwort_${question?.id ?? index}`}
