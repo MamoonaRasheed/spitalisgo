@@ -212,7 +212,7 @@ export default function Page() {
                                 {/* {[1, 2, 3, 4].map((_, index) => ( */}
                                     <SwiperSlide>
                                         <div className="testimonial-item">
-                                            <Image src="/assets/img/testimonial-1.jpg" className="testimonial-img" alt="User" width={80} height={80} />
+                                            <Image src="/assets/img/testimonial-10.jpg" className="testimonial-img" alt="User" width={80} height={80} />
                                             <h3>Lukas Schneider</h3>
                                             <h4>Berufstätige im Marketing</h4>
                                             <div className="stars">
@@ -231,7 +231,7 @@ export default function Page() {
                                     </SwiperSlide>
                                     <SwiperSlide>
                                         <div className="testimonial-item">
-                                            <Image src="/assets/img/testimonial-2.jpg" className="testimonial-img" alt="User" width={80} height={80} />
+                                            <Image src="/assets/img/testimonial-20.jpg" className="testimonial-img" alt="User" width={80} height={80} />
                                             <h3>Felix Wagner</h3>
                                             <h4>CEO &amp; Founder</h4>
                                             <div className="stars">
@@ -250,7 +250,7 @@ export default function Page() {
                                     </SwiperSlide>
                                     <SwiperSlide>
                                         <div className="testimonial-item">
-                                            <Image src="/assets/img/testimonial-3.jpg" className="testimonial-img" alt="User" width={80} height={80} />
+                                            <Image src="/assets/img/testimonial-30.jpg" className="testimonial-img" alt="User" width={80} height={80} />
                                             <h3>Jonas Becker</h3>
                                             <h4>CEO &amp; Founder</h4>
                                             <div className="stars">
@@ -269,7 +269,7 @@ export default function Page() {
                                     </SwiperSlide>
                                      <SwiperSlide>
                                         <div className="testimonial-item">
-                                            <Image src="/assets/img/user.jpg" className="testimonial-img" alt="User" width={80} height={80} />
+                                            <Image src="/assets/img/user1.jpg" className="testimonial-img" alt="User" width={80} height={80} />
                                             <h3>Anna Hoffmann</h3>
                                             <h4>CEO &amp; Founder</h4>
                                             <div className="stars">
