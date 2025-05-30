@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { getAllCourses } from '@/services/courseService';
 import LoadingSpinner from "@/components/loader/Loader";
 interface Course {
@@ -14,6 +14,7 @@ interface CourseResponse {
 }
 
 export default function Course() {
+    const router = useRouter();
     const params = useParams();
     const { exam } = params;
     const [courses, setCourses] = useState<CourseResponse | null>(null); // Define state inside the component
@@ -85,9 +86,9 @@ export default function Course() {
                     </button>
 
                     {/* <button type="button">Weiter</button> */}
-                    <a href="placement-test/tasks">
-                        <button type="button">Zum Einstufungstest</button>
-                    </a>
+                    <button type="button" onClick={() => router.push('placement-test/tasks')}>
+                        Zum Einstufungstest
+                    </button>
 
                 </div>
             </div>

@@ -16,6 +16,8 @@ interface User {
 interface UsersResponse {
   data: User[];
   user_count: number;
+  excercise_count: number;
+  questions_count: number;
 }
 
 export default function Ecommerce() {
@@ -56,7 +58,11 @@ export default function Ecommerce() {
   return (
     <div className="grid grid-cols-12 gap-4 md:gap-6">
       <div className="col-span-12">
-        <EcommerceMetrics count={users.user_count} />
+        <EcommerceMetrics
+          userCount={users.user_count}
+          exerciseCount={users.excercise_count}
+          questionsCount={users.questions_count}
+        />
       </div>
 
       <div className="col-span-12">

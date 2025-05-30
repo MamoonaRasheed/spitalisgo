@@ -2,10 +2,19 @@
 import React from "react";
 import Badge from "../ui/badge/Badge";
 import { ArrowDownIcon, BoxIconLine, GroupIcon } from "@/icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faQuestion } from "@fortawesome/free-solid-svg-icons";
+import {
+  Exercise,
+} from "../../icons/index";
+
+
 type Props = {
-  count: number;
+  userCount: number;
+  exerciseCount: number;
+  questionsCount: number;
 };
-export const EcommerceMetrics = ({ count }: Props) => {
+export const EcommerceMetrics = ({ userCount, exerciseCount, questionsCount }: Props) => {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 md:gap-6">
       {/* <!-- Metric Item Start --> */}
@@ -20,7 +29,7 @@ export const EcommerceMetrics = ({ count }: Props) => {
               Students
             </span>
             <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-            {count}
+            {userCount}
             </h4>
           </div>
           {/* <Badge color="success">
@@ -34,7 +43,7 @@ export const EcommerceMetrics = ({ count }: Props) => {
       {/* <!-- Metric Item Start --> */}
       <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
         <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
-          <BoxIconLine className="text-gray-800 dark:text-white/90" />
+          <FontAwesomeIcon icon={faQuestion} size="2x" />
         </div>
         <div className="flex items-end justify-between mt-5">
           <div>
@@ -42,7 +51,7 @@ export const EcommerceMetrics = ({ count }: Props) => {
               Questions
             </span>
             <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              0
+              {exerciseCount}
             </h4>
           </div>
 
@@ -57,7 +66,7 @@ export const EcommerceMetrics = ({ count }: Props) => {
       {/* <!-- Metric Item Start --> */}
       <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
         <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
-          <BoxIconLine className="text-gray-800 dark:text-white/90" />
+          <Exercise/>
         </div>
         <div className="flex items-end justify-between mt-5">
           <div>
@@ -65,7 +74,7 @@ export const EcommerceMetrics = ({ count }: Props) => {
               Excercises
             </span>
             <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              0
+              {questionsCount}
             </h4>
           </div>
 

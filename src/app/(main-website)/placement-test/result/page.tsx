@@ -109,7 +109,7 @@ const TestResultsPage = ({ progress = 0 }) => {
               <div className="font-bold break-words">{results.userData.total_answers_filled} / 64</div>
               
               <div className="text-gray-700 font-medium">Ihre Punktzahl:</div>
-              <div className="font-bold break-words">{results.userData.total_score} / 240 ({Number(((results.userData.total_score / 240) * 100).toFixed(2))}) %</div>
+              <div className="font-bold break-words">{(results.userData.total_score).toFixed(2)} / 240 ({Number(((results.userData.total_score / 240) * 100).toFixed(2))}) %</div>
               
               {/* <div className="text-gray-700 font-medium">Required score:</div>
               <div className="font-bold break-words">{results.userData.requiredScore}</div> */}
@@ -143,7 +143,7 @@ const TestResultsPage = ({ progress = 0 }) => {
                         <div dangerouslySetInnerHTML={{ __html: item.task_name }} />
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700 text-center">
-                        {item.reached || "0"}
+                        {isNaN(parseFloat(item.reached)) ? "0.00" : parseFloat(item.reached).toFixed(2)}
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700 text-center">
                         {item.points || "4"}

@@ -64,7 +64,7 @@ export default function MainHeader() {
                 </div>
               <div className="header-links">
                   <ul>  
-                      <li><a href=""> Heim </a></li>
+                      <li><a href="/"> Heim </a></li>
                       <li><a href="#"> B1 Probeprüfung </a></li>
                       <li><a href="#"> B2 Probeprüfung </a></li>
                       <li><a href="/placement-test"> Einstufungstest </a></li>

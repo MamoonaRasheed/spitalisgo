@@ -3,6 +3,9 @@
 
 import React from "react";
 import Image from 'next/image';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faFacebookF, faTwitter, faYoutube } from '@fortawesome/free-brands-svg-icons'
+
 export default function MainFooter() {
     return (
         <div>
@@ -19,23 +22,17 @@ export default function MainFooter() {
                                     <ul>
                                         <li>
                                             <a href="#" className="facebook">
-                                                <svg className="e-font-icon-svg e-fab-facebook" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M504 256C504 119 393 8 256 8S8 119 8 256..." />
-                                                </svg>
+                                                <FontAwesomeIcon icon={faFacebookF} />
                                             </a>
                                         </li>
                                         <li>
                                             <a href="#" className="twitter">
-                                                <svg className="e-font-icon-svg e-fab-twitter" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M459.37 151.716c.325 4.548.325 9.097..." />
-                                                </svg>
+                                                <FontAwesomeIcon icon={faTwitter} />
                                             </a>
                                         </li>
                                         <li>
                                             <a href="#" className="youtube">
-                                                <svg className="e-font-icon-svg e-fab-youtube" viewBox="0 0 576 512" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M549.655 124.083c-6.281-23.65-24.787-42.276..." />
-                                                </svg>
+                                                <FontAwesomeIcon icon={faYoutube} />
                                             </a>
                                         </li>
                                     </ul>

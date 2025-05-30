@@ -55,7 +55,7 @@ export default function Task() {
     const [correctOptions, setCorrectOptions] = useState<Record<number, number>>({});
     const [showResults, setShowResults] = useState(false);
     const [checkResults, setCheckResults] = useState<Record<number, boolean>>({});
-     const [checkDropdownResults, setCheckDropdownResults] = useState<Record<number, { option_id: number; is_correct: boolean }[]>>({});
+    const [checkDropdownResults, setCheckDropdownResults] = useState<Record<number, { option_id: number; is_correct: boolean }[]>>({});
     const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
     const containerRef = useRef<HTMLDivElement | null>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -350,14 +350,31 @@ export default function Task() {
             console.log(payload, "payload");
             const response = await checkQuestionAnswers(payload);
             const { correct_answers } = response.data;
+            if (taskData?.task_type === 'dropdown') {
+                console.log(correct_answers, "correct_answerswoewioewiei")
+                const mappedResults = correct_answers.reduce((acc: Record<number, { option_id: number, is_correct: boolean }[]>, item: any) => {
+                    const selectedOptionId = selectedAnswers[item.question_id];
 
-            const mappedResults = correct_answers.reduce((acc: Record<number, boolean | { option_id: number, is_correct: boolean }[]>, item: any) => {
-                acc[item.question_id] = item.answers ?? item.is_correct;
-                return acc;
-            }, {});
+                    acc[item.question_id] = [{
+                        option_id: selectedOptionId ?? 0, 
+                        is_correct: item.is_correct
+                    }];
 
-            setCheckResults(mappedResults);
-            setCheckDropdownResults(mappedResults);
+                    return acc;
+                }, {});
+
+                setCheckDropdownResults(mappedResults);
+            }
+            else {
+                const mappedResults = correct_answers.reduce((acc: Record<number, boolean | { option_id: number, is_correct: boolean }[]>, item: any) => {
+                    acc[item.question_id] = item.answers ?? item.is_correct;
+                    return acc;
+                }, {});
+                setCheckResults(mappedResults);
+            }
+
+
+
             setShowResults(true);
         } catch (error) {
             console.error('Error submitting answers:', error);
@@ -366,23 +383,23 @@ export default function Task() {
         }
     };
 
-    const submitAll = async () => {
-        try {
-            const payload = {
-                allTaskData
-            };
-            console.log("payload", payload);
-            const response = await getResult(payload);
-            console.log("response---->", response);
-            if (response.status) {
-                router.replace("/placement-test/score");
-            }
-        } catch (error) {
-            console.error('Error submitting answers:', error);
-        } finally {
-            // setLoading(false);
-        }
-    };
+    // const submitAll = async () => {
+    //     try {
+    //         const payload = {
+    //             allTaskData
+    //         };
+    //         console.log("payload", payload);
+    //         const response = await getResult(payload);
+    //         console.log("response---->", response);
+    //         if (response.status) {
+    //             router.replace("/placement-test/score");
+    //         }
+    //     } catch (error) {
+    //         console.error('Error submitting answers:', error);
+    //     } finally {
+    //         // setLoading(false);
+    //     }
+    // };
 
 
     useEffect(() => {
@@ -766,11 +783,9 @@ export default function Task() {
                         </svg>
                         Zurück
                     </button>
-                    {
-                        isLastQuestion ?
-                            taskData?.id == 64 && <button type="button" onClick={submitAll}>Submit All</button> :
-                            <button type="button" onClick={() => taskData?.next_slug && fetchTask(taskData?.next_slug)}>Weiter</button>
-                    }
+
+                    <button type="button" onClick={() => taskData?.next_slug && fetchTask(taskData?.next_slug)}>Weiter</button>
+
                 </div>
             </div>
         </section>

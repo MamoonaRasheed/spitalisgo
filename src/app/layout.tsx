@@ -11,7 +11,6 @@ import { RedirectProvider } from '@/context/RedirectContext';
 const outfit = Outfit({
   subsets: ['latin'],
 });
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -20,34 +19,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-         {/* Favicon */}
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-        
-        {/* CSS Links */}
-        <link
-          href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
-          rel="stylesheet"
-        />
-        <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
-        />
-
-        {/* External Scripts placed inside <head> with async */}
-        <Script
-          src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"
-          strategy="beforeInteractive"
-        />
-        <Script
-          src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"
-          strategy="beforeInteractive"
-        />
-
+        <title>Spitalisgo Academy</title>
+        <link rel="icon" href="/images/favicon.ico" type="image/x-icon" />
+        <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+        <Script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js" strategy="beforeInteractive" />
+        <Script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" strategy="beforeInteractive" />
         <Script src="/assets/js/scripts.js" strategy="afterInteractive" />
-
       </head>
+
       <body className={`${outfit.className} dark:bg-gray-900`} suppressHydrationWarning={true}>
-        < RedirectProvider>
+        <RedirectProvider>
           <ThemeProvider>
             <SidebarProvider>
               <ToastContainer
@@ -66,7 +48,6 @@ export default function RootLayout({
               {children}
 
             </SidebarProvider>
-
           </ThemeProvider>
         </RedirectProvider>
       </body>
