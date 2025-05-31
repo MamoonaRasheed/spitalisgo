@@ -3080,8 +3080,49 @@ section#detailed-boxes {
     font-size: 14px !important;
 }
 
+#home-page:before {
+    display: none;
+}
 
+.auth-align,
+.main-align-register {
+    padding: 20px;
+}
 
+.auth-text p {
+    font-size: 16px;
+    margin-bottom: 30px;
+}
+
+.auth-text h2, .auth-text.register-text h2 {
+    font-size: 30px;
+}
+
+.content-wrapper>div {
+    padding: 0;
+}
+
+.auth-fields input {
+    padding: 12px;
+    font-size: 15px;
+}
+
+.submit-btn button {
+    padding: 14px 20px;
+    font-size: 20px;
+    width: 100%;
+}
+
+.btn.btn-outline {
+    padding: 14px 20px;
+    font-size: 20px;
+    width: 100%;
+    line-height: 1.3;
+}
+
+.register-auth .auth-align form {
+    grid-template-columns: 1fr;
+}
 
 
 }
