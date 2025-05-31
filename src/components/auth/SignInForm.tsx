@@ -44,15 +44,19 @@ export default function SignInForm() {
     return isValid;
   };
 
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!validateForm()) return;
 
     setIsLoading(true);
+
     try {
       const response = await axios.post('/login', { email, password });
       const data = response.data;
+
+      console.log("Login success response:", data);
 
       localStorage.setItem('username', data.user.name);
 
@@ -60,17 +64,35 @@ export default function SignInForm() {
 
       toast.success(data.message);
 
-      // Get callbackUrl from query params
+      // Redirect to callback or home
       const callbackUrl = searchParams.get("callbackUrl");
       router.push(callbackUrl || "/");
+
     } catch (err: any) {
-      console.error(err);
-      const errorMessage = err?.response?.data?.message || 'An unexpected error occurred';
+      let errorMessage = "An unexpected error occurred. Please try again.";
+
+      if (err?.response) {
+        const { status, data } = err.response;
+
+        if (status === 401) {
+          if (data?.message === "Student is not active" || data?.code === "INACTIVE_USER") {
+            errorMessage = "Your account is not active. Please contact support.";
+          } else {
+            errorMessage = "Invalid email or password.";
+          }
+        } else if (status === 422) {
+          errorMessage = "Please check your input and try again.";
+        } else if (data?.message) {
+          errorMessage = data.message;
+        }
+      }
+
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
   };
+
 
   if (isLoading) {
     return (

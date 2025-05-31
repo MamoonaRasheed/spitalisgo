@@ -47,7 +47,7 @@ export default function SignUpForm() {
           "Content-Type": "application/json",
         },
       });
-    
+
       // Axios will throw an error for non-2xx status codes, so no need for checking `response.ok`
       if (response.status === 200) {
         setSuccess("Registration successful!");
@@ -73,8 +73,8 @@ export default function SignUpForm() {
     } finally {
       setLoading(false);
     }
-    
-    
+
+
   };
 
   return (
@@ -88,7 +88,7 @@ export default function SignUpForm() {
 
           <div className="auth-align">
             <div className="auth-fields">
-              <form onSubmit={handleSubmit}>
+              <form >
                 <div className="auth-fields">
                   <label htmlFor="email">E-mail address</label>
                   <div className="input-field-align">
@@ -181,14 +181,14 @@ export default function SignUpForm() {
                 {error && <p className="error-message">{error}</p>}
                 {success && <p className="success-message">{success}</p>}
 
-                <div className="submit-btn register-btn-submit">
-                  <button type="submit" disabled={loading}>
-                    {loading ? "Registering..." : "Register"}
-                  </button>
-                </div>
-              </form>
 
-              
+              </form>
+              <div className="submit-btn register-btn-submit" onClick={handleSubmit}>
+                <button type="submit" disabled={loading}>
+                  {loading ? "Registering..." : "Register"}
+                </button>
+              </div>
+
               <div className="already-account">
                 <p>Or</p>
                 <p>If you already have an account,</p>
