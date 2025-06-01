@@ -3227,6 +3227,10 @@ section#detailed-boxes {
     grid-template-columns: 1fr;
   }
 
+  .category-tabs-list ul li button {
+    height: auto;
+  }
+
 }
 
 .placement-test {
