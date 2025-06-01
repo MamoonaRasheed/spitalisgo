@@ -42,6 +42,7 @@ interface Exercise {
     description: string;
     question_description: string;
 }
+
 export default function Exercise() {
     const router = useRouter();
     const pathname = usePathname();
@@ -51,11 +52,13 @@ export default function Exercise() {
 
     const [exerciseData, setExercise] = useState<Exercise | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
+
     useEffect(() => {
         const fetchExercise = async () => {
             try {
                 if (typeof slug === 'string') {
                     const response = await getQuestionsByExcercises({ slug });
+                    console.log("response of exercise data in use effect=-=-=-=-=-=-00=-=-", response.data);
                     setExercise(response.data);
                 }
             } catch (error) {
@@ -119,7 +122,9 @@ export default function Exercise() {
         };
     }, [exerciseData?.description, showResults]);
 
-
+    useEffect(() => {
+        console.log('exerciseData------>', exerciseData);
+    }, [exerciseData])
 
     const handlePlayClick = () => {
         if (!audioRef.current || !containerRef.current) return;
@@ -243,6 +248,7 @@ export default function Exercise() {
     const handleCheck = async () => {
         try {
             setLoading(true);
+
             const payload = {
                 question_answers: exerciseData?.questions
                     .filter((question) => selectedAnswers.hasOwnProperty(question.id))
@@ -251,6 +257,9 @@ export default function Exercise() {
                         answer: selectedAnswers[question.id],
                     })) || [],
             };
+
+            console.log("exerciseData in handle check--------", exerciseData);
+            console.log("payload in handle check--------", payload);
 
             const response = await checkQuestionAnswers(payload);
             const { correct_answers } = response.data;
@@ -280,6 +289,7 @@ export default function Exercise() {
             }
 
             setShowResults(true);
+            handleSubmitAnswers()
         } catch (error) {
             console.error('Error submitting answers:', error);
         } finally {
@@ -291,35 +301,45 @@ export default function Exercise() {
     useEffect(() => {
         console.log("checkResults p", checkResults);
     }, [checkResults]);
+
     const handleReset = () => {
         setSelectedAnswers({});
         setShowResults(false);
     };
 
-    const handleSubmitAnswers = async (slug: string | undefined) => {
-        if (!slug) {
-            console.error("Slug is undefined. Cannot navigate.");
-            return;
-        }
 
+    const handleSubmitAnswers = async () => {
         try {
-            setLoading(true); // Show loading state
+            setLoading(true);
             const hasAnswers = Object.keys(selectedAnswers).length > 0;
+            console.log("handleSubmitAnswers--- hasAnswers", selectedAnswers, hasAnswers);
 
             if (hasAnswers) {
-                const result = await submitAnswers(selectedAnswers);
-                console.log('Answers submitted:', result);
-            }
-            console.log('Navigating to slug:', slug);
+                const payload = {
+                    exerciseId: exerciseData?.id || '',
+                    answers: selectedAnswers,
+                };
 
-            await router.push(`${slug}`); // Navigate after submission
+                const result = await submitAnswers(payload);
+                console.log('Answers submitted:', result);
+            } else if (exerciseData) {
+                console.log("No answers to submit for this exercise.");
+                const payload = {
+                    exerciseId: exerciseData?.id || '',
+                    answers: {},
+                };
+                const result = await submitAnswers(payload);
+            }
         } catch (error: any) {
             console.error('Error submitting answers:', error?.message || error);
             toast.error(error?.message || "Something went wrong.");
         } finally {
-            setLoading(false); // End loading state
+            setLoading(false);
         }
     };
+
+
+
     const goToPrevious = () => {
         if (exerciseData?.prev_slug) {
             router.push(`${exerciseData.prev_slug}`);
@@ -340,9 +360,71 @@ export default function Exercise() {
             <section id="detailed-boxes" className="header-space">
                 <div className="container">
                     {(exerciseData?.excercise_type == 'image and audio') ?
-                        <div className="deutsch-b1-horen">
-                            <div ref={containerRef} dangerouslySetInnerHTML={{ __html: exerciseData?.description || '' }} />
-                        </div>
+                        <>
+                            <div className="deutsch-b1-horen">
+                                <div ref={containerRef} dangerouslySetInnerHTML={{ __html: exerciseData?.description || '' }} />
+                            </div>
+                            <div className="action-btns flex flex-wrap gap-2 items-center justify-start">
+
+                                {/* WhatsApp Button */}
+                                <a
+                                    href={`https://wa.me/491234567890?text=Ich arbeite an der Übung: ${encodeURIComponent(exerciseData?.title || '')}. Hilf mir dabei.`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md flex items-center gap-2 text-sm md:text-base transition duration-200 h-10"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="20"
+                                        height="20"
+                                        fill="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path d="M20.52 3.48A11.92 11.92 0 0012 .01 12 12 0 000 12a11.89 11.89 0 001.66 6L0 24l6.4-1.68A12 12 0 1012 .01a11.9 11.9 0 008.52 3.47zM12 22a10.16 10.16 0 01-5.21-1.43l-.37-.22-3.81 1 .99-3.7-.24-.38A9.93 9.93 0 012.05 12 9.94 9.94 0 1112 22zm5.46-7.3c-.3-.15-1.75-.86-2.02-.96s-.47-.15-.67.15-.77.96-.94 1.15-.35.22-.65.07a8.26 8.26 0 01-2.43-1.5 9.22 9.22 0 01-1.71-2.12c-.18-.3 0-.46.13-.6s.3-.34.45-.51.2-.3.3-.5.05-.38-.02-.53-.66-1.58-.9-2.17-.5-.5-.67-.5h-.56c-.2 0-.53.08-.8.38a3.35 3.35 0 00-1.03 2.5 5.88 5.88 0 001.24 2.47 13.49 13.49 0 005.26 4.72c.73.3 1.3.47 1.75.6a4.19 4.19 0 001.92.12 3.2 3.2 0 002.1-1.5 2.6 2.6 0 00.18-1.5c-.07-.13-.25-.2-.54-.35z" />
+                                    </svg>
+                                    WhatsApp
+                                </a>
+
+
+                                <button type="button" onClick={goToPrevious}>
+                                    <svg
+                                        width="27"
+                                        height="16"
+                                        viewBox="0 0 27 16"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path
+                                            d="M1.5 8.00016L8.16667 14.6668M1.5 8.00016L8.16667 1.3335M1.5 8.00016H25.5"
+                                            stroke="#161616"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                        />
+                                    </svg>
+                                    Zurück
+                                </button>
+
+                                {showResults ? (
+                                    <>
+                                        <button type="button" onClick={handleReset}>Zurücksetzen</button>
+                                        <button
+                                            type="button" onClick={() => router.push(exerciseData?.next_slug || '/')}
+                                            disabled={
+                                                !exerciseData?.next_slug ||
+                                                exerciseData?.next_chapter_id !== exerciseData?.chapter_id
+                                            }
+                                        >
+                                            Nächste
+                                        </button>
+                                    </>
+                                ) : (
+                                    <button type="button" onClick={handleCheck}>Prüfen</button>
+                                )}
+
+
+                            </div>
+                        </>
                         :
                         <div className="align-detailed-boxes">
                             <div className="title-detailed-boxes">
@@ -604,8 +686,7 @@ export default function Exercise() {
                                             <>
                                                 <button type="button" onClick={handleReset}>Zurücksetzen</button>
                                                 <button
-                                                    type="button"
-                                                    onClick={() => handleSubmitAnswers(exerciseData?.next_slug)}
+                                                    type="button" onClick={() => router.push(exerciseData?.next_slug || '/')}
                                                     disabled={
                                                         !exerciseData?.next_slug ||
                                                         exerciseData?.next_chapter_id !== exerciseData?.chapter_id
@@ -627,6 +708,8 @@ export default function Exercise() {
                             </div>
 
                         </div>
+
+
                     }
                 </div>
             </section>
