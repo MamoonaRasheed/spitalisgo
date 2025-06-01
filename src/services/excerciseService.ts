@@ -32,10 +32,15 @@ export const getQuestionsByExcercises = async (params: GetExcerciseParams) => {
 
 };
 interface SelectedAnswers {
-  [questionId: string]: string | number | number[]; // Question ID as string or number, and Option ID as string or number
+  [questionId: string]: string | number | number[];
 }
 
-export const submitAnswers = async (selectedAnswers: SelectedAnswers) => {
+interface SubmitAnswersPayload {
+  exerciseId: number | string;
+  answers: SelectedAnswers;
+}
+
+export const submitAnswers = async ({ exerciseId, answers }: SubmitAnswersPayload) => {
   if (typeof window === 'undefined') {
     throw new Error("localStorage is not available on the server side");
   }
@@ -48,11 +53,14 @@ export const submitAnswers = async (selectedAnswers: SelectedAnswers) => {
 
   try {
     const payload = {
-      answers: Object.entries(selectedAnswers).map(([questionId, optionId]) => ({
+      exercise_id: exerciseId,
+      answers: Object.entries(answers).map(([questionId, optionId]) => ({
         question_id: parseInt(questionId),
         option_id: optionId,
       })),
     };
+
+    console.log("Payload for submitting answer09999999999999999999909090909", payload);
 
     const response = await axios.post("/store-answers", payload, {
       headers: {
