@@ -2855,7 +2855,7 @@ section#services {
 .listening-list__progress span {
     position: absolute;
     inset: 0;
-    z-index: 999;
+    z-index: 98;
     display: flex;
     align-items: center;
     justify-content: center;
