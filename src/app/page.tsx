@@ -138,7 +138,7 @@ export default function Page() {
                                 </div>
                                 <div className="services-box-content">
                                     <h3>Bestehens- garantie</h3>
-                                    <p>Kostenlose Whster holung-im Fall Ago Nichtbestehens.</p>
+                                    <p>Kostenlose Wiederholung Fall eines Nichtbestehens.</p>
                                 </div>
                             </div>
                             <div className="servicex-box">
@@ -167,7 +167,7 @@ export default function Page() {
                                 </div>
                                 <div className="services-box-content">
                                     <h3>WhatsApp- Begleitung</h3>
-                                    <p>Individuelle Unterstützang per Chat</p>
+                                    <p>Individuelle Unterstützung per Chat</p>
                                 </div>
                             </div>
                             <div className="servicex-box">
@@ -197,8 +197,8 @@ export default function Page() {
                                     </svg>
                                 </div>
                                 <div className="services-box-content">
-                                    <h3>Prüfungs- simulation</h3>
-                                    <p>Mit echten Prütenimen und Prüfern .</p>
+                                    <h3>Prüfungsimulation</h3>
+                                    <p>Mit echten Prüferinnen und Prüfern .</p>
                                 </div>
                             </div>
                         </div>

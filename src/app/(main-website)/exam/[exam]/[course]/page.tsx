@@ -69,7 +69,7 @@ export default function Course() {
                                         ) : null
                                     }
 
-                                    {category?.name}
+                                    {category?.name == "Horen" ? "Hören" : category?.name}
                                 </a>
                             </div>
                         ))}
