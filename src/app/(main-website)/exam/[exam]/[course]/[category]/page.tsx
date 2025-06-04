@@ -103,7 +103,7 @@ export default function Category() {
 
                         <div className="category-tab-content">
                             <div className="title-category-tab-content">
-                                <h3>{exam} <span>{category}</span> Übungen</h3>
+                                <h3>{exam} <span>{category == "horen" ? "Hören" : category}</span> Übungen</h3>
                             </div>
 
                             <div className="listing-categories-tab">
