@@ -61,10 +61,11 @@ import MuteIcon from "./mute.svg";
 import UnmuteIcon from "./unmute.svg";
 import Exercise from "./education-quiz.svg";
 import Question from "./diploma-svgrepo-com.svg";
-
+import FileRegular from "./file-regular.svg";
 export {
   Question,
   Exercise,
+  FileRegular,
   DownloadIcon,
   BellIcon,
   MoreDotIcon,

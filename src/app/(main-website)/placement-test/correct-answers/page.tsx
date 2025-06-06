@@ -8,8 +8,9 @@ import ExerciseRenderer from "@/components/common/ExerciseRenderer";
 import DraggableBlock from "@/components/common/DraggableBlock";
 import { checkQuestionAnswers, getResult } from '@/services/questionService';
 import { getCorrectAnswersByTask } from '@/services/userService';
+import { File } from "lucide-react";
 import { createRoot, Root } from 'react-dom/client';
-import { PlayIcon, PauseIcon, MuteIcon, UnmuteIcon } from "@/icons";
+import { PlayIcon, PauseIcon, MuteIcon, UnmuteIcon, FileRegular } from "@/icons";
 import Image from 'next/image';
 interface Task {
     id: number;
@@ -155,7 +156,7 @@ export default function Task() {
         }
     };
     useEffect(() => {
-        fetchTask('task-1');
+        fetchTask('task-7');
     }, []);
 
     const fetchCorrectAnswers = async (slug: string) => {
@@ -175,7 +176,7 @@ export default function Task() {
     };
 
     useEffect(() => {
-        fetchCorrectAnswers('task-1');
+        fetchCorrectAnswers('task-7');
     }, []);
 
     useEffect(() => {
@@ -483,7 +484,9 @@ export default function Task() {
                                 />
                                 {isSubmitted && !isCorrect && (
                                     <>
-                                        <span className="absolute -top-2 -right-3 text-blue-600 cursor-default text-sm z-40">🛈</span>
+                                        <span className="absolute -top-2 -right-3 text-red-600 text-sm z-20">
+                                            <File className="w-4 h-4" />
+                                        </span>
                                         <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 hidden group-hover:block bg-white text-sm text-green-700 border border-green-500 px-2 py-1 rounded shadow whitespace-nowrap z-50">
                                             ✅ Correct: {correctAnswer}
                                         </div>
@@ -510,7 +513,9 @@ export default function Task() {
                                 </button>
                                 {isSubmitted && !isCorrect && (
                                     <>
-                                        <span className="absolute -top-2 -right-3 text-blue-600 cursor-default text-sm">🛈</span>
+                                        <span className="absolute -top-2 -right-3 text-red-600 text-sm z-20">
+                                            <File className="w-4 h-4" />
+                                        </span>
                                         <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 hidden group-hover:block bg-white text-sm text-green-700 border border-green-500 px-2 py-1 rounded shadow whitespace-nowrap z-10">
                                             ✅ Correct: {correctAnswer}
                                         </div>

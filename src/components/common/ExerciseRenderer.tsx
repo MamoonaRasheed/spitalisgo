@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import parse from 'html-react-parser';
+import { File } from "lucide-react";
 
 interface Question {
   question_id: number;
@@ -61,7 +62,7 @@ const ExerciseRenderer = ({
       const option_q = question?.option_q || [];
       const questionId = question?.question_id;
       const selectedOptionId = selectedAnswers?.[questionId || 0];
- const show = question?.showResults;
+      const show = question?.showResults;
       let isCorrect = false;
       let correctAnswerText;
 
@@ -93,7 +94,9 @@ const ExerciseRenderer = ({
             {/* Tooltip */}
             {isSubmitted && selectedOptionId && !isCorrect && correctAnswerText && (
               <>
-                <span className="absolute -top-2 -right-3 text-blue-600 text-sm cursor-default z-20">🛈</span>
+                <span className="absolute -top-2 -right-3 text-red-600 text-sm z-20">
+                  <File className="w-4 h-4" />
+                </span>                
                 <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 hidden group-hover:block bg-white text-sm text-green-700 border border-green-500 px-2 py-1 rounded shadow whitespace-nowrap z-50">
                   ✅ Correct: {correctAnswerText}
                 </span>
