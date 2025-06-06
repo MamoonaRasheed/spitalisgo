@@ -2716,6 +2716,10 @@ section#services {
   right: 70px;
 }
 
+.custom-btn.disabled {
+  border: 2px solid darkgray; /* gray */
+  cursor: not-allowed;
+}
 
 
 @media (max-width: 1199.98px) {

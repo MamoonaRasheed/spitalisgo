@@ -356,7 +356,7 @@ export default function Task() {
                     const selectedOptionId = selectedAnswers[item.question_id];
 
                     acc[item.question_id] = [{
-                        option_id: selectedOptionId ?? 0, 
+                        option_id: selectedOptionId ?? 0,
                         is_correct: item.is_correct
                     }];
 
@@ -764,7 +764,8 @@ export default function Task() {
                 </>
 
                 <div className="action-btns">
-                    <button type="button" onClick={() => taskData?.prev_slug && fetchTask(taskData.prev_slug)}>
+                    <button type="button" onClick={() => router.push('/placement-test/score')}>Ergebnisse Verlassen</button>
+                    <button type="button" disabled={taskData?.prev_slug == null} onClick={() => taskData?.prev_slug && fetchTask(taskData.prev_slug)} className={`custom-btn ${taskData?.prev_slug == null ? 'disabled' : ''}`}>
 
                         <svg
                             width="27"
