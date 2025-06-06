@@ -94,7 +94,7 @@ const ExerciseRenderer = ({
             {/* Tooltip */}
             {isSubmitted && selectedOptionId && !isCorrect && correctAnswerText && (
               <>
-                <span className="absolute -top-2 -right-3 text-red-600 text-sm z-20">
+                <span className="absolute -top-2 -right-3 text-red-600 text-sm">
                   <File className="w-4 h-4" />
                 </span>                
                 <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 hidden group-hover:block bg-white text-sm text-green-700 border border-green-500 px-2 py-1 rounded shadow whitespace-nowrap z-50">
