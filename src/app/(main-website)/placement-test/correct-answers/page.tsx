@@ -156,7 +156,7 @@ export default function Task() {
         }
     };
     useEffect(() => {
-        fetchTask('task-7');
+        fetchTask('task-1');
     }, []);
 
     const fetchCorrectAnswers = async (slug: string) => {
@@ -176,7 +176,7 @@ export default function Task() {
     };
 
     useEffect(() => {
-        fetchCorrectAnswers('task-7');
+        fetchCorrectAnswers('task-1');
     }, []);
 
     useEffect(() => {
